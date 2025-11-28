@@ -9,6 +9,10 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@perplexity-ai/perplexity_ai": "^0.16.0",
     "astro": "^5.16.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1"
   }
 }

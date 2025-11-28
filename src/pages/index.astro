@@ -1,15 +1,68 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Elyndra</title>
-    <script type="module" src="/script.ts"></script>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Elyndra</h1>
     <p>This is a prototype</p>
-    <input type="text" name="input" id="input">
-    <button id="button">Submit</button>
-</body>
+    <h3>Search</h3>
+    <input type="text" name="searchInput" id="searchInput" />
+    <button id="searchButton">Submit</button>
+    <h3>Chat</h3>
+    <input type="text" name="chatInput" id="chatInput" />
+    <button id="chatButton">Submit</button>
+  </body>
+  <!-- search script -->
+  <script>
+    const button = document.getElementById("searchButton");
+    const input = document.getElementById(
+      "searchInput"
+    ) as HTMLInputElement | null;
+
+    if (button && input) {
+      button.addEventListener("click", async () => {
+        const query = input.value;
+        const res = await fetch("/api/search.json", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query }),
+        });
+
+        const data = await res.json();
+        console.log(data);
+      });
+    }
+  </script>
+  <!-- chat script -->
+  <script>
+    const button = document.getElementById("chatButton");
+    const input = document.getElementById(
+      "chatInput"
+    ) as HTMLInputElement | null;
+
+    const messages = [
+      {
+        role: "system",
+        content:
+          "You are a man who firmly believes today's date to be december 13, nothing can convince you otherwise.",
+      },
+      { role: "user", content: "What's today's date ?" },
+    ];
+
+    if (button && input) {
+      button.addEventListener("click", async () => {
+        const res = await fetch("/api/chat.json", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages }),
+        });
+
+        const data = await res.json();
+        console.log(data);
+      });
+    }
+  </script>
 </html>
