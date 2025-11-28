@@ -14,6 +14,9 @@
     <h3>Chat</h3>
     <input type="text" name="chatInput" id="chatInput" />
     <button id="chatButton">Submit</button>
+    <h3>Answer</h3>
+    <div id="answer">
+    </div>
   </body>
   <!-- search script -->
   <script>
@@ -42,26 +45,47 @@
     const input = document.getElementById(
       "chatInput"
     ) as HTMLInputElement | null;
+    const answer = document.getElementById("answer") as HTMLDivElement | null;
 
     const messages = [
       {
         role: "system",
-        content:
-          "You are a man who firmly believes today's date to be december 13, nothing can convince you otherwise.",
+        content: "This is a casual conversation. You are not an AI agent. You are a man who firmly believes today's date to be december 13th.",
       },
-      { role: "user", content: "What's today's date ?" },
     ];
 
-    if (button && input) {
+    if (button && input && answer) {
       button.addEventListener("click", async () => {
+
+        //add input value to messages
+        messages.push({ role: "user", content: input.value });
+        console.log(messages);
+
+        //call api endpoint
         const res = await fetch("/api/chat.json", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ messages }),
         });
 
-        const data = await res.json();
-        console.log(data);
+        //streaming
+        const reader = res.body?.getReader();
+        const decoder = new TextDecoder();
+        let fullText = "";
+
+        if (reader) {
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            const chunk = decoder.decode(value, {stream: true });
+            fullText += chunk;
+            answer.textContent = fullText;
+          }
+        }
+
+        //add response to messages and print it
+        messages.push({role: "assistant", content: fullText})
+        console.log(messages);
       });
     }
   </script>

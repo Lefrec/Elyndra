@@ -2,8 +2,8 @@
 import type { APIRoute } from "astro";
 import Perplexity from "@perplexity-ai/perplexity_ai";
 import type {
-  ChatCompletionCreateResponse,
   ChatCompletionMessage,
+  ChatMessageInput,
 } from "@perplexity-ai/perplexity_ai";
 
 const apiKey = import.meta.env.PERPLEXITY_API_KEY;
@@ -19,7 +19,7 @@ const client = new Perplexity({
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = (await request.json()) as {
-        messages?: ChatCompletionMessage[];
+        messages: ChatMessageInput;
     }
 
     if (!body.messages || !Array.isArray(body.messages) || body.messages.length === 0) {
@@ -29,30 +29,43 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    const completion: ChatCompletionCreateResponse = await client.chat.completions.create({
-        model: "sonar-pro",
-        messages: body.messages,
+    // Create a streaming response
+    const stream = new ReadableStream({
+      async start(controller) {
+        const encoder = new TextEncoder();
+
+        try {
+          const streamResp = await client.chat.completions.create({
+            model: "sonar",
+            messages: body.messages,
+            stream: true,
+            disable_search: true,
+          });
+
+          // The SDK's streaming interface depends on the version.
+          // This assumes it is an async iterable over chunks with `choices[0].delta.content`.
+          for await (const chunk of streamResp as any) {
+            const delta = chunk.choices?.[0]?.delta?.content;
+            if (typeof delta === "string" && delta.length > 0) {
+              controller.enqueue(encoder.encode(delta));
+            }
+          }
+        } catch (err) {
+          console.error("Streaming error:", err);
+          controller.enqueue(encoder.encode("\n[STREAM_ERROR]"));
+        } finally {
+          controller.close();
+        }
+      },
     });
 
-    const choice = completion.choices?.[0];
-    const reply = choice?.message;
-
-    if (!reply) {
-      return new Response(
-        JSON.stringify({ error: "No reply from model" }),
-        { status: 502, headers: { "Content-Type": "application/json" } },
-      );
-    }
-
-    return new Response(
-      JSON.stringify({
-        message: reply,
-        usage: completion.usage,
-        id: completion.id,
-        model: completion.model,
-      }),
-      { status: 200, headers: { "Content-Type": "application/json" } },
-    );
+    return new Response(stream, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Transfer-Encoding": "chunked",
+      },
+    });
   } catch (err) {
     console.error(err);
     return new Response(
