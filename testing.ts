@@ -1,4 +1,4 @@
-import weaviate, { type WeaviateClient, dataType, vectors } from 'weaviate-client';
+import weaviate, { type WeaviateClient, dataType, generativeParameters, vectors } from 'weaviate-client';
 
 // Step 1.1: Connect to your local Weaviate instance
 const client: WeaviateClient = await weaviate.connectToLocal();
@@ -37,9 +37,8 @@ const client: WeaviateClient = await weaviate.connectToLocal();
 
 const gods = client.collections.use("God");
 
-const result = await gods.query.nearText("Who are the gods keeping secrets and dark magic ?", {
-  limit: 2,
-});
+const result = await gods.query.nearText("Who is the sun god ?");
+console.log(result);
 
 for (let object of result.objects) {
   console.log(JSON.stringify(object.properties, null, 2))

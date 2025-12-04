@@ -1,45 +1,22 @@
 ---
+import "/src/styles/global.css";
+
 import Layout from "../layout/Layout.astro";
 ---
 
 <Layout>
-  <h1>Elyndra</h1>
-  <p>This is a prototype</p>
-  <h3>Search</h3>
-  <input type="text" name="searchInput" id="searchInput" />
-  <button id="searchButton">Submit</button>
-  <h3>Chat</h3>
-  <input type="text" name="chatInput" id="chatInput" />
-  <button id="chatButton">Submit</button>
+  <h1>RAG Test</h1>
+  <h3>Input</h3>
+  <input type="text" name="input" id="input" />
+  <button id="button">Submit</button>
   <h3>Answer</h3>
   <div id="answer"></div>
 
-  <!-- search script -->
-  <script>
-    const button = document.getElementById("searchButton");
-    const input = document.getElementById(
-      "searchInput"
-    ) as HTMLInputElement | null;
-
-    if (button && input) {
-      button.addEventListener("click", async () => {
-        const query = input.value;
-        const res = await fetch("/api/search.json", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query }),
-        });
-
-        const data = await res.json();
-        console.log(data);
-      });
-    }
-  </script>
   <!-- chat script -->
   <script>
-    const button = document.getElementById("chatButton");
+    const button = document.getElementById("button");
     const input = document.getElementById(
-      "chatInput"
+      "input"
     ) as HTMLInputElement | null;
     const answer = document.getElementById("answer") as HTMLDivElement | null;
 
@@ -47,7 +24,7 @@ import Layout from "../layout/Layout.astro";
       {
         role: "system",
         content:
-          "This is a casual conversation. You are not an AI agent. You are a man who firmly believes today's date to be december 13th.",
+          "You are the narrator of a role-playing game in the world of Elyndra, the user is playing a character in this world",
       },
     ];
 
@@ -58,7 +35,7 @@ import Layout from "../layout/Layout.astro";
         console.log(messages);
 
         //call api endpoint
-        const res = await fetch("/api/chat.json", {
+        const res = await fetch("/api/RAGtest.json", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ messages }),
