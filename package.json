@@ -6,15 +6,20 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "testing": "node --loader ts-node/esm testing.ts"
   },
   "dependencies": {
     "@perplexity-ai/perplexity_ai": "^0.16.0",
     "@tailwindcss/vite": "^4.1.17",
     "astro": "^5.16.2",
-    "tailwindcss": "^4.1.17"
+    "tailwindcss": "^4.1.17",
+    "weaviate-agents": "^1.1.0",
+    "weaviate-client": "^3.10.0"
   },
   "devDependencies": {
-    "@types/node": "^24.10.1"
+    "@types/node": "^24.10.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }
