@@ -50,34 +50,10 @@ import Layout from "../layout/Layout.astro";
             const { value, done } = await reader.read();
             if (done) break;
             const chunk = decoder.decode(value, { stream: true });
-
-            const parts = chunk.split("__RAG_META__");
-
-            fullText += parts[0];
+            fullText += chunk;
             answer.textContent = fullText;
-
-            if (parts.length > 1) {
-              try {
-                const metaJson = parts[1].trim();
-                const meta = JSON.parse(metaJson);
-                systemMessageContent = meta.context;
-              } catch (e) {
-                console.error("Failed to parse RAG meta:", e);
-              }
-            }
           }
         }
-
-        //pop user prompt for correct order
-        const userMessage = messages.pop();
-
-        //add rag context to messages
-        if (systemMessageContent) {
-          messages.push({role: "system", content: systemMessageContent})
-        };
-
-        messages.push(userMessage || {role: "user", content: "missing content"});
-
         //add response to messages and print it
         messages.push({ role: "assistant", content: fullText });
         console.log(messages);

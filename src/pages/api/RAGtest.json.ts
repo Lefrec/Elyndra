@@ -47,12 +47,6 @@ export const POST: APIRoute = async ({ request }) => {
         systemMessage.content += (JSON.stringify(object.properties))+" | ";
     }
 
-    const userMessage = body.messages.pop();
-
-    body.messages.push(systemMessage);
-
-    body.messages.push(userMessage);
-
     // Create a streaming response
     const stream = new ReadableStream({
       async start(controller) {
@@ -74,12 +68,6 @@ export const POST: APIRoute = async ({ request }) => {
               controller.enqueue(encoder.encode(delta));
             }
           }
-
-          controller.enqueue(
-            encoder.encode(
-                `\n__RAG_META__${JSON.stringify({ context: systemMessage.content })}`,
-            )
-          )
         } catch (err) {
           console.error("Streaming error:", err);
           controller.enqueue(encoder.encode("\n[STREAM_ERROR]"));
