@@ -40,16 +40,16 @@ export const POST: APIRoute = async ({ request }) => {
 
     const result = await gods.query.nearText(prompt);
 
-    const toolMessage = {role: "tool", content: "Use the information provided to answer the next prompt : "};
+    const systemMessage = {role: "system", content: "Use the information provided to answer the user previous prompt : "};
 
     for (let object of result.objects) {
         console.log(JSON.stringify(object.properties, null, 2));
-        toolMessage.content += (JSON.stringify(object.properties))+" | ";
+        systemMessage.content += (JSON.stringify(object.properties))+" | ";
     }
 
     const userMessage = body.messages.pop();
 
-    body.messages.push(toolMessage);
+    body.messages.push(systemMessage);
 
     body.messages.push(userMessage);
 
@@ -74,6 +74,12 @@ export const POST: APIRoute = async ({ request }) => {
               controller.enqueue(encoder.encode(delta));
             }
           }
+
+          controller.enqueue(
+            encoder.encode(
+                `\n__RAG_META__${JSON.stringify({ context: systemMessage.content })}`,
+            )
+          )
         } catch (err) {
           console.error("Streaming error:", err);
           controller.enqueue(encoder.encode("\n[STREAM_ERROR]"));
