@@ -22,12 +22,33 @@ export const POST: APIRoute = async ({ request }) => {
         messages: ChatMessageInput;
     }
 
+    //basic check that throw error if not met
     if (!body.messages || !Array.isArray(body.messages) || body.messages.length === 0) {
       return new Response(
         JSON.stringify({ error: "Body must include a non-empty 'messages' array" }),
         { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
+
+    //query transformation
+    const recentMessages = body.messages.slice(-6);
+    const rewriteMessages: ChatCompletionMessage[] = [
+      {
+        role: "system",
+        content: "Ton rôle est de réécrire le dernier message de l'utilisateur en une requête simple et claire destinée à une base de donnée vectorielle de lore du monde. La requête doit fonctionner seule avec tous les noms et références explicites nécessaires. Retourne uniquement la requête."
+      },
+      ...recentMessages,
+    ]
+
+    const rewriteCompletion = await client.chat.completions.create({
+      model: "sonar",
+      messages: rewriteMessages,
+      disable_search: true,
+    })
+
+    const rewrittenQuery = rewriteCompletion.choices[0].message.content;
+
+    console.log(rewrittenQuery);
 
     //getting rag infos
     var exists = await DBclient.collections.exists("God");

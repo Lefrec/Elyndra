@@ -4,84 +4,87 @@ import Layout from "../layout/Layout.astro";
 
 <Layout>
   <h1>Elyndra</h1>
-  <p>This is a prototype</p>
-  <h3>Search</h3>
-  <input type="text" name="searchInput" id="searchInput" />
-  <button id="searchButton">Submit</button>
-  <h3>Chat</h3>
-  <input type="text" name="chatInput" id="chatInput" />
-  <button id="chatButton">Submit</button>
+  <h3>Input</h3>
+  <input type="text" name="input" id="input" />
+  <button id="button">Submit</button>
   <h3>Answer</h3>
   <div id="answer"></div>
 
-  <!-- search script -->
-  <script>
-    const button = document.getElementById("searchButton");
-    const input = document.getElementById(
-      "searchInput"
-    ) as HTMLInputElement | null;
-
-    if (button && input) {
-      button.addEventListener("click", async () => {
-        const query = input.value;
-        const res = await fetch("/api/search.json", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query }),
-        });
-
-        const data = await res.json();
-        console.log(data);
-      });
-    }
-  </script>
   <!-- chat script -->
   <script>
-    const button = document.getElementById("chatButton");
-    const input = document.getElementById(
-      "chatInput"
-    ) as HTMLInputElement | null;
+    const button = document.getElementById("button");
+    const input = document.getElementById("input") as HTMLInputElement | null;
     const answer = document.getElementById("answer") as HTMLDivElement | null;
 
+    //setting the system prompt
     const messages = [
       {
         role: "system",
         content:
-          "This is a casual conversation. You are not an AI agent. You are a man who firmly believes today's date to be december 13th.",
+          "Tu es un Maître du Jeu d’un jeu de rôle narratif immersif." +
+          "Ta mission : décrire l’univers, narrer les événements, incarner les personnages non-joueurs et faire évoluer l’histoire selon les actions du joueur." +
+          "Règles :" +
+          "- Tes réponses sont très concises et centrées sur la narration immersive." +
+          "- Évite les métaphores à rallonge et formulation pompeuses." +
+          "- Décris les environnements, actions et conséquences de façon sensorielle et cinématique." +
+          "- Ne donne pas au joueur des informations qu'il ne peut pas savoir." +
+          "- Tu contrôles les PNJ et le monde, pas le personnage joueur ; laisse toujours au joueur le choix d’agir." +
+          "- Tes réponse se termine par une ouverture ou une question incitant le joueur à décider de sa prochaine action." +
+          "- Tu donne subtilement des quêtes et des objectifs à suivre pour le joueur." +
+          "- Reste strictement cohérent avec l’historique de la conversation et les données RAG fournies. Ne crée ni éléments contradictoires ni incohérences. " +
+          "- Si tu manque d'information, improvise en te basant sur la logique et l'imagination en faisant attention à la cohérence." +
+          "- Les actions du joueur doivent rester plausibles dans les limites de l’univers. Corrige doucement toute tentative impossible ou méta." +
+          "- Chaque action entraîne une conséquence logique (réussite, échec, compromis)." +
+          "- Récompense les actions créatives et solutions ingénieuses du joueurs." +
+          "- Le ton doit être immersif, fluide et agréable. Tu équilibres description et rythme sans faire de textes trop longs ni trop laconiques." +
+          "- Tu n’es pas un adversaire du joueur, mais un narrateur impartial favorisant l’immersion et le plaisir du jeu.",
       },
     ];
 
+    let waiting = false;
     if (button && input && answer) {
       button.addEventListener("click", async () => {
-        //add input value to messages
-        messages.push({ role: "user", content: input.value });
-        console.log(messages);
+        if (waiting) {
+          console.log("waiting");
+          return;
+        } else {
+          waiting = true;
+          //add the user input to messages
+          messages.push({ role: "user", content: input.value });
 
-        //call api endpoint
-        const res = await fetch("/api/chat.json", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages }),
-        });
+          //call the api endpoint to get chat completion
+          const res = await fetch("/api/ChatCompletion.json", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ messages }),
+          });
 
-        //streaming
-        const reader = res.body?.getReader();
-        const decoder = new TextDecoder();
-        let fullText = "";
+          //get the streaming response of the api
+          const reader = res.body?.getReader();
+          const decoder = new TextDecoder();
+          let fullText = "";
 
-        if (reader) {
-          while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
-            const chunk = decoder.decode(value, { stream: true });
-            fullText += chunk;
-            answer.textContent = fullText;
+          if (reader) {
+            while (true) {
+              const { value, done } = await reader.read();
+              if (done) break;
+              const chunk = decoder.decode(value, { stream: true });
+              fullText += chunk;
+              answer.textContent = fullText;
+            }
           }
+          //add response to messages if it's fine
+          if (res.ok) {
+            messages.push({ role: "assistant", content: fullText });
+          } else {
+            messages.push({
+              role: "assistant",
+              content: "Ignore this message",
+            });
+          }
+          console.log(messages);
+          waiting = false;
         }
-
-        //add response to messages and print it
-        messages.push({ role: "assistant", content: fullText });
-        console.log(messages);
       });
     }
   </script>
