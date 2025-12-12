@@ -40,10 +40,10 @@ export const POST: APIRoute = async ({ request }) => {
         //QUERY TRANSFORMATION
         //we give the last few messages to the llm and tell it to rewrite them into a proper search query for the DB
         const recentMessages = body.messages.slice(-6);
-        //removing the first message if it has the role assistant
-        if (recentMessages[0].role == "assistant" || recentMessages[0].role == "system") {
-            recentMessages.splice(0, 1);
-        };
+        //removing the first messages if they have the role assistant or system
+        while (recentMessages[0].role == "assistant" || recentMessages[0].role == "system") {
+          recentMessages.splice(0,1);
+        }
         //creating the messages array for query transformation
         const rewriteMessages: ChatCompletionMessage[] = [
           {
