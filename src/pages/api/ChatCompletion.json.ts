@@ -41,14 +41,14 @@ export const POST: APIRoute = async ({ request }) => {
         //we give the last few messages to the llm and tell it to rewrite them into a proper search query for the DB
         const recentMessages = body.messages.slice(-6);
         //removing the first message if it has the role assistant
-        if (recentMessages[0].role == "assistant") {
+        if (recentMessages[0].role == "assistant" || recentMessages[0].role == "system") {
             recentMessages.splice(0, 1);
         };
         //creating the messages array for query transformation
         const rewriteMessages: ChatCompletionMessage[] = [
           {
             role: "system",
-            content: "Ton rôle est de réécrire le dernier message de l'utilisateur en une requête simple, courte et claire destinée à une base de donnée vectorielle de lore du monde. La requête doit fonctionner seule avec tous les noms et références explicites nécessaires. Retourne uniquement la requête."
+            content: "Ton rôle est de réécrire le dernier message de l'utilisateur en une requête simple, très courte et concise et claire destinée à une base de donnée vectorielle de lore du monde. La requête doit fonctionner seule avec tous les noms et références explicites nécessaires. Retourne uniquement la requête."
           },
           ...recentMessages,
         ]
@@ -75,13 +75,14 @@ export const POST: APIRoute = async ({ request }) => {
         for (let object of result.objects) {
             systemMessage.content += (JSON.stringify(object.properties))+" | ";
         };
+        console.log(systemMessage);
 
         //add the system message to the messages
         messagesWithRAG = [
             systemMessage,
             ...body.messages,
         ];
-        console.log("Query transformation and RAG suceeded")
+        console.log("Query transformation and RAG succeded")
     } catch (err) {
         console.log("Query transformation and RAG search failed : "+err)
     }

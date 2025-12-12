@@ -3,12 +3,15 @@ import Layout from "../layout/Layout.astro";
 ---
 
 <Layout>
-  <h1>Elyndra</h1>
-  <h3>Input</h3>
-  <input type="text" name="input" id="input" />
-  <button id="button">Submit</button>
-  <h3>Answer</h3>
-  <div id="answer"></div>
+  <div class="flex flex-col w-1/2 h-screen bg-slate-800">
+    <div class="flex flex-col h-full justify-center p-8">
+      <div id="answer"></div>
+    </div>
+    <div class="flex w-full p-4 gap-4">
+      <input class="w-full border border-white bg-none rounded-lg" type="text" name="input" id="input" />
+      <button class="rounded-lg bg-slate-600 p-4" id="button">Submit</button>
+    </div>
+  </div>
 
   <!-- chat script -->
   <script>
@@ -24,6 +27,7 @@ import Layout from "../layout/Layout.astro";
           "Tu es un Maître du Jeu d’un jeu de rôle narratif immersif." +
           "Ta mission : décrire l’univers, narrer les événements, incarner les personnages non-joueurs et faire évoluer l’histoire selon les actions du joueur." +
           "Règles :" +
+          "- Ne sors jamais de ton rôle de maître du jeu" +
           "- Tes réponses sont très concises et centrées sur la narration immersive." +
           "- Évite les métaphores à rallonge et formulation pompeuses." +
           "- Décris les environnements, actions et conséquences de façon sensorielle et cinématique." +
