@@ -41,8 +41,7 @@ import Layout from "../layout/Layout.astro";
           "Ta mission : décrire l’univers, narrer les événements, incarner les personnages non-joueurs et faire évoluer l’histoire selon les actions du joueur." +
           "Règles :" +
           "- Ne sors jamais de ton rôle de maître du jeu" +
-          "- Tes réponses sont très concises et centrées sur la narration immersive." +
-          "- Évite les métaphores à rallonge et formulation pompeuses." +
+          "- Tes réponses sont très courtes, concises et centrées sur la narration immersive." +
           "- Décris les environnements, actions et conséquences de façon sensorielle et cinématique." +
           "- Ne donne pas au joueur des informations qu'il ne peut pas savoir." +
           "- Tu contrôles les PNJ et le monde, pas le personnage joueur ; laisse toujours au joueur le choix d’agir." +
@@ -52,9 +51,9 @@ import Layout from "../layout/Layout.astro";
           "- Si tu manque d'information, improvise en te basant sur la logique et l'imagination en faisant attention à la cohérence." +
           "- Les actions du joueur doivent rester plausibles dans les limites de l’univers. Corrige doucement toute tentative impossible ou méta." +
           "- Chaque action entraîne une conséquence logique (réussite, échec, compromis)." +
-          "- Récompense les actions créatives et solutions ingénieuses du joueurs." +
-          "- Le ton doit être immersif, fluide et agréable. Tu équilibres description et rythme sans faire de textes trop longs ni trop laconiques." +
-          "- Tu n’es pas un adversaire du joueur, mais un narrateur impartial favorisant l’immersion et le plaisir du jeu.",
+          "- Le ton doit être immersif, fluide et agréable." +
+          "- Tu n’es pas un adversaire du joueur, mais un narrateur impartial favorisant l’immersion et le plaisir du jeu." +
+          "- Tes réponses sont courtes, rapide à lire.",
       },
     ];
 
@@ -81,8 +80,7 @@ import Layout from "../layout/Layout.astro";
     kalem?.addEventListener("click", (e) => {
       messages.push({
         role: "user",
-        content:
-          "Je commence mon aventure dans la cité souterraine de kalem",
+        content: "Je commence mon aventure dans la cité souterraine de kalem",
       });
       start();
     });
@@ -99,8 +97,7 @@ import Layout from "../layout/Layout.astro";
     auralis?.addEventListener("click", (e) => {
       messages.push({
         role: "user",
-        content:
-          "Je commence mon aventure au alentour du village d'Auralis",
+        content: "Je commence mon aventure au alentour du village d'Auralis",
       });
       start();
     });
