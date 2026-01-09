@@ -76,9 +76,9 @@ import Layout from "../layout/Layout.astro";
           }
 
           const data = await res.json();
-          const text = data.choices?.[0]?.message?.content;
+          const text = data.content;
 
-          messages.push(data.choices?.[0]?.message);
+          messages.push(data);
 
           answer.textContent = text;
           console.log(messages);
