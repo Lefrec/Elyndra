@@ -1,0 +1,90 @@
+---
+import Layout from "../../layout/Layout.astro";
+---
+
+<Layout>
+  <div class="flex flex-col w-1/2 h-screen bg-slate-800">
+    <div class="flex flex-col h-full justify-center p-8">
+      <div id="answer"></div>
+    </div>
+    <div class="flex w-full p-4 gap-4">
+      <input
+        class="w-full border border-white bg-none rounded-lg"
+        type="text"
+        name="input"
+        id="input"
+      />
+      <button class="btn" id="button">Submit</button>
+    </div>
+  </div>
+
+  <!-- chat script -->
+  <script>
+    const button = document.getElementById(
+      "button"
+    ) as HTMLButtonElement | null;
+    const input = document.getElementById("input") as HTMLInputElement | null;
+    const answer = document.getElementById("answer") as HTMLDivElement | null;
+
+    const messages: { role: string; content: string }[] = [
+      {
+        role: "system",
+        content:
+          "Tu es un Maître du Jeu d'un jeu de rôle narratif immersif." +
+          "Ta mission : décrire l'univers, narrer les événements, incarner les personnages non-joueurs et faire évoluer l'histoire selon les actions du joueur." +
+          "Règles :" +
+          "- Ne sors jamais de ton rôle de maître du jeu" +
+          "- Tes réponses sont très courtes, concises et centrées sur la narration immersive" +
+          "- Décris les environnements, actions et conséquences de façon sensorielle et cinématique" +
+          "- Ne donne pas au joueur des informations qu'il ne peut pas savoir" +
+          "- Tu contrôles les PNJ et le monde, pas le personnage joueur ; laisse toujours au joueur le choix d'agir dans la limite de la logique et de ses capacités" +
+          "- Tes réponse se termine par une ouverture ou une question incitant le joueur à décider de sa prochaine action" +
+          "- Tu donne subtilement des quêtes et des objectifs à suivre pour le joueur" +
+          "- Reste strictement cohérent avec l'historique de la conversation et les données RAG fournies. Ne crée ni éléments contradictoires ni incohérences" +
+          "- Si tu manque d'information, improvise en te basant sur la logique et l'imagination en faisant attention à la cohérence" +
+          "- Les actions du joueur doivent rester plausibles dans les limites de l'univers et de son personnage. Corrige toute tentative de triche impossible ou méta" +
+          "- Chaque action entraîne une conséquence logique (réussite, échec, compromis)" +
+          "- Le ton doit être immersif, fluide et agréable." +
+          "- Tu n'es pas un adversaire du joueur, mais un narrateur impartial favorisant l'immersion et le plaisir du jeu" +
+          "- Tu tutoies le joueur",
+      },
+    ];
+
+    let waiting = false;
+
+    if (button && input && answer) {
+      button.addEventListener("click", async () => {
+        if (waiting) {
+          console.log("waiting");
+          return;
+        } else {
+          waiting = true;
+          //add the user input to messages
+          messages.push({ role: "user", content: input.value });
+
+          //call the api endpoint to get chat completion
+          const res = await fetch("/api/testLabAI.json", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ messages }),
+          });
+
+          if (!res.ok) {
+            const errorText = await res.text();
+            answer.textContent = `Error: ${res.status} - ${errorText}`;
+            return;
+          }
+
+          const data = await res.json();
+          const text = data.content;
+
+          messages.push(data);
+
+          answer.textContent = text;
+          console.log(messages);
+          waiting = false;
+        }
+      });
+    }
+  </script>
+</Layout>
