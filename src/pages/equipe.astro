@@ -2,6 +2,49 @@
 import Layout from "../layout/Layout.astro";
 import heroImage from "../assets/hero_equipe.webp";
 import teamImage from "../assets/team-illustration.webp";
+// Importe les images de projets
+import experienceImg from "../assets/work/experience.webp";
+import developpementImg from "../assets/work/developpement.webp";
+import collaborationImg from "../assets/work/collaboration.webp";
+
+const projects = [
+    {
+        title: "Elyndra - L'Expérience Interactive",
+        description: "Notre projet phare : un jeu narratif immersif où l'IA conversationnelle rencontre le storytelling interactif. Chaque conversation façonne votre histoire unique.",
+        image: experienceImg,
+        stats: ["IA Conversationnelle", "Storytelling Adaptatif", "Univers Immersif"]
+    },
+    {
+        title: "Développement Technique",
+        description: "Une architecture robuste et évolutive, conçue pour offrir une expérience fluide et réactive. Technologies modernes et optimisations poussées.",
+        image: developpementImg,
+        stats: ["Stack Moderne", "Performance Optimale", "Code Maintenable"]
+    },
+    {
+        title: "Collaboration d'Équipe",
+        description: "Un travail d'équipe harmonieux où chaque membre apporte son expertise unique. De la conception à la réalisation, chaque détail compte.",
+        image: collaborationImg,
+        stats: ["3 Membres", "Passion Dévolue", "Vision Commune"]
+    }
+];
+
+const team = [
+    {
+        name: "Margaux Couturier",
+        role: "Narratrice",
+        description: "Architecte d'histoires immersives. Maître dans l'art du storytelling interactif et de la création de mondes."
+    },
+    {
+        name: "Paolo Vincent",
+        role: "Développeur",
+        description: "Passionné par l'innovation technique et l'architecture logicielle. Expert en développement full-stack et optimisation."
+    },
+    {
+        name: "François Yang",
+        role: "Designer",
+        description: "Créateur d'expériences visuelles uniques. Spécialisé dans l'UI/UX et la direction artistique."
+    }
+];
 ---
 
 <Layout>
@@ -89,4 +132,183 @@ import teamImage from "../assets/team-illustration.webp";
     </div>
 </section>
 
+<!-- Section Notre Travail --> 
+<section class="bg-zinc-950 py-20 px-6">
+    <div class="container mx-auto max-w-6xl">
+        <!-- Titre de la section -->
+<div class="text-center mb-12">
+    <!-- Ornement supérieur -->
+    <div class="flex items-center justify-center gap-2 mb-6">
+        <div class="h-px w-20 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+        <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+        <span class="size-2.5 rotate-45 bg-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
+        <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+        <div class="h-px w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
+    </div>
+
+    <h2 class="text-4xl md:text-5xl font-bold uppercase tracking-[0.12em] text-elyndra-gradient">
+        Notre Travail
+    </h2>
+
+    <!-- Ornement inférieur -->
+    <div class="flex items-center justify-center gap-2 mt-6">
+        <div class="h-px w-20 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+        <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+        <span class="size-2.5 rotate-45 bg-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
+        <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+        <div class="h-px w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
+    </div>
+</div>
+
+
+        <div class="grid md:grid-cols-3 gap-8">
+            {projects.map((project, index) => (
+                <div class="group relative bg-gradient-to-b from-zinc-900 to-black border border-amber-200/20 rounded-lg overflow-hidden hover:border-amber-200/50 transition-all duration-300">
+                    <!-- Image -->
+                    <div class="relative h-48 overflow-hidden">
+                        <img
+                            src={project.image.src}
+                            alt={project.title}
+                            class="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-110 transition-all duration-500"
+                        />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                        
+                        <!-- Icône en haut à droite -->
+                        <div class="absolute top-4 right-4 bg-amber-200/10 backdrop-blur-sm p-3 rounded-lg border border-amber-200/30">
+                            {index === 0 && (
+                                <!-- Sparkles icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-amber-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                </svg>
+                            )}
+                            {index === 1 && (
+                                <!-- Code icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-amber-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                                </svg>
+                            )}
+                            {index === 2 && (
+                                <!-- Users icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-amber-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                            )}
+                        </div>
+                    </div>
+
+                    <!-- Content (texte aligné à gauche) -->
+                    <div class="p-6 text-left">
+                        <h3 class="text-xl text-amber-100 mb-3 tracking-wide">
+                            {project.title}
+                        </h3>
+                        <p class="text-gray-400 text-sm mb-4 leading-relaxed">
+                            {project.description}
+                        </p>
+
+                        <!-- Stats -->
+                        <div class="flex flex-wrap gap-2">
+                            {project.stats.map((stat) => (
+                                <span class="text-xs bg-amber-200/10 text-amber-100 px-3 py-1 rounded-full border border-amber-200/20">
+                                    {stat}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    </div>
+</section>
+
+<!-- Section Rejoindre l'équipe -->
+ <!-- Titre de la section -->
+<div class="text-center mb-12">
+    <!-- Ornement supérieur -->
+    <div class="flex items-center justify-center gap-2 mb-6">
+        <div class="h-px w-20 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+        <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+        <span class="size-2.5 rotate-45 bg-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
+        <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+        <div class="h-px w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
+    </div>
+
+    <h2 class="text-4xl md:text-5xl font-bold uppercase tracking-[0.12em] text-elyndra-gradient">
+        L'équipe
+    </h2>
+
+    <!-- Ornement inférieur -->
+    <div class="flex items-center justify-center gap-2 mt-6">
+        <div class="h-px w-20 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+        <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+        <span class="size-2.5 rotate-45 bg-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
+        <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+        <div class="h-px w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
+    </div>
+</div>
+
+<!-- Section Équipe -->
+<!-- Section Équipe -->
+<section class="py-20 px-6 bg-slate-950">
+    <div class="max-w-6xl mx-auto">
+        <!-- Grille de cartes -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {team.map((member) => (
+                <div class="relative">
+                    <!-- Losange en haut -->
+                    <div class="absolute -top-2.5 left-1/2 -translate-x-1/2 z-10">
+                        <span class="block size-3.5 rotate-45 bg-amber-300 shadow-[0_0_20px_rgba(251,191,36,0.7)]"></span>
+                    </div>
+
+                    <!-- Carte -->
+                    <div class="relative border border-white/10 rounded-3xl px-6 py-8 pt-10 bg-black h-full flex flex-col items-center">
+                        <!-- Avatar PETIT avec icône NOIRE -->
+                        <div class="mb-5">
+                            <div class="size-20 rounded-full bg-[#c4ae7f] flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="size-10 text-black" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Nom -->
+                        <h3 class="text-center text-base font-normal text-white mb-1 tracking-wide">
+                            {member.name}
+                        </h3>
+
+                        <!-- Rôle -->
+                        <p class="text-center text-[9px] uppercase tracking-[0.25em] text-gray-400 mb-3">
+                            {member.role}
+                        </p>
+
+                        <!-- Point séparateur -->
+                        <div class="mb-3">
+                            <span class="block size-1 rounded-full bg-gray-500"></span>
+                        </div>
+
+                        <!-- Description -->
+                        <p class="text-center text-[10px] text-gray-400 leading-relaxed">
+                            {member.description}
+                        </p>
+                    </div>
+                </div>
+            ))}
+        </div>
+
+        <!-- Citation -->
+        <div class="mt-20 text-center">
+            <div class="mb-4">
+                <span class="text-4xl text-white/20 font-serif">"</span>
+            </div>
+            <p class="text-white/60 italic text-sm mb-2">
+                NOUS NE RACONTONS PAS UNE HISTOIRE.
+            </p>
+            <p class="text-white text-sm tracking-[0.25em] uppercase">
+                LE MONDE S'ÉCRIT À TRAVERS VOS CHOIX.
+            </p>
+            <div class="mt-4">
+                <span class="text-4xl text-white/20 font-serif">"</span>
+            </div>
+        </div>
+    </div>
+</section>
 </Layout>
