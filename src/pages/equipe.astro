@@ -1,0 +1,92 @@
+---
+import Layout from "../layout/Layout.astro";
+import heroImage from "../assets/hero_equipe.webp";
+import teamImage from "../assets/team-illustration.webp";
+---
+
+<Layout>
+<!-- Hero -->
+<section class="hero flex items-center justify-center min-h-[500px] md:min-h-[550px]">
+    <div class="w-full relative h-full">
+        <!-- Image de fond -->
+        <img
+            src={heroImage.src}
+            alt="Hero background"
+            class="absolute inset-0 w-full h-full object-cover"
+        />
+
+        <!-- Overlay assombrissement + vignette -->
+        <div class="absolute inset-0 bg-slate-950/40"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_20%,rgba(0,0,0,0.7)_80%)]"></div>
+
+        <!-- Contenu -->
+        <div class="relative py-16 md:py-20 px-8 flex flex-col items-center text-center gap-6">
+            <!-- Ornement supérieur -->
+            <div class="flex items-center justify-center gap-2">
+                <div class="h-px w-20 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+                <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+                <span class="size-2.5 rotate-45 bg-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
+                <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+                <div class="h-px w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
+            </div>
+
+            <!-- Titre principal -->
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold uppercase tracking-[0.15em] text-elyndra-gradient drop-shadow-[0_2px_20px_rgba(0,0,0,0.8)]">
+                Qui sommes nous ?
+            </h1>
+
+            <!-- Ornement inférieur -->
+            <div class="flex items-center justify-center gap-2">
+                <div class="h-px w-20 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+                <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+                <span class="size-2.5 rotate-45 bg-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
+                <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+                <div class="h-px w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
+            </div>
+
+            <!-- Description -->
+            <p class="text-sm md:text-base uppercase tracking-[0.2em] max-w-2xl leading-relaxed text-white/90 mt-4">
+                Des étudiants passionnés, un objectif commun, zéro compromis sur l'ambition.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Section Équipe -->
+<section class="py-16 px-6 md:px-12 lg:px-20">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+            
+            <!-- Colonne gauche : Texte -->
+            <div class="space-y-6 text-white/85">
+                <p class="text-base leading-relaxed">
+                    <span class="text-amber-200 font-semibold">Élyndra</span> est né de ton envie de créer quelque chose qui te passionne vraiment. Plus qu'une histoire à raconter, c'est un monde entier que tu imagines, que tu construis et que tu fais vivre.
+                </p>
+
+                <p class="text-base leading-relaxed">
+                    L'expérience s'appuie sur une intelligence conversationnelle avancée, pour que chaque voyage soit unique et personnel. À travers tes choix et tes échanges, tu évolues au sein d'un fil d'une aventure qui s'adapte à ta manière de jouer.
+                </p>
+
+                <p class="text-base leading-relaxed">
+                    Ton objectif est simple : concevoir une expérience interactive immersive où tu n'es pas seulement spectateur, mais véritable acteur. Chaque décision compte, chaque interaction laisse une trace et influence la suite du parcours.
+                </p>
+
+                <p class="text-base leading-relaxed">
+                    Derrière Élyndra, tu retrouves une équipe de trois étudiants, réunis par la même envie : créer, expérimenter et donner vie à une vision commune.
+                </p>
+            </div>
+
+            <!-- Colonne droite : Image -->
+            <div class="relative overflow-hidden rounded-2xl">
+                <img
+                    src={teamImage.src}
+                    alt="Illustration Élyndra"
+                    class="w-full h-auto object-cover"
+                />
+            </div>
+
+        </div>
+    </div>
+</section>
+
+</Layout>
