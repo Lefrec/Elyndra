@@ -12,10 +12,10 @@
   },
   "dependencies": {
     "@perplexity-ai/perplexity_ai": "^0.16.0",
-    "@tailwindcss/vite": "^4.1.17",
-    "astro": "^5.16.2",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.16.9",
     "openai": "^6.10.0",
-    "tailwindcss": "^4.1.17",
+    "tailwindcss": "^4.1.18",
     "weaviate-agents": "^1.1.0",
     "weaviate-client": "^3.10.0"
   },

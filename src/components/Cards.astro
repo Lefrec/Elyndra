@@ -1,0 +1,19 @@
+---
+const { number, title, text } = Astro.props;
+---
+
+<div class="relative group">
+    <!-- Fond gradient -->
+    <div class="absolute inset-0 bg-gradient-to-br from-amber-100/30 to-amber-100/10 rounded-xl -m-0.5"></div>
+    
+    <!-- Carte -->
+    <div class="relative bg-slate-950/80 rounded-2xl border border-amber-100/20 p-8 h-64 flex flex-col gap-3 hover:border-amber-100/40 transition-colors">
+        <div class="text-4xl font-body text-amber-100 opacity-40">{number}</div>
+        <h3 class="text-2xl font-heading text-[#FFE9B5FF]">
+            {title}
+        </h3>
+        <p class="text-base font-body leading-7">
+            {text}
+        </p>
+    </div>
+</div>

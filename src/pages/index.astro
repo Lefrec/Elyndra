@@ -1,187 +1,172 @@
 ---
 import Layout from "../layout/Layout.astro";
+import heroImage from "../assets/hero_landing.webp";
+import Cards from "../components/Cards.astro";
 ---
 
 <Layout>
-  <div class="flex flex-col w-1/2 h-screen bg-slate-800">
-    <div class="flex flex-col h-full justify-center p-8">
-      <div id="starts" class="flex justify-center gap-4">
-        <button class="btn" id="lunel">Lunel</button>
-        <button class="btn" id="kalem">Kalem</button>
-        <button class="btn" id="ruines">Ruines</button>
-        <button class="btn" id="auralis">Auralis</button>
-      </div>
-      <div id="answer"></div>
-    </div>
-    <div class="flex w-full p-4 gap-4">
-      <input
-        class="w-full border border-white bg-none rounded-lg"
-        type="text"
-        name="input"
-        id="input"
-      />
-      <button class="btn" id="button">Submit</button>
-    </div>
-  </div>
+    <!-- Hero -->
+    <section class="hero flex items-center justify-center">
+        <div class="w-full relative">
+            <!-- Image de fond -->
+            <img
+                src={heroImage.src}
+                alt="Hero background"
+                class="absolute inset-0 w-full h-full object-cover rounded-2xl"
+            />
 
-  <!-- chat script -->
-  <script>
-    const button = document.getElementById(
-      "button"
-    ) as HTMLButtonElement | null;
-    const input = document.getElementById("input") as HTMLInputElement | null;
-    const answer = document.getElementById("answer") as HTMLDivElement | null;
+            <!-- Contenu -->
+            <div
+                class="relative py-16 px-8 flex flex-col items-center text-center gap-8"
+            >
+                <!-- Titre principal -->
+                <h1
+                    class="text-7xl font-bold tracking-widest text-elyndra-gradient"
+                >
+                    ELYNDRA
+                </h1>
 
-    //setting the system prompt
-    const messages = [
-      {
-        role: "system",
-        content:
-          "Tu es un Maître du Jeu d’un jeu de rôle narratif immersif." +
-          "Ta mission : décrire l’univers, narrer les événements, incarner les personnages non-joueurs et faire évoluer l’histoire selon les actions du joueur." +
-          "Règles :" +
-          "- Ne sors jamais de ton rôle de maître du jeu" +
-          "- Tes réponses sont très courtes, concises et centrées sur la narration immersive." +
-          "- Décris les environnements, actions et conséquences de façon sensorielle et cinématique." +
-          "- Ne donne pas au joueur des informations qu'il ne peut pas savoir." +
-          "- Tu contrôles les PNJ et le monde, pas le personnage joueur ; laisse toujours au joueur le choix d’agir." +
-          "- Tes réponse se termine par une ouverture ou une question incitant le joueur à décider de sa prochaine action." +
-          "- Tu donne subtilement des quêtes et des objectifs à suivre pour le joueur." +
-          "- Reste strictement cohérent avec l’historique de la conversation et les données RAG fournies. Ne crée ni éléments contradictoires ni incohérences. " +
-          "- Si tu manque d'information, improvise en te basant sur la logique et l'imagination en faisant attention à la cohérence." +
-          "- Les actions du joueur doivent rester plausibles dans les limites de l’univers. Corrige doucement toute tentative impossible ou méta." +
-          "- Chaque action entraîne une conséquence logique (réussite, échec, compromis)." +
-          "- Le ton doit être immersif, fluide et agréable." +
-          "- Tu n’es pas un adversaire du joueur, mais un narrateur impartial favorisant l’immersion et le plaisir du jeu." +
-          "- Tes réponses sont courtes, rapide à lire.",
-      },
-    ];
+                <!-- Description -->
+                <p class="text-lg max-w-2xl leading-relaxed">
+                    Le Gardien est devenu le Destructeur. Vorathys a sombré, et
+                    avec lui, tout Élyndra. Quelle ombre a pu consumer un dieu
+                    au point de lui faire détruire ce qu'il jurait de protéger ?
+                    Le temps presse : trouvez la vérité avant que le monde ne
+                    s'éteigne pour toujours.
+                </p>
 
-    //custom start
-    const starts = document.getElementById("starts") as HTMLDivElement | null;
-    const lunel = document.getElementById("lunel") as HTMLButtonElement | null;
-    const kalem = document.getElementById("kalem") as HTMLButtonElement | null;
-    const ruines = document.getElementById(
-      "ruines"
-    ) as HTMLButtonElement | null;
-    const auralis = document.getElementById(
-      "auralis"
-    ) as HTMLButtonElement | null;
+                <!-- Statistiques -->
+                <div
+                    class="flex gap-16 px-12 py-6 rounded-full border border-slate-700 relative bg-[#270447]/22"
+                >
+                    <div class="flex items-center gap-3">
+                        <svg
+                            class="w-8 h-8"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <rect x="3" y="3" width="7" height="7" rx="1"
+                            ></rect>
+                            <rect x="14" y="3" width="7" height="7" rx="1"
+                            ></rect>
+                            <rect x="3" y="14" width="7" height="7" rx="1"
+                            ></rect>
+                            <rect x="14" y="14" width="7" height="7" rx="1"
+                            ></rect>
+                        </svg>
+                        <div class="text-left">
+                            <div class="text-2xl font-bold">4</div>
+                            <div class="text-sm text-gray-300">Biomes</div>
+                        </div>
+                    </div>
 
-    lunel?.addEventListener("click", (e) => {
-      messages.push({
-        role: "user",
-        content:
-          "Je commence mon aventure dans la forêt du cœur sylvestre de lunel",
-      });
-      start();
-    });
+                    <div class="flex items-center gap-3">
+                        <svg
+                            class="w-8 h-8"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                            ></path>
+                        </svg>
+                        <div class="text-left">
+                            <div class="text-2xl font-bold">100+</div>
+                            <div class="text-sm text-gray-300">Quêtes</div>
+                        </div>
+                    </div>
 
-    kalem?.addEventListener("click", (e) => {
-      messages.push({
-        role: "user",
-        content: "Je commence mon aventure dans la cité souterraine de kalem",
-      });
-      start();
-    });
+                    <div class="flex items-center gap-3">
+                        <svg
+                            class="w-8 h-8"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                d="M17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12Z"
+                            ></path>
+                            <path d="M12 2V7M12 17V22M2 12H7M17 12H22"></path>
+                        </svg>
+                        <div class="text-left">
+                            <div class="text-2xl font-bold">∞</div>
+                            <div class="text-sm text-gray-300">
+                                Possibilités
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    ruines?.addEventListener("click", (e) => {
-      messages.push({
-        role: "user",
-        content:
-          "Je commence mon aventure au milieu des Ruines oubliées d'Elyndra",
-      });
-      start();
-    });
+                <!-- Boutons -->
+                <div class="flex gap-6 mt-4">
+                    <button
+                        class="px-4 py-3.5 bg-elyndra-3 rounded-[10px] inline-flex justify-center items-center gap-3 overflow-hidden"
+                    >
+                        <svg
+                            class="w-5 h-5"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path d="M8 5v14l11-7z"></path>
+                        </svg>
+                        Commencer à jouer
+                    </button>
+                    <button
+                        class="bg-gradient-to-t from-neutral-400 to-white rounded-[10px] hover:bg-gray-300 text-gray-900 px-8 py-3"
+                    >
+                        Comprendre le jeu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    auralis?.addEventListener("click", (e) => {
-      messages.push({
-        role: "user",
-        content: "Je commence mon aventure au alentour du village d'Auralis",
-      });
-      start();
-    });
+    <!-- Explication du jeu -->
+    <section class="py-16 px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Titre avec décoration -->
+            <div class="flex flex-col items-center gap-5 mb-16">
+                <!-- Ligne décorative supérieure -->
+                <div class="flex items-center gap-3.5">
+                    <div class="w-52 h-px bg-gradient-to-r from-transparent to-amber-200"></div>
+                    <div class="w-3.5 h-2 rotate-45 bg-amber-200"></div>
+                    <div class="w-1 h-1 bg-amber-200 rounded-full"></div>
+                    <div class="w-3.5 h-2 rotate-45 bg-amber-200"></div>
+                    <div class="w-52 h-px bg-gradient-to-l from-transparent to-amber-200"></div>
+                </div>
 
-    async function start() {
-      const res = await fetch("/api/ChatCompletion.json", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages }),
-      });
+                <!-- Titre principal -->
+                <h2 class="text-3xl font-heading text-amber-200 tracking-[6px] text-center shadow-[0px_0px_30px_0px_rgba(178,158,94,0.50)]">
+                    COMMENT SE PASSE VOTRE VOYAGE ?
+                </h2>
 
-      starts.hidden = true;
+                <!-- Ligne décorative inférieure -->
+                <div class="flex items-center gap-3.5">
+                    <div class="w-24 h-px bg-gradient-to-r from-transparent to-amber-200"></div>
+                    <div class="w-3.5 h-2 rotate-45 bg-amber-200"></div>
+                    <div class="w-1 h-1 bg-amber-200 rounded-full"></div>
+                    <div class="w-3.5 h-2 rotate-45 bg-amber-200"></div>
+                    <div class="w-24 h-px bg-gradient-to-l from-transparent to-amber-200"></div>
+                </div>
+            </div>
 
-      //get the streaming response of the api
-      const reader = res.body?.getReader();
-      const decoder = new TextDecoder();
-      let fullText = "";
-
-      if (reader) {
-        while (true) {
-          const { value, done } = await reader.read();
-          if (done) break;
-          const chunk = decoder.decode(value, { stream: true });
-          fullText += chunk;
-          answer.textContent = fullText;
-        }
-      }
-      //add response to messages if it's fine
-      if (res.ok) {
-        messages.push({ role: "assistant", content: fullText });
-      } else {
-        messages.push({
-          role: "assistant",
-          content: "Ignore this message",
-        });
-      }
-    }
-
-    let waiting = false;
-
-    if (button && input && answer) {
-      button.addEventListener("click", async () => {
-        if (waiting) {
-          console.log("waiting");
-          return;
-        } else {
-          waiting = true;
-          //add the user input to messages
-          messages.push({ role: "user", content: input.value });
-
-          //call the api endpoint to get chat completion
-          const res = await fetch("/api/ChatCompletion.json", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ messages }),
-          });
-
-          //get the streaming response of the api
-          const reader = res.body?.getReader();
-          const decoder = new TextDecoder();
-          let fullText = "";
-
-          if (reader) {
-            while (true) {
-              const { value, done } = await reader.read();
-              if (done) break;
-              const chunk = decoder.decode(value, { stream: true });
-              fullText += chunk;
-              answer.textContent = fullText;
-            }
-          }
-          //add response to messages if it's fine
-          if (res.ok) {
-            messages.push({ role: "assistant", content: fullText });
-          } else {
-            messages.push({
-              role: "assistant",
-              content: "Ignore this message",
-            });
-          }
-          console.log(messages);
-          waiting = false;
-        }
-      });
-    }
-  </script>
+            <!-- Cartes d'étapes -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <Cards 
+                    number="01" 
+                    title="Choisissez Votre Biome"
+                    text="Sélectionnez le monde dans lequel vous souhaitez débuter votre aventure."
+                />
+                <Cards 
+                    number="02" 
+                    title="Créez Votre Héros"
+                    text="Choisissez votre type de personnage et donnez-lui un nom légendaire."
+                />
+                <Cards 
+                    number="03" 
+                    title="Partez à l'Aventure"
+                    text="Explorez le monde, combattez des ennemis, accomplissez des quêtes et devenez la légende que vous êtes destiné à être."
+                />
+            </div>
+        </div>
+    </section>
 </Layout>
