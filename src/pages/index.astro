@@ -2,6 +2,11 @@
 import Layout from "../layout/Layout.astro";
 import heroImage from "../assets/hero_landing.webp";
 import Cards from "../components/Cards.astro";
+import CardsCharacter from "../components/Cards_character.astro";
+import chevalierImage from "../assets/chevalier.webp";
+import mageImage from "../assets/mage.webp";
+import alchimisteImage from "../assets/alchimiste.webp";
+import ombreImage from "../assets/ombre.webp";
 ---
 
 <Layout>
@@ -17,7 +22,7 @@ import Cards from "../components/Cards.astro";
 
             <!-- Contenu -->
             <div
-                class="relative py-16 px-8 flex flex-col items-center text-center gap-8"
+                class="relative py-30 px-8 flex flex-col items-center text-center gap-8"
             >
                 <!-- Titre principal -->
                 <h1
@@ -98,8 +103,9 @@ import Cards from "../components/Cards.astro";
 
                 <!-- Boutons -->
                 <div class="flex gap-6 mt-4">
-                    <button
-                        class="px-4 py-3.5 bg-elyndra-3 rounded-[10px] inline-flex justify-center items-center gap-3 overflow-hidden"
+                    <a
+                        href="/start_game"
+                        class="px-4 py-3.5 bg-elyndra-3 rounded-[10px] inline-flex justify-center items-center gap-3 overflow-hidden hover:opacity-90"
                     >
                         <svg
                             class="w-5 h-5"
@@ -109,63 +115,350 @@ import Cards from "../components/Cards.astro";
                             <path d="M8 5v14l11-7z"></path>
                         </svg>
                         Commencer à jouer
-                    </button>
-                    <button
-                        class="bg-gradient-to-t from-neutral-400 to-white rounded-[10px] hover:bg-gray-300 text-gray-900 px-8 py-3"
+                    </a>
+                    <a
+                        href="/understand_game"
+                        class="bg-gradient-to-t from-neutral-400 to-white rounded-[10px] hover:bg-gray-300 text-gray-900 px-8 py-3 hover:opacity-90 items-center inline-flex justify-center gap-3 overflow-hidden"
                     >
                         Comprendre le jeu
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Explication du jeu -->
-    <section class="py-16 px-8">
+    <section>
         <div class="max-w-7xl mx-auto">
             <!-- Titre avec décoration -->
-            <div class="flex flex-col items-center gap-5 mb-16">
+            <div class="flex flex-col items-center gap-10 mb-16">
                 <!-- Ligne décorative supérieure -->
-                <div class="flex items-center gap-3.5">
-                    <div class="w-52 h-px bg-gradient-to-r from-transparent to-amber-200"></div>
-                    <div class="w-3.5 h-2 rotate-45 bg-amber-200"></div>
-                    <div class="w-1 h-1 bg-amber-200 rounded-full"></div>
-                    <div class="w-3.5 h-2 rotate-45 bg-amber-200"></div>
-                    <div class="w-52 h-px bg-gradient-to-l from-transparent to-amber-200"></div>
-                </div>
-
+                <svg
+                    width="1440"
+                    height="26"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    ><path
+                        transform="translate(-6.142 11.728)"
+                        fill="url(#a)"
+                        d="M0 0H670V2H0z"></path><path
+                        transform="rotate(45 345.464 834.025)"
+                        fill="#FFE9B5"
+                        d="M0 0H18V18H0z"></path><path
+                        d="M718 12.728a2 2 0 114 0 2 2 0 01-4 0z"
+                        fill="#EED9A9"></path><path
+                        transform="rotate(45 374.536 904.209)"
+                        fill="#FFE9B5"
+                        d="M0 0H18V18H0z"></path><path
+                        transform="translate(776.142 11.728)"
+                        fill="url(#b)"
+                        d="M0 0H670V2H0z"></path><defs
+                        ><linearGradient
+                            id="a"
+                            x1="670"
+                            y1="1"
+                            x2="0"
+                            y2="1"
+                            gradientUnits="userSpaceOnUse"
+                            ><stop stop-color="#D9C69A"></stop><stop
+                                offset="1"
+                                stop-opacity="0"></stop></linearGradient
+                        ><linearGradient
+                            id="b"
+                            x1="670"
+                            y1="1"
+                            x2="0"
+                            y2="1"
+                            gradientUnits="userSpaceOnUse"
+                            ><stop stop-opacity="0"></stop><stop
+                                offset="1"
+                                stop-color="#D9C69A"></stop></linearGradient
+                        ></defs
+                    ></svg
+                >
                 <!-- Titre principal -->
-                <h2 class="text-3xl font-heading text-amber-200 tracking-[6px] text-center shadow-[0px_0px_30px_0px_rgba(178,158,94,0.50)]">
+                <h2
+                    class="text-3xl font-heading text-[#FFE9B5FF] tracking-[6px] text-center"
+                >
                     COMMENT SE PASSE VOTRE VOYAGE ?
                 </h2>
-
-                <!-- Ligne décorative inférieure -->
-                <div class="flex items-center gap-3.5">
-                    <div class="w-24 h-px bg-gradient-to-r from-transparent to-amber-200"></div>
-                    <div class="w-3.5 h-2 rotate-45 bg-amber-200"></div>
-                    <div class="w-1 h-1 bg-amber-200 rounded-full"></div>
-                    <div class="w-3.5 h-2 rotate-45 bg-amber-200"></div>
-                    <div class="w-24 h-px bg-gradient-to-l from-transparent to-amber-200"></div>
-                </div>
             </div>
 
             <!-- Cartes d'étapes -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <Cards 
-                    number="01" 
+                <Cards
+                    compact
+                    number="01"
                     title="Choisissez Votre Biome"
                     text="Sélectionnez le monde dans lequel vous souhaitez débuter votre aventure."
                 />
-                <Cards 
-                    number="02" 
+                <Cards
+                    compact
+                    number="02"
                     title="Créez Votre Héros"
                     text="Choisissez votre type de personnage et donnez-lui un nom légendaire."
                 />
-                <Cards 
-                    number="03" 
+                <Cards
+                    compact
+                    number="03"
                     title="Partez à l'Aventure"
                     text="Explorez le monde, combattez des ennemis, accomplissez des quêtes et devenez la légende que vous êtes destiné à être."
                 />
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16">
+        <!-- Ligne décorative supérieure -->
+        <svg
+            width="1440"
+            height="26"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+                transform="translate(-6.142 11.728)"
+                fill="url(#a)"
+                d="M0 0H670V2H0z"></path><path
+                transform="rotate(45 345.464 834.025)"
+                fill="#FFE9B5"
+                d="M0 0H18V18H0z"></path><path
+                d="M718 12.728a2 2 0 114 0 2 2 0 01-4 0z"
+                fill="#EED9A9"></path><path
+                transform="rotate(45 374.536 904.209)"
+                fill="#FFE9B5"
+                d="M0 0H18V18H0z"></path><path
+                transform="translate(776.142 11.728)"
+                fill="url(#b)"
+                d="M0 0H670V2H0z"></path><defs
+                ><linearGradient
+                    id="a"
+                    x1="670"
+                    y1="1"
+                    x2="0"
+                    y2="1"
+                    gradientUnits="userSpaceOnUse"
+                    ><stop stop-color="#D9C69A"></stop><stop
+                        offset="1"
+                        stop-opacity="0"></stop></linearGradient
+                ><linearGradient
+                    id="b"
+                    x1="670"
+                    y1="1"
+                    x2="0"
+                    y2="1"
+                    gradientUnits="userSpaceOnUse"
+                    ><stop stop-opacity="0"></stop><stop
+                        offset="1"
+                        stop-color="#D9C69A"></stop></linearGradient
+                ></defs
+            ></svg
+        >
+        <h3
+            class="text-3xl font-heading text-[#FFE9B5FF] tracking-[5px] text-center my-16"
+        >
+            Qui seriez-vous ?
+        </h3>
+
+        <div class="max-w-7xl mx-auto">
+            <div
+                class="grid grid-cols-2 md:grid-cols-4 gap-8 items-end justify-items-center"
+            >
+                <!-- Ombre -->
+                <div class="flex flex-col items-center">
+                    <img
+                        src={ombreImage.src}
+                        alt="Ombre"
+                        class="w-64 h-64 object-contain hover:scale-105 transition-transform cursor-pointer"
+                    />
+                </div>
+
+                <!-- Mage -->
+                <div class="flex flex-col items-center">
+                    <img
+                        src={mageImage.src}
+                        alt="Mage"
+                        class="w-80 h-72 object-contain hover:scale-105 transition-transform cursor-pointer"
+                    />
+                </div>
+
+                <!-- Chevalier -->
+                <div class="flex flex-col items-center">
+                    <img
+                        src={chevalierImage.src}
+                        alt="Chevalier"
+                        class="w-64 h-64 object-contain hover:scale-105 transition-transform cursor-pointer"
+                    />
+                </div>
+
+                <!-- Alchimiste -->
+                <div class="flex flex-col items-center">
+                    <img
+                        src={alchimisteImage.src}
+                        alt="Alchimiste"
+                        class="w-60 h-64 object-contain hover:scale-105 transition-transform cursor-pointer"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <h5
+            class="font-heading text-center pt-15 text-white tracking-[5px] text-xl"
+        >
+            Statistiques de base
+        </h5>
+
+        <div class="max-w-7xl mx-auto px-8 mt-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <CardsCharacter
+                    img={ombreImage.src}
+                    title="Ombre"
+                    lieu="Forêt des Ombres"
+                    type="Assassin"
+                    description="Un maître furtif des ténèbres, agile et mortel dans l'obscurité."
+                />
+
+                <CardsCharacter
+                    img={mageImage.src}
+                    title="Mage"
+                    lieu="Tour des Arcanes"
+                    type="Sorcier"
+                    description="Un érudit des arts mystiques, manipulant les forces magiques avec maîtrise."
+                />
+
+                <CardsCharacter
+                    img={chevalierImage.src}
+                    title="Chevalier"
+                    lieu="Château"
+                    type="Guerrier"
+                    description="Un chevalier courageux et loyal, maître de l'épée et du bouclier."
+                />
+
+                <CardsCharacter
+                    img={alchimisteImage.src}
+                    title="Alchimiste"
+                    lieu="Laboratoire"
+                    type="Scientifique"
+                    description="Un savant expert en potions et transmutations alchimiques."
+                />
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <!-- Ligne décorative inférieure -->
+        <svg
+            width="1440"
+            height="26"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+                transform="translate(-6.142 11.728)"
+                fill="url(#a)"
+                d="M0 0H670V2H0z"></path><path
+                transform="rotate(45 345.464 834.025)"
+                fill="#FFE9B5"
+                d="M0 0H18V18H0z"></path><path
+                d="M718 12.728a2 2 0 114 0 2 2 0 01-4 0z"
+                fill="#EED9A9"></path><path
+                transform="rotate(45 374.536 904.209)"
+                fill="#FFE9B5"
+                d="M0 0H18V18H0z"></path><path
+                transform="translate(776.142 11.728)"
+                fill="url(#b)"
+                d="M0 0H670V2H0z"></path><defs
+                ><linearGradient
+                    id="a"
+                    x1="670"
+                    y1="1"
+                    x2="0"
+                    y2="1"
+                    gradientUnits="userSpaceOnUse"
+                    ><stop stop-color="#D9C69A"></stop><stop
+                        offset="1"
+                        stop-opacity="0"></stop></linearGradient
+                ><linearGradient
+                    id="b"
+                    x1="670"
+                    y1="1"
+                    x2="0"
+                    y2="1"
+                    gradientUnits="userSpaceOnUse"
+                    ><stop stop-opacity="0"></stop><stop
+                        offset="1"
+                        stop-color="#D9C69A"></stop></linearGradient
+                ></defs
+            ></svg
+        >
+        <h3
+            class="text-3xl font-heading2 text-[#FFE9B5FF] tracking-[5px] text-center my-16"
+        >
+            L'Art du Jeu Nararatif
+        </h3>
+
+        <div class="max-w-7xl mx-auto px-8">
+            <div
+                class="grid grid-cols-1 md:grid-cols-[0.70fr_1.30fr] gap-8 mb-12"
+            >
+                <Cards
+                    number="01"
+                    title="Explorez les Biomes"
+                    text="Chaque biome possède ses propres défis, ennemis et trésors à découvrir. Naviguez à travers des environnements uniques et mystérieux."
+                />
+                <Cards
+                    number="02"
+                    title="Accomplissez des Quêtes Épiques"
+                    text="Obtenez des équipements variés (armes, armures, artefacts) en explorant les recoins sombres que l'IA génère pour vous. Chaque combat remporté, chaque coffre découvert enrichit votre arsenal. Votre puissance dépend de votre préparation : utilisez les ressources récupérées pour améliorer les statistiques de votre matériel et créer l'équipement ultime adapté à votre style de jeu."
+                />
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <Cards
+                    number="03"
+                    title="Compétences & Évolution"
+                    text="Définissez vos attributs, de la force brute à l'intelligence arcanique. Vos compétences influencent directement la réussite de vos actions. Gagnez en expérience pour débloquer de nouveaux talents et transformer votre novice en maître redouté. Ainsi, chaque décision façonne votre héros et son destin."
+                />
+                <Cards
+                    number="04"
+                    title="Combat"
+                    text="Pas de clics, mais des mots. Décrivez vos tactiques avec précision : jetez du sable, renversez un brasero, visez les failles. L'IA juge l'issue du duel selon votre équipement, vos stats et votre ingéniosité tactique. Chaque combat est unique, évoluant en fonction de vos choix stratégiques. Sois donc créatif et audacieux !"
+                />
+                <Cards
+                    number="05"
+                    title="Dialoguer avec l'IA"
+                    text="Oubliez les actions préconçues. Décrivez vos intentions en toute liberté : négocier, briser, s'infiltrer... L'IA analyse votre audace et tisse la suite de l'histoire en temps réel, réagissant à chaque nuance de vos paroles. Chaque interaction est une occasion de créer ta propre légende qui répond à ton imagination. Alors exprime toi pleinement !"
+                />
+            </div>
+            <div class="grid grid-cols-1 gap-8 mb-5">
+                <Cards
+                    number="06"
+                    title="Décisions & Conséquences"
+                    text="Une épopée principale vous offrira un but clair, une lumière à suivre dans les ténèbres, mais ne vous y trompez pas : la véritable richesse de ce monde ne révélera ses secrets que si vous osez le provoquer. Ne soyez pas un simple spectateur. Interrogez un garde au comportement suspicieux, déchiffrez les runes d'un livre poussiéreux oublié dans une crypte, ou décidez de suivre une piste subtile que vous seul avez remarquée. C'est en prenant ces initiatives audacieuses que la magie opère : l'IA réagira à votre curiosité en tissant instantanément des quêtes secondaires complexes et des mystères profonds. Votre aventure ne sera pas simplement une histoire que l'on vous raconte, mais une destinée unique, taillée sur mesure par vos propres choix."
+                />
+            </div>
+        </div>
+        <div class="flex justify-center py-16">
+            <div class="text-center space-y-6">
+                <h4
+                    class="text-2xl font-heading text-[#FFE9B5FF] tracking-[3px]"
+                >
+                    Prêt à Écrire Votre Légende ?
+                </h4>
+                <a
+                    href="/start_game"
+                    class="px-10 py-5 bg-elyndra-3 rounded-[10px] inline-flex justify-center items-center gap-4 overflow-hidden hover:scale-105 transition-transform text-lg"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path d="M8 5v14l11-7z"></path>
+                    </svg>
+                    Commencer Votre Aventure
+                </a>
+                <p class="text-sm text-gray-400 max-w-md mx-auto">
+                    Rejoignez des milliers d'aventuriers dans un monde où chaque
+                    choix compte
+                </p>
             </div>
         </div>
     </section>

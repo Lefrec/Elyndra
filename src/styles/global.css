@@ -1,10 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Volkhov:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cinzel&display=swap");
 @import "tailwindcss";
 
 @theme  {
   --font-heading: "Cinzel Decorative", serif;
   --font-body: "Volkhov", serif;
+  --font-heading2: "Cinzel", serif;
 }
 
 @layer base {
