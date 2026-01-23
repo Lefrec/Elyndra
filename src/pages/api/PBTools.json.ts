@@ -5,57 +5,52 @@ import { listInventory, getItem, createItem, updateItem, deleteItem } from "../.
 const API_KEY = import.meta.env.LABAI_API_KEY;
 const API_URL = "https://lab-ia.umlp.fr/api/chat/completions";
 
-// Helper: parse multiple OpenWebUI tool calls from a single response
-// function parseAllToolCalls(content: string): Array<{ name: string; args: any }> {
-//   const TAG = "[TOOL_CALLS]";
-//   const toolCalls: Array<{ name: string; args: any }> = [];
-  
-//   let searchIndex = 0;
-//   while (true) {
-//     const tagIndex = content.indexOf(TAG, searchIndex);
-//     if (tagIndex === -1) break;
+//parse the [TOOL_CALLS] request, should be able to handle multiple call in a single request
+function parseToolCalls(request : string): Array<{ name: string; args: any }> | null {
+    console.log("[parseToolCalls] Parsing request looking for tool call")
+    const TAG : string = "[TOOL_CALLS]";
+    const toolCalls : Array<{ name: string; args: any }> = [];
+    
+    if (!request.includes(TAG)) {
+        console.log("[parseToolCalls] No tool call found in request")
+        return null;
+    }
 
-//     const afterTag = content.slice(tagIndex + TAG.length);
-//     const nameMatch = afterTag.match(/^([a-zA-Z0-9_]+)/);
-//     if (!nameMatch) {
-//       searchIndex = tagIndex + TAG.length;
-//       continue;
-//     }
+    //split the request into different sections delimited by the TAG, filter removes empty values
+    const splittedRequests : Array<string> = request.split(TAG).filter(d => d);
+    console.log("[parseToolCalls] Found",splittedRequests.length,"tool call in request")
 
-//     const name = nameMatch[1];
-//     const argsStart = tagIndex + TAG.length + name.length;
-//     const argsJson = content.slice(argsStart);
+    //for each call, get the name of the function called and the arguments
+    splittedRequests.forEach(call => {
+        const nameMatch = call.match(/^([a-zA-Z0-9_]+)/);
+        if (!nameMatch) return null;
+        const name = nameMatch[1];
 
-//     // Find the matching closing brace for the JSON object
-//     let braceCount = 0;
-//     let argsEnd = -1;
-//     for (let i = 0; i < argsJson.length; i++) {
-//       if (argsJson[i] === "{") braceCount++;
-//       if (argsJson[i] === "}") braceCount--;
-//       if (braceCount === 0 && argsJson[i] === "}") {
-//         argsEnd = i + 1;
-//         break;
-//       }
-//     }
+        const argsJSON = call.slice(name.length);
+        const args = checkValidJSON(argsJSON) ? JSON.parse(argsJSON) : {};
 
-//     if (argsEnd === -1) {
-//       searchIndex = tagIndex + TAG.length;
-//       continue;
-//     }
+        toolCalls.push({ name, args });
+        console.log("[parseToolCalls] Added a call for",name,"to the list of toolCalls")
+    });
 
-//     const argsStr = argsJson.slice(0, argsEnd);
-//     try {
-//       const args = JSON.parse(argsStr);
-//       toolCalls.push({ name, args });
-//     } catch (e) {
-//       console.log("[PBTools] Failed to parse args: " + argsStr);
-//     }
+    return toolCalls;
+}
 
-//     searchIndex = argsStart + argsEnd;
-//   }
+//simple helper function that check if a string is valid JSON format
+function checkValidJSON(string : string) {
+    try {
+        JSON.parse(string);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
 
-//   return toolCalls;
-// }
+export const POST: APIRoute = async ({request}) => {
+    const {messages} = await request.json() as {
+        
+    }
+}
 
 // export const POST: APIRoute = async ({ request }) => {
 //   const { messages } = await request.json() as { 
@@ -243,12 +238,3 @@ const API_URL = "https://lab-ia.umlp.fr/api/chat/completions";
 //     { status: 200, headers: { "Content-Type": "application/json" } },
 //   );
 // };
-
-//parse the [TOOL_CALLS] request, should be able to handle multiple call in a single request
-function parseToolCalls(request : string): { name: string; args: any } | null {
-    const TAG = "[TOOL_CALLS]";
-    if (!request.includes(TAG)) {
-        return null;
-    }
-    
-}
