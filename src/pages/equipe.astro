@@ -133,33 +133,32 @@ const team = [
 </section>
 
 <!-- Section Notre Travail --> 
-<section class="bg-zinc-950 py-20 px-6">
+<section class="py-20 px-6">
     <div class="container mx-auto max-w-6xl">
         <!-- Titre de la section -->
-<div class="text-center mb-12">
-    <!-- Ornement supérieur -->
-    <div class="flex items-center justify-center gap-2 mb-6">
-        <div class="h-px w-20 bg-gradient-to-r from-transparent to-amber-200/50"></div>
-        <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
-        <span class="size-2.5 rotate-45 bg-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
-        <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
-        <div class="h-px w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
-    </div>
+        <div class="text-center mb-12">
+            <!-- Ornement supérieur -->
+            <div class="flex items-center justify-center gap-2 mb-6">
+                <div class="h-px w-20 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+                <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+                <span class="size-2.5 rotate-45 bg-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
+                <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+                <div class="h-px w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
+            </div>
 
-    <h2 class="text-4xl md:text-5xl font-bold uppercase tracking-[0.12em] text-elyndra-gradient">
-        Notre Travail
-    </h2>
+            <h2 class="text-4xl md:text-5xl font-bold uppercase tracking-[0.12em] text-elyndra-gradient">
+                Notre Travail
+            </h2>
 
-    <!-- Ornement inférieur -->
-    <div class="flex items-center justify-center gap-2 mt-6">
-        <div class="h-px w-20 bg-gradient-to-r from-transparent to-amber-200/50"></div>
-        <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
-        <span class="size-2.5 rotate-45 bg-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
-        <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
-        <div class="h-px w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
-    </div>
-</div>
-
+            <!-- Ornement inférieur -->
+            <div class="flex items-center justify-center gap-2 mt-6">
+                <div class="h-px w-20 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+                <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+                <span class="size-2.5 rotate-45 bg-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
+                <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+                <div class="h-px w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
+            </div>
+        </div>
 
         <div class="grid md:grid-cols-3 gap-8">
             {projects.map((project, index) => (
@@ -221,7 +220,7 @@ const team = [
 </section>
 
 <!-- Section Rejoindre l'équipe -->
- <!-- Titre de la section -->
+<!-- Titre de la section -->
 <div class="text-center mb-12">
     <!-- Ornement supérieur -->
     <div class="flex items-center justify-center gap-2 mb-6">
@@ -247,46 +246,48 @@ const team = [
 </div>
 
 <!-- Section Équipe -->
-<!-- Section Équipe -->
-<section class="py-20 px-6 bg-slate-950">
+<section class="py-20 px-6">
     <div class="max-w-6xl mx-auto">
         <!-- Grille de cartes -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             {team.map((member) => (
-                <div class="relative">
-                    <!-- Losange en haut -->
-                    <div class="absolute -top-2.5 left-1/2 -translate-x-1/2 z-10">
-                        <span class="block size-3.5 rotate-45 bg-amber-300 shadow-[0_0_20px_rgba(251,191,36,0.7)]"></span>
+                <div class="relative flex justify-center">
+                    <!-- Losange doré en haut -->
+                    <div class="absolute -top-3 z-10">
+                        <div class="w-3.5 h-3.5 rotate-45 bg-[#FFE9B5] shadow-[0_0_15px_rgba(255,233,181,0.6)]"></div>
                     </div>
 
-                    <!-- Carte -->
-                    <div class="relative border border-white/10 rounded-3xl px-6 py-8 pt-10 bg-black h-full flex flex-col items-center">
-                        <!-- Avatar PETIT avec icône NOIRE -->
-                        <div class="mb-5">
-                            <div class="size-20 rounded-full bg-[#c4ae7f] flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="size-10 text-black" fill="currentColor" viewBox="0 0 24 24">
+                    <!-- Rectangle carte -->
+                    <div class="w-80 bg-black rounded-3xl border border-amber-200/30 flex flex-col items-center pt-14 pb-10 px-8 gap-5">
+                        
+                        <!-- Avatar avec dégradé #D9C69A vers #8B7A56 et icône NOIRE -->
+                        <div class="w-24 h-24 bg-gradient-to-b from-[#D9C69A] to-[#8B7A56] rounded-full p-[2px] inline-flex justify-center items-center shadow-[0_0_20px_rgba(217,198,154,0.3)]">
+                            <div class="w-full h-full bg-gradient-to-b from-[#D9C69A] to-[#8B7A56] rounded-full flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-black" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                                 </svg>
                             </div>
                         </div>
 
-                        <!-- Nom -->
-                        <h3 class="text-center text-base font-normal text-white mb-1 tracking-wide">
+                        <!-- Nom en BLANC avec Cinzel Decorative -->
+                        <h3 class="text-center text-white text-xl font-light font-heading tracking-wider">
                             {member.name}
                         </h3>
 
-                        <!-- Rôle -->
-                        <p class="text-center text-[9px] uppercase tracking-[0.25em] text-gray-400 mb-3">
+                        <!-- Rôle en #FFE9B5 avec Volkhov (font-body) -->
+                        <p class="text-center text-[#FFE9B5] text-[11px] font-body font-normal tracking-[0.25em] uppercase">
                             {member.role}
                         </p>
 
-                        <!-- Point séparateur -->
-                        <div class="mb-3">
-                            <span class="block size-1 rounded-full bg-gray-500"></span>
+                        <!-- Ornement ligne + losange + ligne en #FFE9B5 -->
+                        <div class="flex items-center justify-center gap-2 w-full">
+                            <div class="h-px w-20 bg-gradient-to-r from-transparent via-[#FFE9B5]/60 to-[#FFE9B5]/60"></div>
+                            <div class="w-1.5 h-1.5 rotate-45 bg-[#FFE9B5] flex-shrink-0"></div>
+                            <div class="h-px w-20 bg-gradient-to-l from-transparent via-[#FFE9B5]/60 to-[#FFE9B5]/60"></div>
                         </div>
 
-                        <!-- Description -->
-                        <p class="text-center text-[10px] text-gray-400 leading-relaxed">
+                        <!-- Description en gris -->
+                        <p class="text-center text-gray-400 text-xs font-body leading-relaxed">
                             {member.description}
                         </p>
                     </div>
@@ -295,20 +296,31 @@ const team = [
         </div>
 
         <!-- Citation -->
-        <div class="mt-20 text-center">
-            <div class="mb-4">
-                <span class="text-4xl text-white/20 font-serif">"</span>
-            </div>
-            <p class="text-white/60 italic text-sm mb-2">
-                NOUS NE RACONTONS PAS UNE HISTOIRE.
-            </p>
-            <p class="text-white text-sm tracking-[0.25em] uppercase">
-                LE MONDE S'ÉCRIT À TRAVERS VOS CHOIX.
-            </p>
-            <div class="mt-4">
-                <span class="text-4xl text-white/20 font-serif">"</span>
-            </div>
-        </div>
+<div class="mt-20 text-center relative max-w-4xl mx-auto">
+    
+    <!-- Guillemet ouverture -->
+    <div class="leading-none mb-1">
+        <span class="text-[#FFE9B5] text-6xl md:text-7xl font-serif leading-none">"</span>
+    </div>
+    
+    <!-- Première ligne en italique gris -->
+    <p class="text-white/50 italic text-lg md:text-xl font-body tracking-wider leading-relaxed mb-6">
+        NOUS NE RACONTONS PAS UNE HISTOIRE.
+    </p>
+    
+    <!-- Deuxième ligne dorée avec espacement -->
+    <p class="text-[#FFE9B5] text-lg md:text-xl tracking-[0.35em] uppercase font-body leading-relaxed mb-9">
+        LE MONDE S'ÉCRIT À TRAVERS VOS CHOIX.
+    </p>
+    
+    <!-- Guillemet fermeture -->
+    <div class="leading-none">
+        <span class="text-[#FFE9B5] text-6xl md:text-7xl font-serif leading-none">"</span>
+    </div>
+</div>
+
+
     </div>
 </section>
+
 </Layout>
