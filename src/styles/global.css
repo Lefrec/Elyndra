@@ -19,14 +19,16 @@
     @apply h-full;
   }
 
-  h1,
+  h1 {
+    @apply font-heading;
+  }
+
   h2,
   h3,
   h4,
   h5,
   h6 {
     @apply font-heading2;
-
   }
 
   body {
@@ -47,11 +49,15 @@
 
   @layer utilities {
     .text-elyndra-gradient {
-      @apply  text-transparent bg-clip-text bg-gradient-to-b from-[#FFE9B5] via-[#CBBA90] to-[#656246];
+      @apply text-transparent bg-clip-text bg-gradient-to-b from-[#FFE9B5] via-[#CBBA90] to-[#656246];
     }
   }
 
   .bg-elyndra-3 {
     @apply bg-gradient-to-t from-stone-800 to-yellow-100;
+  }
+
+  .text-Or-clair {
+    @apply text-[#FFE9B5FF];
   }
 }
