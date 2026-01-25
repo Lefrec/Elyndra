@@ -1,0 +1,117 @@
+---
+import Layout from '../layout/Layout.astro';
+---
+
+<Layout title="Contactez-nous">
+  <div class="pt-9 pb-16 bg-[#0a0a0a] min-h-screen">
+    
+    <!-- Header -->
+    <div class="text-center mb-20 px-4">
+      <h1 class="text-amber-100 text-5xl font-bold tracking-[5.40px] mb-6">
+        CONTACTEZ-NOUS
+      </h1>
+      <p class="text-white text-xl max-w-4xl mx-auto">
+        Chaque grande aventure commence par un premier pas. Partagez-nous votre projet, et écrivons ensemble le premier chapitre de votre histoire.
+      </p>
+    </div>
+
+    <!-- Content -->
+    <div class="max-w-6xl mx-auto flex flex-wrap gap-20 justify-center px-4">
+      
+      <!-- Left Section -->
+      <div class="w-48">
+        <div class="mb-20">
+          <h2 class="text-stone-200 text-3xl font-bold mb-5">Email</h2>
+          <p class="text-stone-200 text-base">elyndra@elyndra.com</p>
+        </div>
+        <div>
+          <h2 class="text-stone-200 text-3xl font-bold mb-6">Socials</h2>
+          <div class="space-y-3">
+            <a href="#" class="block text-stone-200 text-base underline hover:text-amber-100">Instagram</a>
+            <a href="#" class="block text-stone-200 text-base underline hover:text-amber-100">Twitter</a>
+            <a href="#" class="block text-stone-200 text-base underline hover:text-amber-100">Facebook</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form with exact decorative frame from image -->
+      <div class="w-full max-w-[600px] relative p-8">
+        
+        <!-- Decorative corners with circles -->
+        <div class="absolute top-2 left-2 w-12 h-12 bg-[#4a3f35] rounded-full"></div>
+        <div class="absolute top-2 right-2 w-12 h-12 bg-[#4a3f35] rounded-full"></div>
+        <div class="absolute bottom-2 left-2 w-12 h-12 bg-[#4a3f35] rounded-full"></div>
+        <div class="absolute bottom-2 right-2 w-12 h-12 bg-[#4a3f35] rounded-full"></div>
+
+        <!-- Border frame -->
+        <div class="border-4 border-[#6b5845] rounded-lg p-1">
+          <div class="bg-[#1a1410] p-10 rounded">
+            
+            <form id="contact-form" class="space-y-5">
+              
+              <div>
+                <label class="block text-white text-sm mb-2">Prénom</label>
+                <input type="text" name="prenom" required 
+                  class="w-full h-11 bg-transparent border border-[#8b7355] rounded px-4 text-white placeholder-gray-500 focus:outline-none focus:border-[#d4af7a]" />
+              </div>
+
+              <div>
+                <label class="block text-white text-sm mb-2">Nom</label>
+                <input type="text" name="nom" required 
+                  class="w-full h-11 bg-transparent border border-[#8b7355] rounded px-4 text-white placeholder-gray-500 focus:outline-none focus:border-[#d4af7a]" />
+              </div>
+
+              <div>
+                <label class="block text-white text-sm mb-2">Email</label>
+                <input type="email" name="email" required 
+                  class="w-full h-11 bg-transparent border border-[#8b7355] rounded px-4 text-white placeholder-gray-500 focus:outline-none focus:border-[#d4af7a]" />
+              </div>
+
+              <div>
+                <label class="block text-white text-sm mb-2">Message</label>
+                <textarea name="message" required rows="5"
+                  class="w-full bg-transparent border border-[#8b7355] rounded px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#d4af7a] resize-none"></textarea>
+              </div>
+
+              <button type="submit" 
+                class="w-full py-3 bg-[#d4af7a] rounded text-[#0a0a0a] text-lg font-semibold hover:bg-[#c09960] transition-colors shadow-md">
+                Envoyer
+              </button>
+
+              <div id="message" class="hidden text-center text-sm mt-4"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import PocketBase from 'pocketbase';
+    
+    const pb = new PocketBase('http://127.0.0.1:8090');
+    const form = document.getElementById('contact-form') as HTMLFormElement;
+    const messageDiv = document.getElementById('message') as HTMLDivElement;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData);
+
+      try {
+        await pb.collection('messages').create(data);
+        messageDiv.textContent = 'Message envoyé avec succès !';
+        messageDiv.className = 'text-green-400 text-center text-sm mt-4';
+        messageDiv.classList.remove('hidden');
+        form.reset();
+        
+        setTimeout(() => messageDiv.classList.add('hidden'), 5000);
+      } catch (error) {
+        messageDiv.textContent = 'Erreur lors de l\'envoi';
+        messageDiv.className = 'text-red-400 text-center text-sm mt-4';
+        messageDiv.classList.remove('hidden');
+      }
+    });
+  </script>
+</Layout>
