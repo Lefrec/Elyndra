@@ -1,6 +1,8 @@
 import Pocketbase from "pocketbase";
 const pb = new Pocketbase("http://127.0.0.1:8090/");
 
+//Basic functions to test tools interacting with inventory in PocketBase
+
 //get all inventory items
 export async function listInventory() {
     try {
@@ -18,7 +20,7 @@ export async function listInventory() {
 }
 
 //get single inventory item by ID
-export async function getItem(itemId) {
+export async function getItem(itemId : string) {
     try {
         console.log("[getItem] Fetching item: " + itemId);
         
@@ -34,7 +36,7 @@ export async function getItem(itemId) {
 }
 
 //create new inventory item
-export async function createItem(name, desc, amount) {
+export async function createItem(name: string, desc: string, amount: number) {
     try {
         console.log("[createItem] Creating item: " + name);
         
@@ -54,7 +56,7 @@ export async function createItem(name, desc, amount) {
 }
 
 //update inventory item
-export async function updateItem(itemId, name, desc, amount) {
+export async function updateItem(itemId: string, name: string, desc: string, amount: number) {
     try {
         console.log("[updateItem] Updating item " + itemId);
         
@@ -74,7 +76,7 @@ export async function updateItem(itemId, name, desc, amount) {
 }
 
 //delete inventory item
-export async function deleteItem(itemId) {
+export async function deleteItem(itemId: string) {
     try {
         console.log("[deleteItem] Deleting item: " + itemId);
         

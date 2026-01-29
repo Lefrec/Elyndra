@@ -1,12 +1,17 @@
 import type { APIRoute } from "astro";
-import { listInventory, getItem, createItem, updateItem, deleteItem } from "../../../backend/backend";
+import { listInventory, getItem, createItem, updateItem, deleteItem } from "../../../backend/functions/inventory.ts";
+import { rollTest } from "../../../backend/functions/roll.ts";
 
 //get API key and URL
 const API_KEY = import.meta.env.LABAI_API_KEY;
 const API_URL = "https://lab-ia.umlp.fr/api/chat/completions";
 
 //we keep the system prompt out of the POST for readability
-const systemPrompt: string = "You can use tools to interact with the inventory database. Help the user manage items by listing, getting, creating, updating or deleting inventory items. When you don't know the id of an item you can list the inventory first to find it.";
+const systemPrompt: string = "You can use tools to interact with the inventory database."+
+"Help the user manage his inventory."+
+"When you don't know the id of an item, list the inventory first to find it."+
+"You can also make RPG style diffculty test when asked to."+
+"Either make tool call or answer the user, not both in the same response.";
 
 //same logic for the array of available tools, easier to read, easier to change
 const toolsArray = [
@@ -110,6 +115,27 @@ const toolsArray = [
             },
         },
     },
+    {
+        type: "function",
+        function: {
+            name: "rollTest",
+            description: "Make an RPG style dice roll to test an action",
+            parameters: {
+                type: "object",
+                properties: {
+                    difficulty: {
+                        type: "number",
+                        description: "The difficulty of the test, ranging between 6 and 18. 6 is very simple, 18 is almost impossible",
+                    },
+                    modifier: {
+                        type: "number",
+                        description: "The modifier applied to the roll, ranging from -6 to +6",
+                    }
+                },
+                required: ["difficulty","modifier"],
+            }
+        }
+    }
 ];
 
 //we can define the max amount of call the LLM can make before we force it to stop calling tools
@@ -157,6 +183,7 @@ function checkValidJSON(string : string) {
 }
 
 export const POST: APIRoute = async ({request}) => {
+    try {
 
     console.log("[PBTools] Starting PBTools.json API endpoint");
 
@@ -230,6 +257,8 @@ export const POST: APIRoute = async ({request}) => {
                 } else if (toolCall.name === "deleteItem") {
                     await deleteItem(toolCall.args.itemId);
                     toolResult = { success: true };
+                } else if (toolCall.name === "rollTest") {
+                    toolResult = rollTest(toolCall.args.difficulty, toolCall.args.modifier);
                 }
             } catch (e) {
                 toolResult = { error: String(e) };
@@ -244,4 +273,10 @@ export const POST: APIRoute = async ({request}) => {
         JSON.stringify({ reply: "Max tool calls reached" }),
         { status: 200, headers: { "Content-Type": "application/json" } },
     );
+    } catch (error) {
+        return new Response(
+            JSON.stringify({ reply: "There was an error :", error }),
+            { status: 500, headers: { "Content-Type": "application/json" } },
+        );
+    }
 };

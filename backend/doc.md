@@ -399,3 +399,16 @@ function parseToolCalls(request : string): Array<{ name: string; args: any }> | 
     return toolCalls;
 }
 ```
+
+### Helper checking if a string can be parsed in json
+```TS
+function checkValidJSON(string : string) {
+    try {
+        JSON.parse(string);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+```
+
