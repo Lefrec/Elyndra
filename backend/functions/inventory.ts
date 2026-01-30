@@ -68,7 +68,9 @@ export async function updateItem(itemId: string, name: string, desc: string, amo
         });
         
         console.log("[updateItem] Item updated successfully");
-        return updatedItem;
+        // return updatedItem;
+        //test temporaire
+        return "updated succesfuly"
     } catch (error) {
         console.log("[updateItem] Failed to update item: " + error);
         throw error;
