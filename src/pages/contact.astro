@@ -3,14 +3,14 @@ import Layout from '../layout/Layout.astro';
 ---
 
 <Layout title="Contactez-nous">
-  <div class="pt-9 pb-16 bg-[#0a0a0a] min-h-screen">
+  <div class="pt-9 pb-48 bg-[#0a0a0a] min-h-screen">
     
     <!-- Header -->
     <div class="text-center mb-20 px-4">
-      <h1 class="text-amber-100 text-5xl font-bold tracking-[5.40px] mb-6">
+      <h1 class="text-Or-clair text-5xl font-bold tracking-[5.40px] mb-6">
         CONTACTEZ-NOUS
       </h1>
-      <p class="text-white text-xl max-w-4xl mx-auto">
+      <p class="text-Blanc text-xl max-w-4xl mx-auto">
         Chaque grande aventure commence par un premier pas. Partagez-nous votre projet, et écrivons ensemble le premier chapitre de votre histoire.
       </p>
     </div>
@@ -21,66 +21,93 @@ import Layout from '../layout/Layout.astro';
       <!-- Left Section -->
       <div class="w-48">
         <div class="mb-20">
-          <h2 class="text-stone-200 text-3xl font-bold mb-5">Email</h2>
-          <p class="text-stone-200 text-base">elyndra@elyndra.com</p>
+          <h2 class="text-Blanc text-3xl font-bold mb-5">Email</h2>
+          <p class="text-Blanc text-base">elyndra@elyndra.com</p>
         </div>
         <div>
-          <h2 class="text-stone-200 text-3xl font-bold mb-6">Socials</h2>
+          <h2 class="text-Blanc text-3xl font-bold mb-6">Socials</h2>
           <div class="space-y-3">
-            <a href="#" class="block text-stone-200 text-base underline hover:text-amber-100">Instagram</a>
-            <a href="#" class="block text-stone-200 text-base underline hover:text-amber-100">Twitter</a>
-            <a href="#" class="block text-stone-200 text-base underline hover:text-amber-100">Facebook</a>
+            <a href="#" class="block text-Blanc text-base underline hover:text-Or-clair">Instagram</a>
+            <a href="#" class="block text-Blanc text-base underline hover:text-Or-clair">Twitter</a>
+            <a href="#" class="block text-Blanc text-base underline hover:text-Or-clair">Facebook</a>
           </div>
         </div>
       </div>
 
-      <!-- Form with exact decorative frame from image -->
-      <div class="w-full max-w-[600px] relative p-8">
+      <!-- CADRE ULTRA-VISIBLE -->
+      <div class="w-[725px] h-[686px] relative bg-transparent">
         
-        <!-- Decorative corners with circles -->
-        <div class="absolute top-2 left-2 w-12 h-12 bg-[#4a3f35] rounded-full"></div>
-        <div class="absolute top-2 right-2 w-12 h-12 bg-[#4a3f35] rounded-full"></div>
-        <div class="absolute bottom-2 left-2 w-12 h-12 bg-[#4a3f35] rounded-full"></div>
-        <div class="absolute bottom-2 right-2 w-12 h-12 bg-[#4a3f35] rounded-full"></div>
+        <!-- COUCHE 1 : CADRE DORÉ ÉPAIS (z-10) -->
+        <div class="w-[725px] h-[686px] left-0 top-0 absolute bg-Bordure-foncée border-8 border-[#1a1a1a] z-10"></div>
+        
+        <!-- COUCHE 2 : Carte intérieure noire (z-20) -->
+        <div class="w-[691px] h-[656px] left-[17px] top-[15px] absolute bg-Background-card z-20"></div>
+        
+        <!-- COUCHE 3 : Cercles décoratifs (z-30) -->
+        <div class="w-10 h-10 left-[7px] top-0 absolute bg-Bordure-foncée rounded-full z-30"></div>
+        <div class="w-10 h-10 left-[7px] top-[638px] absolute bg-Bordure-foncée rounded-full z-30"></div>
+        <div class="w-10 h-10 left-[678px] top-0 absolute bg-Bordure-foncée rounded-full z-30"></div>
+        <div class="w-10 h-10 left-[678px] top-[638px] absolute bg-Bordure-foncée rounded-full z-30"></div>
 
-        <!-- Border frame -->
-        <div class="border-4 border-[#6b5845] rounded-lg p-1">
-          <div class="bg-[#1a1410] p-10 rounded">
+        <!-- COUCHE 4 : Formulaire (z-40) -->
+        <div class="w-[691px] h-[656px] left-[17px] top-[15px] absolute z-40 flex flex-col justify-center items-center gap-7 p-6">
+          <form id="contact-form" class="contents">
             
-            <form id="contact-form" class="space-y-5">
-              
-              <div>
-                <label class="block text-white text-sm mb-2">Prénom</label>
-                <input type="text" name="prenom" required 
-                  class="w-full h-11 bg-transparent border border-[#8b7355] rounded px-4 text-white placeholder-gray-500 focus:outline-none focus:border-[#d4af7a]" />
-              </div>
+            <!-- Prénom -->
+            <div class="flex flex-col justify-start items-start gap-3.5 w-[563px]">
+              <label class="text-Blanc text-sm font-normal font-body">Prénom</label>
+              <input 
+                type="text" 
+                name="prenom" 
+                required 
+                class="w-full h-11 bg-zinc-900 rounded-[5px] border-2 border-Or-clair px-4 text-Blanc font-body focus:outline-none focus:border-Or-clair focus:ring-2 focus:ring-Or-clair/50 placeholder:text-sous-texte" 
+              />
+            </div>
 
-              <div>
-                <label class="block text-white text-sm mb-2">Nom</label>
-                <input type="text" name="nom" required 
-                  class="w-full h-11 bg-transparent border border-[#8b7355] rounded px-4 text-white placeholder-gray-500 focus:outline-none focus:border-[#d4af7a]" />
-              </div>
+            <!-- Nom -->
+            <div class="flex flex-col justify-start items-start gap-3.5 w-[563px]">
+              <label class="text-Blanc text-sm font-normal font-body">Nom</label>
+              <input 
+                type="text" 
+                name="nom" 
+                required 
+                class="w-full h-11 bg-neutral-800 rounded-[5px] border-2 border-Or-clair px-4 text-Blanc font-body focus:outline-none focus:border-Or-clair focus:ring-2 focus:ring-Or-clair/50 placeholder:text-sous-texte" 
+              />
+            </div>
 
-              <div>
-                <label class="block text-white text-sm mb-2">Email</label>
-                <input type="email" name="email" required 
-                  class="w-full h-11 bg-transparent border border-[#8b7355] rounded px-4 text-white placeholder-gray-500 focus:outline-none focus:border-[#d4af7a]" />
-              </div>
+            <!-- Email -->
+            <div class="flex flex-col justify-start items-start gap-3.5 w-[563px]">
+              <label class="text-Blanc text-sm font-normal font-body">Email</label>
+              <input 
+                type="email" 
+                name="email" 
+                required 
+                class="w-full h-11 bg-zinc-900 rounded-[5px] border-2 border-Or-clair px-4 text-Blanc font-body focus:outline-none focus:border-Or-clair focus:ring-2 focus:ring-Or-clair/50 placeholder:text-sous-texte" 
+              />
+            </div>
 
-              <div>
-                <label class="block text-white text-sm mb-2">Message</label>
-                <textarea name="message" required rows="5"
-                  class="w-full bg-transparent border border-[#8b7355] rounded px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#d4af7a] resize-none"></textarea>
-              </div>
+            <!-- Message -->
+            <div class="flex flex-col justify-start items-start gap-3.5 w-[563px]">
+              <label class="text-Blanc text-sm font-normal font-body">Message</label>
+              <textarea 
+                name="message" 
+                required 
+                class="w-full h-40 bg-neutral-800 rounded-[5px] border-2 border-Or-clair px-4 py-3 text-Blanc font-body resize-none focus:outline-none focus:border-Or-clair focus:ring-2 focus:ring-Or-clair/50 placeholder:text-sous-texte"
+              ></textarea>
+            </div>
 
-              <button type="submit" 
-                class="w-full py-3 bg-[#d4af7a] rounded text-[#0a0a0a] text-lg font-semibold hover:bg-[#c09960] transition-colors shadow-md">
-                Envoyer
-              </button>
+            <!-- Bouton CORRIGÉ -->
+            <button 
+              type="submit"
+              class="w-[563px] h-12 px-20 bg-Or-clair rounded-[5px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] border-2 border-Bordure-foncée inline-flex justify-center items-center transition-all duration-300 hover:bg-[#FBFBFBFF] hover:shadow-[0_6px_8px_rgba(0,0,0,0.35)] hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <span class="text-text-color-2 text-xl font-bold font-heading tracking-[0.1em] hover:text-[#0E0E0EFF]">
+                ENVOYER
+              </span>
+            </button>
 
-              <div id="message" class="hidden text-center text-sm mt-4"></div>
-            </form>
-          </div>
+            <div id="message" class="hidden text-center text-sm font-body mt-2 w-[563px]"></div>
+          </form>
         </div>
       </div>
     </div>
@@ -102,14 +129,14 @@ import Layout from '../layout/Layout.astro';
       try {
         await pb.collection('messages').create(data);
         messageDiv.textContent = 'Message envoyé avec succès !';
-        messageDiv.className = 'text-green-400 text-center text-sm mt-4';
+        messageDiv.className = 'text-Or-clair text-center text-sm mt-2 font-body font-bold';
         messageDiv.classList.remove('hidden');
         form.reset();
         
         setTimeout(() => messageDiv.classList.add('hidden'), 5000);
       } catch (error) {
         messageDiv.textContent = 'Erreur lors de l\'envoi';
-        messageDiv.className = 'text-red-400 text-center text-sm mt-4';
+        messageDiv.className = 'text-red-400 text-center text-sm mt-2 font-body font-bold';
         messageDiv.classList.remove('hidden');
       }
     });
