@@ -43,11 +43,12 @@ import Layout from '../layout/Layout.astro';
         <!-- COUCHE 2 : Carte intérieure noire (z-20) -->
         <div class="w-[691px] h-[656px] left-[17px] top-[15px] absolute bg-Background-card z-20"></div>
         
-        <!-- COUCHE 3 : Cercles décoratifs (z-30) -->
-        <div class="w-10 h-10 left-[7px] top-0 absolute bg-Bordure-foncée rounded-full z-30"></div>
-        <div class="w-10 h-10 left-[7px] top-[638px] absolute bg-Bordure-foncée rounded-full z-30"></div>
-        <div class="w-10 h-10 left-[678px] top-0 absolute bg-Bordure-foncée rounded-full z-30"></div>
-        <div class="w-10 h-10 left-[678px] top-[638px] absolute bg-Bordure-foncée rounded-full z-30"></div>
+       <div class="w-[711px] h-[679px] relative">
+<div class="w-10 h-10 left-0 top-0 absolute bg-stone-800 rounded-full"></div>
+<div class="w-10 h-10 left-0 top-[638px] absolute bg-stone-800 rounded-full"></div>
+<div class="w-10 h-10 left-[671px] top-0 absolute bg-stone-800 rounded-full"></div>
+<div class="w-10 h-10 left-[671px] top-[638px] absolute bg-stone-800 rounded-full"></div>
+</div>
 
         <!-- COUCHE 4 : Formulaire (z-40) -->
         <div class="w-[691px] h-[656px] left-[17px] top-[15px] absolute z-40 flex flex-col justify-center items-center gap-7 p-6">
@@ -97,11 +98,12 @@ import Layout from '../layout/Layout.astro';
             </div>
 
             <!-- Bouton CORRIGÉ -->
+             
             <button 
               type="submit"
-              class="w-[563px] h-12 px-20 bg-Or-clair rounded-[5px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] border-2 border-Bordure-foncée inline-flex justify-center items-center transition-all duration-300 hover:bg-[#FBFBFBFF] hover:shadow-[0_6px_8px_rgba(0,0,0,0.35)] hover:scale-[1.02] active:scale-[0.98]"
+              class="group w-[563px] h-12 px-20 bg-Or-clair rounded-[5px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] border-2 border-Bordure-foncée inline-flex justify-center items-center transition-all duration-300 hover:bg-[#FBFBFBFF] hover:shadow-[0_6px_8px_rgba(0,0,0,0.35)] hover:scale-[1.02] active:scale-[0.98]"
             >
-              <span class="text-text-color-2 text-xl font-bold font-heading tracking-[0.1em] hover:text-[#0E0E0EFF]">
+              <span class="text-text-color-2 text-xl font-bold font-heading tracking-[0.1em] group-hover:text-[#0E0E0EFF]">
                 ENVOYER
               </span>
             </button>
