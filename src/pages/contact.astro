@@ -3,7 +3,7 @@ import Layout from '../layout/Layout.astro';
 ---
 
 <Layout title="Contactez-nous">
-  <div class="pt-9 pb-48 bg-[#0a0a0a] min-h-screen">
+  <div class="pt-9 pb-240 bg-[#0a0a0a] min-h-screen">
     
     <!-- Header -->
     <div class="text-center mb-20 px-4">
@@ -37,18 +37,17 @@ import Layout from '../layout/Layout.astro';
       <!-- CADRE ULTRA-VISIBLE -->
       <div class="w-[725px] h-[686px] relative bg-transparent">
         
-        <!-- COUCHE 1 : CADRE DORÉ ÉPAIS (z-10) -->
-        <div class="w-[725px] h-[686px] left-0 top-0 absolute bg-Bordure-foncée border-8 border-[#1a1a1a] z-10"></div>
+        <!-- COUCHE 1 : CADRE DORÉ ÉPAIS AVEC BORDURE CARRÉE (z-10) -->
+        <div class="w-[725px] h-[686px] left-0 top-0 absolute bg-Bordure-foncée z-10 border-[12px] border-[#353120]"></div>
         
-        <!-- COUCHE 2 : Carte intérieure noire (z-20) -->
-        <div class="w-[691px] h-[656px] left-[17px] top-[15px] absolute bg-Background-card z-20"></div>
+        <!-- COUCHE 2 : Carte intérieure noire avec coins arrondis (z-20) -->
+        <div class="w-[665px] h-[630px] left-[30px] top-[28px] absolute bg-Background-card rounded-[28px] z-20"></div>
         
-       <div class="w-[711px] h-[679px] relative">
-<div class="w-10 h-10 left-0 top-0 absolute bg-stone-800 rounded-full"></div>
-<div class="w-10 h-10 left-0 top-[638px] absolute bg-stone-800 rounded-full"></div>
-<div class="w-10 h-10 left-[671px] top-0 absolute bg-stone-800 rounded-full"></div>
-<div class="w-10 h-10 left-[671px] top-[638px] absolute bg-stone-800 rounded-full"></div>
-</div>
+        <!-- Boules aux coins du cadre (z-30) -->
+        <div class="w-11 h-11 left-0 top-0 absolute bg-[#353120] rounded-full z-30 shadow-lg"></div>
+        <div class="w-11 h-11 left-0 bottom-0 absolute bg-[#353120] rounded-full z-30 shadow-lg"></div>
+        <div class="w-11 h-11 right-0 top-0 absolute bg-[#353120] rounded-full z-30 shadow-lg"></div>
+        <div class="w-11 h-11 right-0 bottom-0 absolute bg-[#353120] rounded-full z-30 shadow-lg"></div>
 
         <!-- COUCHE 4 : Formulaire (z-40) -->
         <div class="w-[691px] h-[656px] left-[17px] top-[15px] absolute z-40 flex flex-col justify-center items-center gap-7 p-6">
