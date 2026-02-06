@@ -1,16 +1,1 @@
 @import "tailwindcss";
-
-@layer base {
-    * {
-        @apply text-white;
-    }
-    body {
-        @apply flex justify-center bg-slate-950;
-    }
-}
-
-@layer components {
-    .btn {
-        @apply rounded-lg bg-slate-600 p-4 hover:bg-slate-500;
-    }
-}

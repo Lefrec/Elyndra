@@ -8,9 +8,11 @@
     "preview": "astro preview",
     "astro": "astro",
     "lore": "node --loader ts-node/esm lore.ts",
-    "test": "node --loader ts-node/esm ./backend/testBack.ts"
+    "test": "node --loader ts-node/esm ./backend/testBack.ts",
+    "type": "npx pocketbase-typegen --db ./backend/pb_data/data.db --out ./src/utils/type.ts"
   },
   "dependencies": {
+    "@astrojs/node": "^9.5.2",
     "@perplexity-ai/perplexity_ai": "^0.16.0",
     "@tailwindcss/vite": "^4.1.17",
     "astro": "^5.16.2",

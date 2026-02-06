@@ -1,0 +1,17 @@
+---
+import ProtoLayout from "../../layout/ProtoLayout.astro";
+
+export const prerender = false;
+---
+
+<ProtoLayout>
+  <h1>Prototype</h1>
+  <p>
+    {
+      Astro.locals.pb.authStore.isValid
+        ? "Connecté en tant que " + Astro.locals.pb.authStore.record?.name
+        : "Pas connecté"
+    }
+  </p>
+  
+</ProtoLayout>

@@ -1,4 +1,4 @@
-import { rollTest } from "./functions/player.ts";
+import { rollTest } from "./functions/testPlayer.ts";
 
 console.log("[testBack] Running testBack.ts");
 

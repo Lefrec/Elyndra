@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { connectToLefrec } from "../../../backend/functions/user";
+import { connectToLefrec } from "../../../backend/functions/testUser";
 
 export const POST: APIRoute = async ({request}) => {
     try {

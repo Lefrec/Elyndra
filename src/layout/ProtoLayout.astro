@@ -1,14 +1,21 @@
 ---
 import "/src/styles/global.css";
 ---
+
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Elyndra</title>
+    <title>Elyndra prototype</title>
   </head>
-  <body class="flex justify-center bg-slate-950 text-white">
-    <slot/>
+  <body>
+    <header>
+      <nav>
+        <a href="/proto">Proto</a>
+        <a href="/proto/auth">Auth</a>
+      </nav>
+    </header>
+    <slot />
   </body>
 </html>
