@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
-import { listInventory, getItem, createItem, updateItem, deleteItem } from "../../../backend/functions/testInventory.ts";
-import { rollTest } from "../../../backend/functions/testPlayer.ts";
+import { listInventory, getItem, createItem, updateItem, deleteItem } from "../../../../backend/functions/test/inventory.ts";
+import { rollTest } from "../../../../backend/functions/test/player.ts";
 
 //get API key and URL
 const API_KEY = import.meta.env.LABAI_API_KEY;

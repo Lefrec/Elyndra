@@ -13,5 +13,20 @@ export const prerender = false;
         : "Pas connecté"
     }
   </p>
-  
+  <button id="setupBtn">Set up collections</button>
 </ProtoLayout>
+
+<script>
+  const setupBtn = document.getElementById(
+    "setupBtn",
+  ) as HTMLButtonElement | null;
+
+  if (setupBtn) {
+    setupBtn.addEventListener("click", async (e) => {
+      const res = await fetch("/api/proto/setupCollections.json", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+    });
+  }
+</script>
