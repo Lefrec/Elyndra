@@ -10,17 +10,160 @@ export async function authAdmin() {
 
 export async function setupCollections(id: string) {
     try {
-        const pb = await authAdmin();
+        await authAdmin();
+        await setupPlayer(id);
         await setupInventory(id);
+        await setupEntity(id);
+        pb.authStore.clear();
+        return;
+    } catch (e) {
+        console.log("[setupCollections] Failed")
+        return e;
     }
-    catch (e) {
-        return e
+}
+
+async function setupPlayer(id: string) {
+    try {
+        const collectionName : string = "Player_"+id;
+        const doesExist : boolean = await checkCollection(collectionName);
+
+        //logic executed if the collection doesn't exist
+        if (!doesExist) {
+            console.log("[setupPlayer] Create collection");
+            await pb.collections.create({
+                type: "base",
+                name: collectionName,
+                fields: [
+                    {
+                        name: "name",
+                        type: "text",
+                    },
+                    {
+                        name: "class",
+                        type: "select",
+                        values: ["knight","mage"],
+                    },
+                    {
+                        name: "maxHP",
+                        type: "number",
+                    },
+                    {
+                        name: "currentHP",
+                        type: "number",
+                    },
+                    {
+                        name: "str",
+                        type: "number",
+                    },
+                    {
+                        name: "dex",
+                        type: "number",
+                    },
+                    {
+                        name: "con",
+                        type: "number",
+                    },
+                    {
+                        name: "int",
+                        type: "number",
+                    },
+                    {
+                        name: "isCurrent",
+                        type: "bool",
+                    },
+                ]
+            })
+        }
+
+        return;
+    } catch (e) {
+        console.log("[setupPlayer] Failed")
+        return e;
     }
 }
 
 async function setupInventory(id: string) {
-    let collection = await pb.collections.delete("Inventory_"+id);
-    console.log("[setupInventory]");
-    return;
+    try {
+        const collectionName : string = "Inventory_"+id;
+        const doesExist : boolean = await checkCollection(collectionName);
+
+        //logic executed if the collection doesn't exist
+        if (!doesExist) {
+            console.log("[setupInventory] Create collection");
+            await pb.collections.create({
+                type: "base",
+                name: collectionName,
+                fields: [
+                    {
+                        name: "name",
+                        type: "text",
+                    },
+                    {
+                        name: "desc",
+                        type: "text",
+                    },
+                    {
+                        name: "amount",
+                        type: "number",
+                    },
+                ]
+            })
+        } else {
+            console.log("[setupInventory] Truncate collection");
+            await pb.collections.truncate(collectionName)
+        }
+
+        return;
+    } catch (e) {
+        console.log("[setupInventory] Failed")
+        return e;
+    }
 }
 
+async function setupEntity(id: string) {
+    try {
+        const collectionName : string = "Entity_"+id;
+        const doesExist : boolean = await checkCollection(collectionName);
+
+        //logic executed if the collection doesn't exist
+        if (!doesExist) {
+            console.log("[setupEntity] Create collection");
+            await pb.collections.create({
+                type: "base",
+                name: collectionName,
+                fields: [
+                    {
+                        name: "name",
+                        type: "text",
+                    },
+                    {
+                        name: "desc",
+                        type: "text",
+                    },
+                    {
+                        name: "currentHP",
+                        type: "number",
+                    },
+                ]
+            })
+        } else {
+            console.log("[setupEntity] Truncate collection");
+            await pb.collections.truncate(collectionName)
+        }
+
+        return;
+    } catch (e) {
+        console.log("[setupEntity] Failed")
+        return e;
+    }
+}
+
+//helper returning a boolean value based on if a collection exist or not given its name
+async function checkCollection(collectionName : string) : Promise<boolean> {
+    try {
+        await pb.collections.getOne(collectionName);
+        return true;
+    } catch {
+        return false;
+    }
+}
