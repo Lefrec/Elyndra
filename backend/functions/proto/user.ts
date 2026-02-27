@@ -1,4 +1,4 @@
-import Pocketbase,{ type CollectionModel } from "pocketbase";
+import Pocketbase from "pocketbase";
 const pb = new Pocketbase("http://127.0.0.1:8090/");
 
 const PB_ADMIN_EMAIL = import.meta.env.PB_ADMIN_EMAIL!;
@@ -93,6 +93,11 @@ async function setupInventory(id: string) {
             await pb.collections.create({
                 type: "base",
                 name: collectionName,
+                listRule:   "",
+                viewRule:   "@request.auth.id != ''",
+                createRule: "@request.auth.id != ''",
+                updateRule: "@request.auth.id != ''",
+                deleteRule: null,
                 fields: [
                     {
                         name: "name",
