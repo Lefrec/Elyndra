@@ -1,10 +1,11 @@
 import Pocketbase from "pocketbase";
+import { setupGamestate } from "./gamestate";
 const pb = new Pocketbase("http://127.0.0.1:8090/");
 
 const PB_ADMIN_EMAIL = import.meta.env.PB_ADMIN_EMAIL!;
 const PB_ADMIN_PASSWORD = import.meta.env.PB_ADMIN_PASSWORD!;
 
-export async function authAdmin() {
+async function authAdmin() {
   await pb.collection("_superusers").authWithPassword(PB_ADMIN_EMAIL,PB_ADMIN_PASSWORD);
 }
 
@@ -14,10 +15,25 @@ export async function setupCollections(id: string) {
         await setupPlayer(id);
         await setupInventory(id);
         await setupEntity(id);
+        await setupGamestate(id);
         pb.authStore.clear();
         return;
     } catch (e) {
         console.log("[setupCollections] Failed")
+        return e;
+    }
+}
+
+export async function deleteCollections(id: string) {
+    try {
+        await authAdmin();
+        await deletePlayer(id);
+        await deleteInventory(id);
+        await deleteEntity(id);
+        pb.authStore.clear();
+        return;
+    } catch (e) {
+        console.log("[deleteCollections] Failed")
         return e;
     }
 }
@@ -73,11 +89,33 @@ async function setupPlayer(id: string) {
                     },
                 ]
             })
+        } else {
+            console.log("[setupPlayer] Truncate collection");
+            await pb.collections.truncate(collectionName)
         }
 
         return;
     } catch (e) {
         console.log("[setupPlayer] Failed")
+        return e;
+    }
+}
+
+async function deletePlayer(id: string) {
+    try {
+        const collectionName : string = "Player_"+id;
+        const doesExist : boolean = await checkCollection(collectionName);
+
+        if (!doesExist) {
+            console.log("[deletePlayer] Collection doesn't exist");
+        } else {
+            await pb.collections.delete(collectionName);
+            console.log("[deletePlayer] Deleted collection");
+        }
+
+        return;
+    } catch (e) {
+        console.log("[deletePlayer] Failed")
         return e;
     }
 }
@@ -93,11 +131,6 @@ async function setupInventory(id: string) {
             await pb.collections.create({
                 type: "base",
                 name: collectionName,
-                listRule:   "",
-                viewRule:   "@request.auth.id != ''",
-                createRule: "@request.auth.id != ''",
-                updateRule: "@request.auth.id != ''",
-                deleteRule: null,
                 fields: [
                     {
                         name: "name",
@@ -121,6 +154,25 @@ async function setupInventory(id: string) {
         return;
     } catch (e) {
         console.log("[setupInventory] Failed")
+        return e;
+    }
+}
+
+async function deleteInventory(id: string) {
+    try {
+        const collectionName : string = "Inventory_"+id;
+        const doesExist : boolean = await checkCollection(collectionName);
+
+        if (!doesExist) {
+            console.log("[deleteInventory] Collection doesn't exist");
+        } else {
+            await pb.collections.delete(collectionName);
+            console.log("[deleteInventory] Deleted collection");
+        }
+
+        return;
+    } catch (e) {
+        console.log("[deleteInventory] Failed")
         return e;
     }
 }
@@ -159,6 +211,25 @@ async function setupEntity(id: string) {
         return;
     } catch (e) {
         console.log("[setupEntity] Failed")
+        return e;
+    }
+}
+
+async function deleteEntity(id: string) {
+    try {
+        const collectionName : string = "Entity_"+id;
+        const doesExist : boolean = await checkCollection(collectionName);
+
+        if (!doesExist) {
+            console.log("[deleteEntity] Collection doesn't exist");
+        } else {
+            await pb.collections.delete(collectionName);
+            console.log("[deleteEntity] Deleted collection");
+        }
+
+        return;
+    } catch (e) {
+        console.log("[deleteEntity] Failed")
         return e;
     }
 }

@@ -1,19 +1,19 @@
 import { type APIRoute } from "astro";
-import { setupCollections } from "../../../../backend/functions/proto/user";
+import { addGamestate, deleteGamestate, listCollections, listGamestate } from "../../../../backend/functions/proto/gamestate";
 
 export const POST: APIRoute = async ({locals, request}) => {
     try {
-        console.log("[setupCollections]");
+        console.log("[testFunction]");
         const id = locals.pb.authStore.record?.id;
         if (id) {
-            await setupCollections(id);
+            await deleteGamestate(id);
             return new Response(
-                JSON.stringify({ reply: "Collections set up correctly" }),
+                JSON.stringify({ reply: "Test function correctly" }),
                 { status: 200, headers: { "Content-Type": "application/json" } },
             );
         } else {
             return new Response(
-                JSON.stringify({ reply: "You must be connected to set up collections" }),
+                JSON.stringify({ reply: "You must be connected" }),
                 { status: 400, headers: { "Content-Type": "application/json" } },
             );
         }
