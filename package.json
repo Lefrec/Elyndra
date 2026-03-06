@@ -13,7 +13,7 @@
   "dependencies": {
     "@perplexity-ai/perplexity_ai": "^0.16.0",
     "@tailwindcss/vite": "^4.1.18",
-    "astro": "^5.16.9",
+    "astro": "^5.18.0",
     "openai": "^6.10.0",
     "pocketbase": "^0.26.6",
     "tailwindcss": "^4.1.18",
