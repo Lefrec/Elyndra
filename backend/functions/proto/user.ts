@@ -58,7 +58,7 @@ async function setupPlayer(id: string) {
                     {
                         name: "class",
                         type: "select",
-                        values: ["knight","mage"],
+                        values: ["chevalier","mage","alchimiste","ombre"],
                     },
                     {
                         name: "maxHP",
@@ -69,19 +69,19 @@ async function setupPlayer(id: string) {
                         type: "number",
                     },
                     {
-                        name: "str",
+                        name: "for",
                         type: "number",
                     },
                     {
-                        name: "dex",
+                        name: "def",
                         type: "number",
                     },
                     {
-                        name: "con",
+                        name: "mag",
                         type: "number",
                     },
                     {
-                        name: "int",
+                        name: "agi",
                         type: "number",
                     },
                     {

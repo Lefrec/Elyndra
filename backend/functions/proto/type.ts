@@ -12,13 +12,13 @@ export type Entity = {
 
 export type Player = {
     name?: string;
-    class?: ['Knight','Mage'];
+    class?: ['chevalier','mage','alchimiste','ombre'];
     maxHP?: number;
     currentHP?: number;
-    str?: number;
-    dex?: number;
-    con?: number;
-    int?: number;
+    for?: number;
+    def?: number;
+    mag?: number;
+    agi?: number;
     isCurrent?: boolean;
 }
 
