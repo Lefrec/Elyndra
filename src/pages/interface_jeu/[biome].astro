@@ -123,24 +123,6 @@ const currentBiome =
     </head>
 
     <div class="min-h-screen bg-neutral-950">
-        <!-- Bandeau d'incitation à la connexion -->
-        <div class="w-full flex justify-center">
-            <div
-                class="h-11 px-3 py-5 bg-zinc-800/75 rounded-bl-2xl rounded-br-2xl inline-flex justify-center items-center overflow-hidden"
-            >
-                <a
-                    href="/login"
-                    class="justify-start text-Or-clair text-sm font-normal underline leading-5"
-                >
-                    Connectez
-                </a>
-                <div
-                    class="justify-start text-white/60 text-sm font-normal leading-5"
-                >
-                    -vous pour sauvegarder votre partie
-                </div>
-            </div>
-        </div>
 
         <!-- En-tête du biome -->
         <header
@@ -350,50 +332,20 @@ const currentBiome =
                     </li>
                     <li>
                         <button
+                            id="save-btn"
                             class="w-full text-left px-4 py-3 text-white hover:text-Or-clair hover:bg-zinc-900 rounded transition-colors"
                         >
-                            💾 Sauvegarder
+                            Sauvegarder
                         </button>
                     </li>
                     <li>
                         <button
                             class="w-full text-left px-4 py-3 text-white hover:text-Or-clair hover:bg-zinc-900 rounded transition-colors"
                         >
-                            ⚙️ Paramètres
+                            Paramètres
                         </button>
                     </li>
                 </ul>
-
-                <!-- Biomes disponibles -->
-                <div class="mt-8 pt-6 border-t border-Or-clair/30">
-                    <h3 class="text-Or-clair text-lg mb-4">Biomes</h3>
-                    <div class="space-y-2">
-                        <a
-                            href="/interface_jeu/lunel"
-                            class="block px-4 py-2 text-green-300 hover:bg-green-950/50 rounded transition-colors text-sm"
-                        >
-                            🌳 Lunel
-                        </a>
-                        <a
-                            href="/interface_jeu/solarys"
-                            class="block px-4 py-2 text-orange-300 hover:bg-orange-950/50 rounded transition-colors text-sm"
-                        >
-                            🏜️ Solarys
-                        </a>
-                        <a
-                            href="/interface_jeu/auralis"
-                            class="block px-4 py-2 text-blue-300 hover:bg-blue-950/50 rounded transition-colors text-sm"
-                        >
-                            ❄️ Auralis
-                        </a>
-                        <a
-                            href="/interface_jeu/elyndra"
-                            class="block px-4 py-2 text-purple-300 hover:bg-purple-950/50 rounded transition-colors text-sm"
-                        >
-                            🏛️ Élyndra
-                        </a>
-                    </div>
-                </div>
 
                 <!-- Retour -->
                 <div class="mt-8 pt-6 border-t border-Or-clair/30">
@@ -942,6 +894,35 @@ const currentBiome =
         </main>
     </div>
 
+    <!-- Toast sauvegarde -->
+    <div
+        id="save-toast"
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-neutral-900 border border-[#FFE9B5]/50 rounded-[10px] text-[#FFE9B5] text-sm font-body tracking-wide shadow-lg opacity-0 pointer-events-none transition-opacity duration-300"
+    ></div>
+
+    <!-- Modal reprendre la partie -->
+    <div
+        id="resume-modal"
+        class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity duration-300"
+    >
+        <div class="bg-neutral-950 border border-[#FFE9B5]/50 rounded-[10px] p-8 max-w-md w-full mx-4 text-center space-y-6">
+            <h3 class="text-[#FFE9B5] text-xl font-heading2 tracking-widest uppercase">Partie sauvegardée</h3>
+            <p class="text-white/70 text-sm font-body leading-relaxed">
+                Une aventure précédente a été trouvée dans ce biome.<br/>Souhaitez-vous la reprendre ?
+            </p>
+            <div class="flex gap-4 justify-center">
+                <button
+                    id="resume-yes"
+                    class="px-6 py-3 bg-elyndra-3 rounded-[10px] text-sm font-semibold hover:opacity-90 transition-opacity"
+                >Reprendre</button>
+                <button
+                    id="resume-no"
+                    class="px-6 py-3 bg-zinc-800 border border-white/20 rounded-[10px] text-sm font-semibold hover:bg-zinc-700 transition-colors"
+                >Nouvelle partie</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Script pour l'interface IA -->
     <script define:vars={{ biomeData: currentBiome, biomeName: biome }}>
         // ============ GESTION DU MENU HAMBURGER ============
@@ -1160,8 +1141,73 @@ const currentBiome =
             }
         });
 
+        // ============ SAUVEGARDE / CHARGEMENT ============
+        const saveBtn     = document.getElementById("save-btn");
+        const saveToast   = document.getElementById("save-toast");
+        const resumeModal = document.getElementById("resume-modal");
+        const resumeYes   = document.getElementById("resume-yes");
+        const resumeNo    = document.getElementById("resume-no");
+
+        const role = new URLSearchParams(window.location.search).get("role") ?? "";
+
+        let savedMessages = null;
+
+        function showToast(text) {
+            saveToast.textContent = text;
+            saveToast.classList.remove("opacity-0");
+            setTimeout(() => saveToast.classList.add("opacity-0"), 2500);
+        }
+
+        // Bouton Sauvegarder
+        saveBtn?.addEventListener("click", async () => {
+            try {
+                const res = await fetch("/api/game/save", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ biome: biomeName, role, messages }),
+                });
+                showToast(res.ok ? "✓ Partie sauvegardée" : "✗ Erreur lors de la sauvegarde");
+                if (res.ok) toggleMenu();
+            } catch {
+                showToast("✗ Erreur lors de la sauvegarde");
+            }
+        });
+
+        // Vérifier si une sauvegarde existe au chargement
+        async function checkSave() {
+            try {
+                const res  = await fetch(`/api/game/load?biome=${biomeName}`);
+                const data = await res.json();
+
+                if (data.save?.messages?.length > 1) {
+                    savedMessages = data.save.messages;
+                    resumeModal.classList.remove("opacity-0", "pointer-events-none");
+                } else {
+                    startGame();
+                }
+            } catch {
+                startGame();
+            }
+        }
+
+        // Reprendre la partie sauvegardée
+        resumeYes?.addEventListener("click", () => {
+            resumeModal.classList.add("opacity-0", "pointer-events-none");
+            messages.length = 0;
+            savedMessages.forEach((m) => messages.push(m));
+            messages
+                .filter((m) => m.role !== "system")
+                .forEach((m) => addMessage(m.role, m.content));
+        });
+
+        // Nouvelle partie
+        resumeNo?.addEventListener("click", () => {
+            resumeModal.classList.add("opacity-0", "pointer-events-none");
+            startGame();
+        });
+
         // Démarrer le jeu au chargement
-        startGame();
+        checkSave();
     </script>
 
 

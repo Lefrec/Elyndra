@@ -10,6 +10,27 @@ import ombreImage from "../assets/ombre.webp";
 ---
 
 <Layout>
+    <!-- BANDEAU FLOTTANT  -->
+    <div id="promo-banner" class="fixed top-0 left-0 right-0 z-50 flex items-center justify-center gap-4 px-4 py-3 bg-gradient-to-r from-[#110224] via-[#2d0f4e] to-[#110224] border-b border-[#FFE9B5]/30 shadow-lg shadow-black/40">
+        <span class="text-[#FFE9B5] text-sm md:text-base font-medium tracking-wide">
+            🎁 Inscris-toi maintenant et reçois <strong>100 crédits de bienvenue</strong>
+        </span>
+        <a
+            href="/login"
+            class="shrink-0 px-4 py-1.5 bg-[#612D53] rounded-[8px] text-sm font-semibold hover:opacity-90 transition-opacity whitespace-nowrap"
+        >
+            S'inscrire
+        </a>
+        <button
+            id="close-banner"
+            aria-label="Fermer le bandeau"
+            class="absolute right-4 text-[#FFE9B5]/60 hover:text-[#FFE9B5] transition-colors text-lg leading-none"
+        >
+            ✕
+        </button>
+    </div>
+    <div id="promo-spacer" class="h-[52px]"></div>
+
     <!-- Hero -->
     <section class="hero flex items-center justify-center">
         <div class="w-full relative">
@@ -463,3 +484,14 @@ import ombreImage from "../assets/ombre.webp";
         </div>
     </section>
 </Layout>
+
+<script>
+    const banner  = document.getElementById('promo-banner');
+    const spacer  = document.getElementById('promo-spacer');
+    const closeBtn = document.getElementById('close-banner');
+
+    closeBtn?.addEventListener('click', () => {
+        banner?.remove();
+        spacer?.remove();
+    });
+</script>

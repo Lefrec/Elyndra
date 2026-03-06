@@ -1,56 +1,107 @@
 ---
 ---
 
-<header class="bg-black backdrop-blur-sm px-8 py-2 sticky top-0 z-10 w-full">
-    <div
-        class="h-16 bg-black px-20 inline-flex justify-center items-center gap-52 overflow-hidden"
-    >
-        <a href="/" class="hover:opacity-80">
-            <h1
-                class="justify-center text-2xl font-bold font-heading text-elyndra-gradient pr-5"
-            >
+<header class="bg-black backdrop-blur-sm px-4 md:px-8 py-2 sticky top-0 z-50 w-full border-b border-[#FFE9B5]/10">
+    <div class="max-w-7xl mx-auto h-16 flex justify-between items-center">
+
+        <!-- Logo -->
+        <a href="/" class="hover:opacity-80 shrink-0">
+            <h1 class="text-2xl font-bold font-heading text-elyndra-gradient">
                 ELYNDRA
             </h1>
         </a>
-        <nav>
-            <ul class="flex ml-10 gap-30 items-center">
+
+        <!-- Nav desktop -->
+        <nav class="hidden md:flex items-center gap-10">
+            <ul class="flex items-center gap-10">
                 <li>
-                    <a href="/choixbiome" class="hover:underline font-heading"
-                        >Le Jeu</a>
+                    <a href="/choixbiome" class="hover:underline font-heading text-sm tracking-widest">Le Jeu</a>
                 </li>
                 <li>
-                    <a href="/a_propos" class="hover:underline font-heading"
-                        >À Propos</a
-                    >
+                    <a href="/a_propos" class="hover:underline font-heading text-sm tracking-widest">À Propos</a>
                 </li>
                 <li>
-                    <a href="/contact" class="hover:underline font-heading"
-                        >Contact</a>
+                    <a href="/contact" class="hover:underline font-heading text-sm tracking-widest">Contact</a>
                 </li>
-                <li class="ml-45">
+                <li>
                     <a href="/login" class="hover:opacity-80">
-                        <svg
-                            width="28"
-                            height="28"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            ><path
-                                d="M28.195 29.653s0-1.459-.487-3.403c-.588-2.356-1.944-3.889-4.86-3.889H12.152c-2.917 0-4.273 1.533-4.861 3.889-.486 1.944-.486 3.403-.486 3.403h21.389zM12.639 12.639c0 1.81.263 3.796.972 4.861.905 1.358 2.44 1.944 3.89 1.944 1.504 0 2.982-.586 3.888-1.944.71-1.065.972-3.05.972-4.861 0-1.358-.486-5.833-4.86-5.833-4.376 0-4.862 3.57-4.862 5.833z"
-                                fill="#D0CFCE"></path><path
-                                d="M28.195 29.167s0-.973-.487-2.917c-.588-2.356-1.944-3.889-4.86-3.889H12.152c-2.917 0-4.273 1.533-4.861 3.889-.486 1.944-.486 2.917-.486 2.917"
-                                stroke="#000"
-                                stroke-width=".5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"></path><path
-                                d="M12.639 12.639c0 1.81.262 3.796.972 4.861.905 1.358 2.44 1.944 3.889 1.944 1.505 0 2.983-.586 3.889-1.944.71-1.065.972-3.05.972-4.861 0-1.358-.486-5.833-4.861-5.833s-4.861 3.57-4.861 5.833z"
-                                stroke="#000"
-                                stroke-width=".5"
-                                stroke-linejoin="round"></path></svg
-                        >
+                        <svg width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M28.195 29.653s0-1.459-.487-3.403c-.588-2.356-1.944-3.889-4.86-3.889H12.152c-2.917 0-4.273 1.533-4.861 3.889-.486 1.944-.486 3.403-.486 3.403h21.389zM12.639 12.639c0 1.81.263 3.796.972 4.861.905 1.358 2.44 1.944 3.89 1.944 1.504 0 2.982-.586 3.888-1.944.71-1.065.972-3.05.972-4.861 0-1.358-.486-5.833-4.86-5.833-4.376 0-4.862 3.57-4.862 5.833z" fill="#D0CFCE"/>
+                            <path d="M28.195 29.167s0-.973-.487-2.917c-.588-2.356-1.944-3.889-4.86-3.889H12.152c-2.917 0-4.273 1.533-4.861 3.889-.486 1.944-.486 2.917-.486 2.917" stroke="#000" stroke-width=".5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12.639 12.639c0 1.81.262 3.796.972 4.861.905 1.358 2.44 1.944 3.889 1.944 1.505 0 2.983-.586 3.889-1.944.71-1.065.972-3.05.972-4.861 0-1.358-.486-5.833-4.861-5.833s-4.861 3.57-4.861 5.833z" stroke="#000" stroke-width=".5" stroke-linejoin="round"/>
+                        </svg>
                     </a>
                 </li>
             </ul>
         </nav>
+
+        <!-- Boutons mobile : login + hamburger -->
+        <div class="flex md:hidden items-center gap-4">
+            <a href="/login" class="hover:opacity-80">
+                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M28.195 29.653s0-1.459-.487-3.403c-.588-2.356-1.944-3.889-4.86-3.889H12.152c-2.917 0-4.273 1.533-4.861 3.889-.486 1.944-.486 3.403-.486 3.403h21.389zM12.639 12.639c0 1.81.263 3.796.972 4.861.905 1.358 2.44 1.944 3.89 1.944 1.504 0 2.982-.586 3.888-1.944.71-1.065.972-3.05.972-4.861 0-1.358-.486-5.833-4.86-5.833-4.376 0-4.862 3.57-4.862 5.833z" fill="#D0CFCE"/>
+                </svg>
+            </a>
+
+            <!-- Bouton hamburger -->
+            <button
+                id="menu-btn"
+                class="flex flex-col justify-center items-center gap-1.5 w-8 h-8 bg-transparent border-none cursor-pointer"
+                aria-label="Ouvrir le menu"
+            >
+                <span id="bar1" class="block w-6 h-0.5 bg-[#FFE9B5] transition-all duration-300"></span>
+                <span id="bar2" class="block w-6 h-0.5 bg-[#FFE9B5] transition-all duration-300"></span>
+                <span id="bar3" class="block w-6 h-0.5 bg-[#FFE9B5] transition-all duration-300"></span>
+            </button>
+        </div>
+
     </div>
+
+    <!-- Menu mobile déroulant -->
+    <div
+        id="mobile-menu"
+        class="md:hidden hidden flex-col gap-0 bg-black border-t border-[#FFE9B5]/10 overflow-hidden transition-all duration-300"
+    >
+        <nav class="px-4 py-6 flex flex-col gap-5">
+            <a href="/choixbiome" class="hover:text-[#FFE9B5] font-heading text-sm uppercase tracking-widest transition-colors">
+                Le Jeu
+            </a>
+            <a href="/a_propos" class="hover:text-[#FFE9B5] font-heading text-sm uppercase tracking-widest transition-colors">
+                À Propos
+            </a>
+            <a href="/contact" class="hover:text-[#FFE9B5] font-heading text-sm uppercase tracking-widest transition-colors">
+                Contact
+            </a>
+        </nav>
+    </div>
+
 </header>
 
+<script>
+    const menuBtn    = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const bar1       = document.getElementById('bar1');
+    const bar2       = document.getElementById('bar2');
+    const bar3       = document.getElementById('bar3');
+
+    let isOpen = false;
+
+    menuBtn?.addEventListener('click', () => {
+        isOpen = !isOpen;
+
+        // Affiche / cache le menu
+        mobileMenu?.classList.toggle('hidden', !isOpen);
+        mobileMenu?.classList.toggle('flex', isOpen);
+
+        // Animation hamburger → croix
+        if (isOpen) {
+            bar1?.classList.add('rotate-45', 'translate-y-2');
+            bar2?.classList.add('opacity-0');
+            bar3?.classList.add('-rotate-45', '-translate-y-2');
+        } else {
+            bar1?.classList.remove('rotate-45', 'translate-y-2');
+            bar2?.classList.remove('opacity-0');
+            bar3?.classList.remove('-rotate-45', '-translate-y-2');
+        }
+    });
+</script>
