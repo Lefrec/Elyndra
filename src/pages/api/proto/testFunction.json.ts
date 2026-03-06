@@ -1,12 +1,13 @@
 import { type APIRoute } from "astro";
-import { addGamestate, deleteGamestate, listCollections, listGamestate } from "../../../../backend/functions/proto/gamestate";
+import { addGamestate, deleteGamestate, getGamestateRAG, getLoreRAG, listCollections, listGamestate } from "../../../../backend/functions/proto/weaviate";
 
 export const POST: APIRoute = async ({locals, request}) => {
     try {
-        console.log("[testFunction]");
+        console.log("[testFunction] Testing some function");
         const id = locals.pb.authStore.record?.id;
         if (id) {
-            await deleteGamestate(id);
+            const RAG = await getGamestateRAG(id, 'Dieu de la lune', 1);
+            console.log("[testFunction] Result : ", RAG);
             return new Response(
                 JSON.stringify({ reply: "Test function correctly" }),
                 { status: 200, headers: { "Content-Type": "application/json" } },

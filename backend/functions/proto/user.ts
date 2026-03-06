@@ -1,5 +1,5 @@
 import Pocketbase from "pocketbase";
-import { setupGamestate } from "./gamestate";
+import { deleteGamestate, setupGamestate } from "./weaviate";
 const pb = new Pocketbase("http://127.0.0.1:8090/");
 
 const PB_ADMIN_EMAIL = import.meta.env.PB_ADMIN_EMAIL!;
@@ -30,6 +30,7 @@ export async function deleteCollections(id: string) {
         await deletePlayer(id);
         await deleteInventory(id);
         await deleteEntity(id);
+        await deleteGamestate(id);
         pb.authStore.clear();
         return;
     } catch (e) {
