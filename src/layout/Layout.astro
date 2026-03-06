@@ -2,6 +2,12 @@
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import "/src/styles/global.css";
+
+interface Props {
+    showBanner?: boolean;
+    title?: string;
+}
+const { showBanner = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -12,7 +18,7 @@ import "/src/styles/global.css";
     <title>Elyndra</title>
   </head>
   <body>
-    <Header />
+    <Header bannerOffset={showBanner} />
     <main class="flex-1 min-w-0">
       <slot />
     </main>

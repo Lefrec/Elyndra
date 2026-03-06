@@ -7,29 +7,33 @@ import chevalierImage from "../assets/chevalier.webp";
 import mageImage from "../assets/mage.webp";
 import alchimisteImage from "../assets/alchimiste.webp";
 import ombreImage from "../assets/ombre.webp";
+
+const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
 ---
 
-<Layout>
+<Layout showBanner={!isLoggedIn}>
     <!-- BANDEAU FLOTTANT  -->
-    <div id="promo-banner" class="fixed top-0 left-0 right-0 z-50 flex items-center justify-center gap-4 px-4 py-3 bg-gradient-to-r from-[#110224] via-[#2d0f4e] to-[#110224] border-b border-[#FFE9B5]/30 shadow-lg shadow-black/40">
-        <span class="text-[#FFE9B5] text-sm md:text-base font-medium tracking-wide">
-            🎁 Inscris-toi maintenant et reçois <strong>100 crédits de bienvenue</strong>
-        </span>
-        <a
-            href="/login"
-            class="shrink-0 px-4 py-1.5 bg-[#612D53] rounded-[8px] text-sm font-semibold hover:opacity-90 transition-opacity whitespace-nowrap"
-        >
-            S'inscrire
-        </a>
-        <button
-            id="close-banner"
-            aria-label="Fermer le bandeau"
-            class="absolute right-4 text-[#FFE9B5]/60 hover:text-[#FFE9B5] transition-colors text-lg leading-none"
-        >
-            ✕
-        </button>
-    </div>
-    <div id="promo-spacer" class="h-[52px]"></div>
+    {!isLoggedIn && (
+        <div id="promo-banner" class="fixed top-0 left-0 right-0 z-[60] flex items-center justify-center gap-4 px-4 py-3 bg-gradient-to-r from-[#110224] via-[#2d0f4e] to-[#110224] border-b border-[#FFE9B5]/30 shadow-lg shadow-black/40">
+            <span class="text-[#FFE9B5] text-sm md:text-base font-medium tracking-wide">
+                🎁 Inscris-toi maintenant et reçois <strong>100 crédits de bienvenue</strong>
+            </span>
+            <a
+                href="/login"
+                class="shrink-0 px-4 py-1.5 bg-[#612D53] rounded-[8px] text-sm font-semibold hover:opacity-90 transition-opacity whitespace-nowrap"
+            >
+                S'inscrire
+            </a>
+            <button
+                id="close-banner"
+                aria-label="Fermer le bandeau"
+                class="absolute right-4 text-[#FFE9B5]/60 hover:text-[#FFE9B5] transition-colors text-lg leading-none"
+            >
+                ✕
+            </button>
+        </div>
+        <div id="promo-spacer" class="h-[52px]"></div>
+    )}
 
     <!-- Hero -->
     <section class="hero flex items-center justify-center">
@@ -138,18 +142,25 @@ import ombreImage from "../assets/ombre.webp";
                         Commencer à jouer
                     </a>
                     <a
-                        href="/understand_game"
+                        href="#explication"
                         class="bg-gradient-to-t from-neutral-400 to-white rounded-[10px] hover:bg-gray-300 text-gray-900 px-8 py-3 hover:opacity-90 items-center inline-flex justify-center gap-3 overflow-hidden"
                     >
                         Comprendre le jeu
                     </a>
+                </div>
+
+                <!-- Incentives inscription -->
+                <div class="flex flex-wrap justify-center gap-x-8 gap-y-2 mt-2">
+                    <span class="text-sm text-[#FFE9B5]/80 tracking-wide">🎁 150 aventures dès ton premier voyage !</span>
+                    <span class="text-sm text-[#FFE9B5]/80 tracking-wide">✨ + 50 crédits gratuits chaque jour</span>
+                    <span class="text-sm text-[#FFE9B5]/80 tracking-wide">👥 + 50 crédits par ami invité</span>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Explication du jeu -->
-    <section>
+    <section id="explication">
         <div class="max-w-7xl mx-auto">
             <!-- Titre avec décoration -->
             <div class="flex flex-col items-center gap-10 mb-16">
@@ -493,5 +504,10 @@ import ombreImage from "../assets/ombre.webp";
     closeBtn?.addEventListener('click', () => {
         banner?.remove();
         spacer?.remove();
+        const header = document.getElementById('site-header');
+        if (header) {
+            header.classList.remove('top-[52px]');
+            header.classList.add('top-0');
+        }
     });
 </script>

@@ -32,6 +32,15 @@ export const POST: APIRoute = async ({ request, cookies }) => {
             maxAge: SESSION_MAX_AGE,
         });
 
+        // Stocker le pseudo dans un cookie lisible (non httpOnly)
+        const pseudo = (authData.record as Record<string, unknown>)?.pseudo as string ?? "";
+        cookies.set("elyndra_pseudo", pseudo, {
+            httpOnly: false,
+            sameSite: "lax",
+            path: "/",
+            maxAge: SESSION_MAX_AGE,
+        });
+
         return new Response(JSON.stringify({ success: true }), {
             status: 200,
             headers: { "Content-Type": "application/json" },

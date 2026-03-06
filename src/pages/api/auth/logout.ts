@@ -13,6 +13,7 @@ export const POST: APIRoute = ({ cookies }) => {
     }
 
     cookies.delete("elyndra_session", { path: "/" });
+    cookies.delete("elyndra_pseudo", { path: "/" });
 
     return new Response(JSON.stringify({ success: true }), {
         status: 200,

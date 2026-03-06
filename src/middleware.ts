@@ -15,7 +15,6 @@ function getUserIdFromToken(token: string): string | null {
 // Routes nécessitant une authentification
 const PROTECTED_ROUTES = [
     "/interface_jeu",
-    "/choixbiome",
     "/start_game",
 ];
 
@@ -28,7 +27,8 @@ export const onRequest = defineMiddleware(async ({ cookies, url, redirect, local
         const token = cookies.get("elyndra_session")?.value;
 
         if (!token) {
-            return redirect(`/login?redirect=${encodeURIComponent(url.pathname)}`);
+            const fullPath = url.pathname + url.search;
+            return redirect(`/login?redirect=${encodeURIComponent(fullPath)}`);
         }
 
         // Vérifier le token auprès de PocketBase
@@ -42,7 +42,8 @@ export const onRequest = defineMiddleware(async ({ cookies, url, redirect, local
         } catch {
             // Token expiré ou invalide → on renvoie vers le login
             cookies.delete("elyndra_session", { path: "/" });
-            return redirect(`/login?redirect=${encodeURIComponent(url.pathname)}`);
+            const fullPath = url.pathname + url.search;
+            return redirect(`/login?redirect=${encodeURIComponent(fullPath)}`);
         }
     }
 

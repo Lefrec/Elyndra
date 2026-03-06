@@ -10,6 +10,8 @@ import mage from "../assets/mage.webp";
 import alchimiste from "../assets/alchimiste.webp";
 import ombre from "../assets/ombre.webp";
 
+const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
+
 const biomes = [
     { id: 1, title: "Le Cœur Sylvestre de Lunel", description: "Une jungle oppressante avec des cités perchées et des dangers au sol", image: lunel, link: "/interface_jeu/lunel" },
     { id: 2, title: "Les Dunes ardentes de Solarys", description: "Une immensité aride avec un oasis solitaire et un monde souterrain", image: solarys, link: "/interface_jeu/solarys" },
@@ -75,7 +77,9 @@ const roles = [
     <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- CAROUSEL — 3 panneaux                                       -->
     <!-- ═══════════════════════════════════════════════════════════ -->
-    <div id="carousel-window" class="w-full overflow-hidden relative">
+    <!-- Vous êtes prêt à jouer --> 
+    <!-- data-logged utilisé par le script pour décider redirect vs navigation-->
+    <div id="carousel-window" class="w-full overflow-hidden relative" data-logged={isLoggedIn ? "1" : "0"}>
         <div
             id="steps-track"
             class="flex transition-transform duration-700 ease-in-out"
@@ -299,6 +303,8 @@ const roles = [
     const recapBiome = document.getElementById('recap-biome') as HTMLElement;
     const recapRole  = document.getElementById('recap-role') as HTMLElement;
 
+    const isLoggedIn = win.dataset.logged === '1';
+
     let biomeLink = '';
     let biomeName = '';
 
@@ -328,9 +334,21 @@ const roles = [
             const roleName = card.dataset.roleTitle ?? '';
             recapBiome.textContent = biomeName;
             recapRole.textContent  = roleName;
-            playBtn.href = `${biomeLink}?role=${encodeURIComponent(roleName)}`;
+            const dest = `${biomeLink}?role=${encodeURIComponent(roleName)}`;
+            playBtn.href = dest;
+            // Stocker la destination pour l'intercepteur
+            playBtn.dataset.dest = dest;
             goToStep(2);
         });
+    });
+
+    // Intercepter le clic sur "Commencer le jeu"
+    playBtn.addEventListener('click', (e) => {
+        if (!isLoggedIn) {
+            e.preventDefault();
+            const dest = playBtn.dataset.dest ?? playBtn.href;
+            window.location.href = `/login?redirect=${encodeURIComponent(dest)}`;
+        }
     });
 
     document.getElementById('role-back-btn')?.addEventListener('click', () => goToStep(0));
