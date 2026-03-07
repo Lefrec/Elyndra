@@ -1,4 +1,4 @@
-import weaviate, { type WeaviateClient, dataType, generativeParameters, vectors } from 'weaviate-client';
+import weaviate, { type WeaviateClient, dataType, vectors } from 'weaviate-client';
 
 //connect to local Weaviate DB
 const client: WeaviateClient = await weaviate.connectToLocal();
