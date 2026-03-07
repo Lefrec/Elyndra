@@ -1,0 +1,55 @@
+---
+import pb from "pocketbase";
+import ProtoLayout from "../../layout/ProtoLayout.astro";
+
+export const prerender = false;
+
+if (Astro.request.method === "POST") {
+const data = await Astro.request.formData();
+if (data.has("deconnexion")){
+    Astro.locals.pb.authStore.clear();
+    Astro.response.headers.append(
+      "set-cookie",
+      Astro.locals.pb.authStore.exportToCookie()
+    );
+}
+  try {
+    const email = data.get("email") as string;
+    const password = data.get("password") as string;
+    console.log({ email, password });
+    await Astro.locals.pb.collection("users").authWithPassword(email, password);
+    Astro.response.headers.append(
+      "set-cookie",
+      Astro.locals.pb.authStore.exportToCookie()
+    );
+
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}
+---
+
+<ProtoLayout>
+    <h1>Authentification</h1>
+    {
+        Astro.locals.pb.authStore.isValid ? (
+            <h1>Connecté en tant que {Astro.locals.pb.authStore.record?.name}</h1>
+            <form method="post">
+                <input type="hidden" value="1" name="deconnexion" />
+                <button>Se déconnecter</button>
+            </form>
+        ) : (
+            <form method="post">
+            <label>
+                Email : <input type="email" name="email" />
+            </label>
+            <label>
+                Mot de passe : <input type="password" name="password" minlength="5" />
+            </label>
+            <button>Submit</button>
+            </form>
+        )
+    }
+</ProtoLayout>

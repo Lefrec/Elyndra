@@ -1,0 +1,60 @@
+---
+import ProtoLayout from "../../layout/ProtoLayout.astro";
+
+export const prerender = false;
+---
+
+<ProtoLayout>
+  <h1>Prototype</h1>
+  <p>
+    {
+      Astro.locals.pb.authStore.isValid
+        ? "Connecté en tant que " + Astro.locals.pb.authStore.record?.name
+        : "Pas connecté"
+    }
+  </p>
+  <button id="setupBtn">Set up collections</button>
+  <button id="deleteBtn">Delete collections</button>
+  <button id="testBtn">Test function</button>
+</ProtoLayout>
+
+<script>
+  const setupBtn = document.getElementById(
+    "setupBtn",
+  ) as HTMLButtonElement | null;
+
+  if (setupBtn) {
+    setupBtn.addEventListener("click", async (e) => {
+      const res = await fetch("/api/proto/setupCollections.json", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+    });
+  }
+
+  const deleteBtn = document.getElementById(
+    "deleteBtn",
+  ) as HTMLButtonElement | null;
+
+  if (deleteBtn) {
+    deleteBtn.addEventListener("click", async (e) => {
+      const res = await fetch("/api/proto/deleteCollections.json", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+    });
+  }
+
+  const testBtn = document.getElementById(
+    "testBtn",
+  ) as HTMLButtonElement | null;
+
+  if (testBtn) {
+    testBtn.addEventListener("click", async (e) => {
+      const res = await fetch("/api/proto/testFunction.json", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+    });
+  }
+</script>

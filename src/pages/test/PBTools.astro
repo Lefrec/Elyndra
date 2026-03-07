@@ -1,0 +1,99 @@
+---
+import Layout from "../../layout/Layout.astro";
+---
+
+<Layout>
+  <div class="flex flex-col w-1/2 h-screen bg-slate-800">
+    <div class="flex flex-col h-full justify-between p-8 overflow-hidden">
+      <div>
+        <h1>Test Tools Pocketbase</h1>
+        <div
+          id="conversation"
+          class="mt-4 overflow-y-auto max-h-96 border border-gray-600 rounded-lg p-4 bg-slate-900"
+        >
+        </div>
+      </div>
+    </div>
+    <div class="flex w-full p-4 gap-4">
+      <input
+        class="w-full border border-white bg-slate-700 rounded-lg px-3 py-2"
+        type="text"
+        name="input"
+        id="input"
+      />
+      <button class="btn" id="button">Submit</button>
+    </div>
+  </div>
+
+  <!-- chat script -->
+  <script>
+    const button = document.getElementById(
+      "button",
+    ) as HTMLButtonElement | null;
+    const input = document.getElementById("input") as HTMLInputElement | null;
+    const conversation = document.getElementById(
+      "conversation",
+    ) as HTMLDivElement | null;
+
+    // Store conversation history
+    let messages: Array<{ role: string; content: string }> = [];
+
+    if (button && input && conversation) {
+      button.addEventListener("click", async () => {
+        const userMessage = input.value.trim();
+        if (!userMessage) return;
+
+        // Add user message to history
+        messages.push({ role: "user", content: userMessage });
+
+        // Display user message
+        const userDiv = document.createElement("div");
+        userDiv.className = "mb-2 text-blue-400";
+        userDiv.textContent = "You: " + userMessage;
+        conversation.appendChild(userDiv);
+
+        input.value = "";
+
+        const res = await fetch("/api/PBTools.json", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            messages: messages,
+          }),
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          const errorDiv = document.createElement("div");
+          errorDiv.className = "mb-2 text-red-400";
+          errorDiv.textContent = `Error ${res.status}: ${text}`;
+          conversation.appendChild(errorDiv);
+          return;
+        }
+
+        const data = await res.json();
+
+        // Add assistant message to history
+        messages.push({ role: "assistant", content: data.reply });
+
+        // Display assistant message
+        const assistantDiv = document.createElement("div");
+        assistantDiv.className = "mb-2 text-green-400";
+        assistantDiv.textContent = "Assistant: " + data.reply;
+        conversation.appendChild(assistantDiv);
+
+        // Auto-scroll to bottom
+        conversation.scrollTop = conversation.scrollHeight;
+      });
+
+      // Allow Enter key to submit
+      input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          button.click();
+        }
+      });
+    }
+  </script>
+</Layout>

@@ -24,6 +24,5 @@ pnpm-debug.log*
 .idea/
 
 # PocketBase
-backend/pocketbase_*/pocketbase.exe
-backend/pocketbase_*/pb_data/
+backend/pb_data/
 

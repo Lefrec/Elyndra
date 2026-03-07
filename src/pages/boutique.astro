@@ -1,0 +1,47 @@
+---
+import Layout from '../layout/Layout.astro';
+import CreditPackCard from '../components/CreditPackCard.astro';
+---
+<Layout title="Boutique - Elyndra" description="Découvrez nos packs de crédits pour profiter pleinement de votre expérience sur Elyndra. Rechargez vos crédits avec bonus et accédez à des fonctionnalités exclusives.">
+<div class="py-16 px-4 md:px-8 max-w-6xl mx-auto">
+  <div class="text-center mb-20">
+    <h1 class="text-4xl md:text-6xl font-black text-[#FFE9B5] mb-4">Packs de Crédits</h1>
+    <p class="text-[#9C9C9C] text-lg max-w-lg mx-auto">Rechargez vos crédits avec bonus</p>
+  </div>
+  
+  <div class="carousel-container overflow-x-auto pb-8 -mx-4 md:-mx-6 snap-x snap-mandatory scrollbar-hide">
+    <div class="flex gap-4 md:gap-6 lg:gap-8 px-4 md:px-6 snap-x snap-center">
+      
+      <CreditPackCard name="Starter" credits={500} price="4,99€" image="/src/assets/starter-pack.svg" />
+      <CreditPackCard name="Pack Standard" credits={1200} price="9,99€" image="/src/assets/pack-standard.svg" isPopular={true} />
+      <CreditPackCard name="Pack Premium" credits={2500} price="19,99€" image="/src/assets/pack-premium.svg" />
+      <CreditPackCard name="Pack Elite" credits={6000} price="44,99€" image="/src/assets/pack-elite.svg" />
+      
+    </div>
+  </div>
+</div>
+
+<style>
+  .carousel-container {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .carousel-container::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .credit-card {
+    flex: 0 0 280px;
+    max-width: 280px;
+    min-height: 320px;
+  }
+  
+  @media (max-width: 768px) {
+    .credit-card {
+      flex: 0 0 260px;
+      min-height: 280px;
+    }
+  }
+</style>
+</Layout>
