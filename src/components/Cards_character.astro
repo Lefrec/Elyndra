@@ -1,0 +1,31 @@
+---
+const { img, title, lieu, type, description } = Astro.props;
+---
+
+<div class="relative group">
+    <!-- Fond gradient horizontal (côtés) -->
+    <div class="absolute inset-0 bg-gradient-to-r from-amber-100/40 via-amber-100/10 to-amber-100/40 rounded-2xl"></div>
+    
+    <!-- Carte -->
+    <div class="relative bg-slate-950/80 rounded-2xl border border-amber-100/20 p-6 ">
+        <div class="flex gap-10">
+            <!-- Image à gauche -->
+            <div class="flex-shrink-0">
+                <img src={img} alt={title} class="w-40 h-40 object-contain rounded-lg" />
+            </div>
+            
+            <!-- Informations à droite -->
+            <div class="flex flex-col gap-3 flex-1">
+                <h3 class="text-2xl font-heading2 text-[#FFE9B5FF]">
+                    {title}
+                </h3>
+                <p class="text-sm font-body italic text-amber-200">
+                    {type} - {lieu}
+                </p>
+                <p class="text-base font-body leading-7 text-white">
+                    {description}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

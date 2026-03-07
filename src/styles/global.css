@@ -1,1 +1,90 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Volkhov:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cinzel&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Almendra:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import "tailwindcss";
+
+/* Priorité maximale : hors @layer, override le reset Tailwind */
+html {
+  scroll-behavior: smooth;
+}
+
+@theme  {
+  --font-heading: "Cinzel Decorative", serif;
+  --font-body: "Volkhov", serif;
+  --font-heading2: "Cinzel", serif;
+  --font-heading3: "Almendra", serif;
+}
+
+@layer base {
+  * {
+    @apply text-white;
+  }
+
+  html,
+  body {
+    @apply h-full;
+  }
+
+  h1 {
+    @apply font-heading;
+  }
+
+  h2,
+  h3,
+  h4
+   {
+    @apply font-heading2;
+  }
+
+  h5,
+  h6 {
+    @apply font-heading3;
+  }
+
+  p {
+    @apply font-body;
+  }
+
+  body {
+    @apply flex flex-col bg-[#090D13FF] font-body min-h-screen;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply rounded-lg;
+  }
+}
+
+@layer utilities {
+  .bg-elyndra-1 {
+    @apply bg-gradient-to-t from-amber-100 via-stone-400 to-stone-800;
+  }
+
+  @layer utilities {
+    .text-elyndra-gradient {
+      @apply text-transparent bg-clip-text bg-gradient-to-b from-[#FFE9B5] via-[#CBBA90] to-[#656246];
+    }
+  }
+
+  .bg-elyndra-3 {
+    @apply bg-gradient-to-t from-stone-800 to-yellow-100;
+  }
+
+  .text-Or-clair,
+  .border-Or-clair {
+    @apply text-[#FFE9B5FF];
+  }
+}
+
+@layer utilities {
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}

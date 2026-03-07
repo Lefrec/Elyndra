@@ -1,0 +1,139 @@
+---
+import Layout from "../layout/Layout.astro";
+---
+
+<Layout title="Connexion">
+    <div class="min-h-screen flex flex-col items-center justify-center py-16">
+        <!-- Titre -->
+        <h1
+            class="text-3xl md:text-4xl font-heading2 text-[#FFE9B5] tracking-[5px] mb-16"
+        >
+            CONNECTEZ-VOUS
+        </h1>
+
+        <!-- Container du formulaire -->
+        <div class="w-[536px] h-[528px] relative">
+            <!-- Bordure externe -->
+            <div
+                class="w-[536px] h-[536px] left-0 top-[-8px] absolute bg-[#353120] rounded-[10px]"
+            >
+            </div>
+            <!-- Fond du formulaire -->
+            <div
+                class="w-[501px] h-[504px] left-[18px] top-[8px] absolute bg-[#0f0f0f] rounded-[10px]"
+            >
+            </div>
+            <!-- Contenu du formulaire -->
+            <div
+                class="w-[501px] h-[504px] left-[18px] top-[8px] absolute inline-flex flex-col justify-center items-center gap-12"
+            >
+                <div class="h-64 flex flex-col justify-start items-start gap-7">
+                    <!-- Votre email -->
+                    <div class="w-72 h-28 relative">
+                        <label
+                            class="left-[0.50px] top-[0.25px] absolute text-white text-sm font-body leading-5"
+                            >Votre adresse-email</label
+                        >
+                        <input
+                            id="login-email"
+                            type="email"
+                            placeholder="Votre adresse-email"
+                            class="w-72 h-11 left-[0.50px] top-[33.25px] absolute bg-zinc-900 rounded-[5px] border border-[#FFE9B5]/30 px-4 text-white placeholder:text-gray-500 placeholder:text-xs focus:border-[#FFE9B5] focus:outline-none"
+                        />
+                    </div>
+                    <!-- Mot de passe -->
+                    <div class="w-72 h-28 relative">
+                        <label
+                            class="left-[0.50px] top-[0.25px] absolute text-white text-sm font-body leading-5"
+                            >Mot de passe</label
+                        >
+                        <input
+                            id="login-password"
+                            type="password"
+                            placeholder="Votre mot de passe"
+                            class="w-72 h-11 left-[0.50px] top-[33.25px] absolute bg-zinc-900 rounded-[5px] border border-[#FFE9B5]/30 px-4 text-white placeholder:text-gray-500 placeholder:text-xs focus:border-[#FFE9B5] focus:outline-none"
+                        />
+                    </div>
+                    <a
+                        href="/forgot_password"
+                        class="text-gray-400 text-xs font-body leading-5 hover:text-white transition-colors"
+                        >Mot de passe oublié ?</a
+                    >
+                </div>
+                <!-- Bouton Envoyer -->
+                <button
+                    id="login-btn"
+                    type="button"
+                    class="w-72 px-20 py-3 bg-[#FFE9B5] rounded-[5px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] inline-flex justify-center items-center gap-2.5 hover:bg-[#D9C69A] transition-colors disabled:opacity-50"
+                >
+                    <span class="text-gray-900 text-xl font-body font-semibold"
+                        >Se connecter</span
+                    >
+                </button>
+                <p id="login-error" class="text-red-400 text-xs text-center hidden"></p>
+                <!-- Lien inscription -->
+                <div
+                    class="text-center text-gray-400 text-xs font-body leading-5"
+                >
+                    Pas encore de compte ? <br />
+                    <a
+                        href="/register"
+                        class="text-white hover:text-[#FFE9B5] transition-colors"
+                        >Rejoignez l'aventure en cliquant ici</a
+                    >
+                </div>
+            </div>
+            <!-- Coins décoratifs -->
+            <div
+                class="w-7 h-8 left-[16.01px] top-0 absolute bg-[#353120] rounded-full"
+            >
+            </div>
+            <div
+                class="w-7 h-8 left-[10px] top-[486.92px] absolute bg-[#353120] rounded-full"
+            >
+            </div>
+            <div
+                class="w-7 h-8 left-[496.63px] top-0 absolute bg-[#353120] rounded-full"
+            >
+            </div>
+            <div
+                class="w-7 h-8 left-[496.63px] top-[488.37px] absolute bg-[#353120] rounded-full"
+            >
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script>
+    const btn      = document.getElementById('login-btn') as HTMLButtonElement;
+    const emailEl  = document.getElementById('login-email') as HTMLInputElement;
+    const pwdEl    = document.getElementById('login-password') as HTMLInputElement;
+    const errorEl  = document.getElementById('login-error') as HTMLParagraphElement;
+
+    btn.addEventListener('click', async () => {
+        errorEl.classList.add('hidden');
+        btn.disabled = true;
+
+        const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: emailEl.value, password: pwdEl.value }),
+        });
+
+        if (res.ok) {
+            // Redirige vers la page demandée ou vers le choix de biome
+            const params = new URLSearchParams(window.location.search);
+            window.location.href = params.get('redirect') || '/choixbiome';
+        } else {
+            const data = await res.json();
+            errorEl.textContent = data.error ?? 'Une erreur est survenue.';
+            errorEl.classList.remove('hidden');
+            btn.disabled = false;
+        }
+    });
+
+    // Soumettre avec Entrée
+    [emailEl, pwdEl].forEach(el =>
+        el.addEventListener('keydown', e => { if (e.key === 'Enter') btn.click(); })
+    );
+</script>
