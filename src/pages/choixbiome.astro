@@ -5,363 +5,164 @@ import lunel from "../assets/biomes/lunel.webp";
 import solarys from "../assets/biomes/solarys.webp";
 import auralis from "../assets/biomes/auralis.webp";
 import elyndra from "../assets/biomes/elyndra.webp";
-import chevalier from "../assets/chevalier.webp";
-import mage from "../assets/mage.webp";
-import alchimiste from "../assets/alchimiste.webp";
-import ombre from "../assets/ombre.webp";
-
-const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
 
 const biomes = [
-    { id: 1, title: "Le Cœur Sylvestre de Lunel", description: "Une jungle oppressante avec des cités perchées et des dangers au sol", image: lunel, link: "/interface_jeu/lunel" },
-    { id: 2, title: "Les Dunes ardentes de Solarys", description: "Une immensité aride avec un oasis solitaire et un monde souterrain", image: solarys, link: "/interface_jeu/solarys" },
-    { id: 3, title: "Le Village Gelé d'Auralis", description: "Un refuge givré avec des vents mordants et des spectres de glace", image: auralis, link: "/interface_jeu/auralis" },
-    { id: 4, title: "Les Ruines Oubliées d'Élyndra", description: "Une cité perdue avec des pierres runiques et des légendes oubliées", image: elyndra, link: "/interface_jeu/elyndra" }
-];
-
-const roles = [
-    { id: 1, slug: "Chevalier", title: "Le Chevalier", description: "Un guerrier en armure forgé dans l'acier et la bravoure", image: chevalier },
-    { id: 2, slug: "Mage", title: "La Mage", description: "Tisseuse de sorts, elle plie les éléments à sa volonté", image: mage },
-    { id: 3, slug: "Chimiste", title: "Le Chimiste", description: "Maître des potions et des runes, il transforme la nature en arme", image: alchimiste },
-    { id: 4, slug: "Ombre", title: "L'Ombre", description: "Assassin des ténèbres, il frappe vite et disparaît sans laisser de traces", image: ombre }
+    {
+        id: 1,
+        title: "Le Cœur Sylvestre de Lunel",
+        description: "Une jungle oppressante avec des cités perchées et des dangers au sol",
+        image: lunel,
+        link: "/biomes/lunel"
+    },
+    {
+        id: 2,
+        title: "Les Dunes ardentes de Solarys",
+        description: "Une immensité aride avec un oasis solitaire et un monde souterrain",
+        image: solarys,
+        link: "/biomes/solarys"
+    },
+    {
+        id: 3,
+        title: "Le Village Gelé d'Auralis",
+        description: "Un refuge givré avec des vents mordants et des spectres de glace",
+        image: auralis,
+        link: "/biomes/auralis"
+    },
+    {
+        id: 4,
+        title: "Les Ruines Oubliées d'Élyndra",
+        description: "Une cité perdue avec des pierres runiques et des légendes oubliées",
+        image: elyndra,
+        link: "/biomes/elyndra"
+    }
 ];
 ---
 
 <Layout>
+<!-- Hero -->
+<section class="hero flex items-center justify-center min-h-[500px] md:min-h-[550px]">
+    <div class="w-full relative h-full">
+        <!-- Image de fond -->
+        <img
+            src={heroImage.src}
+            alt="Hero background"
+            class="absolute inset-0 w-full h-full object-cover"
+        />
 
-    <!-- ═══ HERO ═══ -->
-    <section class="relative min-h-[380px] md:min-h-[500px] flex items-center justify-center">
-        <img src={heroImage.src} alt="Hero" class="absolute inset-0 w-full h-full object-cover" />
+        <!-- Overlay assombrissement + vignette -->
         <div class="absolute inset-0 bg-slate-950/40"></div>
         <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_20%,rgba(0,0,0,0.7)_80%)]"></div>
 
-        <div class="relative flex flex-col items-center text-center gap-4 md:gap-6 py-12 md:py-20 px-6 md:px-8">
-            <!-- Ornement haut -->
-            <div class="flex items-center gap-2">
-                <div class="h-px w-12 md:w-20 bg-gradient-to-r from-transparent to-[#FFE9B5]/50"></div>
-                <span class="size-1.5 rotate-45 bg-[#FFE9B5]/70 block"></span>
-                <span class="size-2.5 rotate-45 bg-[#FFE9B5]/90 block shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
-                <span class="size-1.5 rotate-45 bg-[#FFE9B5]/70 block"></span>
-                <div class="h-px w-12 md:w-20 bg-gradient-to-l from-transparent to-[#FFE9B5]/50"></div>
+        <!-- Contenu -->
+        <div class="relative py-16 md:py-20 px-8 flex flex-col items-center text-center gap-6">
+            <!-- Ornement supérieur -->
+            <div class="flex items-center justify-center gap-2">
+                <div class="h-px w-20 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+                <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+                <span class="size-2.5 rotate-45 bg-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
+                <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+                <div class="h-px w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
             </div>
 
-            <h1 class="text-elyndra-gradient text-3xl sm:text-4xl md:text-6xl lg:text-[4.5rem] font-bold uppercase tracking-[0.1em] md:tracking-[0.15em]">
+            <!-- Titre principal -->
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold uppercase tracking-[0.15em] text-elyndra-gradient drop-shadow-[0_2px_20px_rgba(0,0,0,0.8)]">
                 Début de l'Aventure
             </h1>
 
-            <!-- Ornement bas -->
-            <div class="flex items-center gap-2">
-                <div class="h-px w-12 md:w-20 bg-gradient-to-r from-transparent to-[#FFE9B5]/50"></div>
-                <span class="size-1.5 rotate-45 bg-[#FFE9B5]/70 block"></span>
-                <span class="size-2.5 rotate-45 bg-[#FFE9B5]/90 block shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
-                <span class="size-1.5 rotate-45 bg-[#FFE9B5]/70 block"></span>
-                <div class="h-px w-12 md:w-20 bg-gradient-to-l from-transparent to-[#FFE9B5]/50"></div>
+            <!-- Ornement inférieur -->
+            <div class="flex items-center justify-center gap-2">
+                <div class="h-px w-20 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+                <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+                <span class="size-2.5 rotate-45 bg-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
+                <span class="size-1.5 rotate-45 bg-amber-200/70"></span>
+                <div class="h-px w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
             </div>
 
-            <p class="text-xs md:text-sm uppercase tracking-[0.15em] md:tracking-[0.2em] max-w-xs md:max-w-2xl leading-loose text-white/90 mt-2 md:mt-4">
+            <!-- Description -->
+            <p class="text-sm md:text-base uppercase tracking-[0.2em] max-w-2xl leading-relaxed text-white/90 mt-4">
                 Tout ce que vous devez savoir pour commencer l'aventure
             </p>
         </div>
-    </section>
-
-    <!-- ═══ SÉPARATEUR ═══ -->
-    <div class="relative w-full py-6 md:py-8">
-        <div class="absolute inset-0 flex items-center">
-            <div class="h-px w-full bg-gradient-to-r from-transparent via-[#FFE9B5]/30 to-transparent"></div>
-        </div>
-        <div class="relative flex justify-center">
-            <span class="size-4 rotate-45 bg-[#FFE9B5]/90 block shadow-[0_0_15px_rgba(251,191,36,0.7)]"></span>
-        </div>
     </div>
+</section>
 
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- CAROUSEL — 3 panneaux                                       -->
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- Vous êtes prêt à jouer --> 
-    <!-- data-logged utilisé par le script pour décider redirect vs navigation-->
-    <div id="carousel-window" class="w-full overflow-hidden relative" data-logged={isLoggedIn ? "1" : "0"}>
-        <div
-            id="steps-track"
-            class="flex transition-transform duration-700 ease-in-out"
-            style="width:300%;transform:translateX(0);"
-        >
+<!-- Séparateur avec losange -->
+<div class="relative w-full py-8">
+    <div class="absolute inset-0 flex items-center justify-center">
+        <div class="h-px w-full bg-gradient-to-r from-transparent via-amber-200/30 to-transparent"></div>
+    </div>
+    <div class="relative flex justify-center">
+        <span class="size-4 rotate-45 bg-amber-200/90 shadow-[0_0_15px_rgba(251,191,36,0.7)]"></span>
+    </div>
+</div>
 
-            <!-- ════════════ PANNEAU 1 — BIOMES ════════════ -->
-            <div class="shrink-0 py-8 md:py-16 px-4 md:px-[5vw]" style="width:33.333%;">
-                <div class="max-w-7xl mx-auto border border-[#FFE9B5]/30 rounded-2xl md:rounded-3xl p-4 md:p-8 lg:p-12">
-                    <div class="text-center mb-6 md:mb-12">
-                        <h2 class="text-elyndra-gradient font-heading2 text-2xl sm:text-3xl md:text-5xl uppercase tracking-[0.08em] md:tracking-[0.12em] mb-3 md:mb-4">
-                            Choisissez Votre Monde
-                        </h2>
-                        <p class="text-xs md:text-sm uppercase tracking-[0.12em] md:tracking-[0.18em] text-white/80">
-                            Sélectionne un biome pour commencer ton aventure
-                        </p>
+<!-- Section Biomes -->
+<section class="py-16 px-6 md:px-12 lg:px-20">
+    <!-- Conteneur avec bordure -->
+    <div class="max-w-7xl mx-auto border border-amber-200/30 rounded-3xl p-8 md:p-12 lg:p-16">
+        <!-- En-tête -->
+        <div class="text-center mb-12">
+            <h2 class="text-4xl md:text-5xl font-bold uppercase tracking-[0.12em] text-elyndra-gradient mb-4">
+                Choisissez Votre Monde
+            </h2>
+            <p class="text-sm md:text-base uppercase tracking-[0.18em] text-white/80">
+                Sélectionne un biome pour commencer ta quête
+            </p>
+        </div>
+
+        <!-- Grille de cartes -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+            {biomes.map((biome) => (
+                <a
+                    href={biome.link}
+                    class="group relative overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(251,191,36,0.3)]"
+                >
+                    <!-- Image de fond -->
+                    <div class="relative h-80 md:h-96 overflow-hidden">
+                        <img
+                            src={biome.image.src}
+                            alt={biome.title}
+                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                        <!-- Overlay gradient -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/50 to-transparent"></div>
                     </div>
 
-                    <!-- 1 colonne sur mobile, 2 sur md+ -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                        {biomes.map((biome) => (
-                            <button
-                                data-biome-id={biome.id}
-                                data-biome-title={biome.title}
-                                data-biome-link={biome.link}
-                                class="biome-card group relative overflow-hidden rounded-xl md:rounded-2xl border-2 border-transparent cursor-pointer text-left transition-all duration-300 bg-transparent"
-                            >
-                                <div class="relative h-56 sm:h-72 md:h-80 lg:h-96 overflow-hidden">
-                                    <img
-                                        src={biome.image.src}
-                                        alt={biome.title}
-                                        class="biome-img absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                    />
-                                    <div class="absolute inset-0 bg-gradient-to-t from-Background-dark-blue/95 via-Background-dark-blue/50 to-transparent"></div>
-                                </div>
-
-                                <div class="absolute inset-0 flex flex-col justify-end p-3 md:p-6">
-                                    <div class="border border-[#FFE9B5]/40 rounded-lg md:rounded-xl p-3 md:p-6 backdrop-blur-sm bg-Background-dark-blue/30 transition-all duration-300 group-hover:border-[#FFE9B5]/70 group-hover:bg-Background-dark-blue/50">
-                                        <div class="flex items-center justify-center gap-2 mb-2 md:mb-4">
-                                            <div class="h-px w-10 md:w-16 bg-gradient-to-r from-transparent to-[#FFE9B5]/50"></div>
-                                            <span class="size-1 rotate-45 bg-[#FFE9B5] block"></span>
-                                            <span class="size-1.5 md:size-2 rotate-45 bg-[#FFE9B5]/90 block"></span>
-                                            <span class="size-1 rotate-45 bg-[#FFE9B5]/70 block"></span>
-                                            <div class="h-px w-10 md:w-16 bg-gradient-to-l from-transparent to-[#FFE9B5]/50"></div>
-                                        </div>
-                                        <h3 class="text-sm md:text-xl font-semibold text-center mb-2 md:mb-4 text-[#FFE9B5] tracking-wide">
-                                            {biome.title}
-                                        </h3>
-                                        <div class="flex items-center justify-center gap-2 mb-2 md:mb-4">
-                                            <div class="h-px w-10 md:w-16 bg-gradient-to-r from-transparent to-[#FFE9B5]/50"></div>
-                                            <span class="size-1 rotate-45 bg-[#FFE9B5]/70 block"></span>
-                                            <span class="size-1.5 md:size-2 rotate-45 bg-[#FFE9B5]/90 block"></span>
-                                            <span class="size-1 rotate-45 bg-[#FFE9B5]/70 block"></span>
-                                            <div class="h-px w-10 md:w-16 bg-gradient-to-l from-transparent to-[#FFE9B5]/50"></div>
-                                        </div>
-                                        <p class="text-xs md:text-sm text-center text-white/75 leading-relaxed">
-                                            {biome.description}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div class="biome-badge hidden absolute top-3 right-3 bg-[#FFE9B5] text-[#090D13] text-[0.6rem] md:text-xs font-bold uppercase tracking-widest px-2 md:px-3 py-1 rounded-full shadow-[0_0_12px_rgba(251,191,36,0.8)]">
-                                    ✓ Sélectionné
-                                </div>
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            <!-- ════════════ PANNEAU 2 — RÔLES ════════════ -->
-            <div class="shrink-0 py-8 md:py-16 px-4 md:px-[5vw]" style="width:33.333%;">
-                <div class="max-w-7xl mx-auto rounded-[10px] outline outline-2 outline-[#FFE9B5]/40">
-                    <div class="p-4 sm:p-6 md:p-14 flex flex-col gap-4 md:gap-6">
-
-                        <!-- En-tête -->
-                        <div class="relative flex items-center justify-center mb-0 md:mb-2">
-                            <button
-                                id="role-back-btn"
-                                class="absolute left-0 flex items-center justify-center w-10 h-10 md:w-16 md:h-16 bg-transparent border-none cursor-pointer transition-opacity duration-200 hover:opacity-70"
-                                aria-label="Retour aux biomes"
-                            >
-                                <!-- SVG réduit sur mobile -->
-                                <svg class="w-8 h-7 md:w-[62px] md:h-[57px]" viewBox="0 0 62 57" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M21.333 45.5c0-1.802-1.771-4.493-3.564-6.751-2.306-2.915-5.06-5.457-8.22-7.398C7.182 29.896 4.31 28.5 2 28.5m0 0c2.31 0 5.184-1.396 7.55-2.851 3.158-1.943 5.913-4.486 8.219-7.395 1.793-2.261 3.564-4.957 3.564-6.754M2 28.5h58" stroke="#FFE9B5" stroke-width="2" stroke-linecap="square"/>
-                                </svg>
-                            </button>
-                            <div class="text-center px-12 md:px-0">
-                                <h2 class="text-elyndra-gradient font-heading2 text-xl sm:text-2xl md:text-5xl uppercase tracking-[0.08em] md:tracking-[0.12em] mb-1 md:mb-2">
-                                    Choisissez Votre Rôle
-                                </h2>
-                                <p class="text-xs md:text-sm uppercase tracking-[0.12em] md:tracking-[0.18em] text-white/80">
-                                    Sélectionner votre rôle préféré
-                                </p>
-                                <div class="flex items-center justify-center gap-2 mt-1">
-                                    <span class="text-[0.6rem] md:text-xs uppercase tracking-widest text-[#FFE9B5] font-body">Monde :</span>
-                                    <span id="selected-biome-label" class="text-[0.6rem] md:text-xs uppercase tracking-widest text-[#FFE9B5] font-semibold font-body"></span>
-                                </div>
+                    <!-- Contenu de la carte -->
+                    <div class="absolute inset-0 flex flex-col justify-end p-6">
+                        <!-- Cadre avec titre et description -->
+                        <div class="border border-amber-200/40 rounded-xl p-6 backdrop-blur-sm bg-slate-950/30 transition-all duration-300 group-hover:border-amber-200/70 group-hover:bg-slate-950/50">
+                            <!-- Ornement supérieur -->
+                            <div class="flex items-center justify-center gap-2 mb-4">
+                                <div class="h-px w-16 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+                                <span class="size-1 rotate-45 bg-amber-200/70"></span>
+                                <span class="size-2 rotate-45 bg-amber-200/90 shadow-[0_0_8px_rgba(251,191,36,0.5)]"></span>
+                                <span class="size-1 rotate-45 bg-amber-200/70"></span>
+                                <div class="h-px w-16 bg-gradient-to-l from-transparent to-amber-200/50"></div>
                             </div>
-                        </div>
 
-                        <!-- Grille rôles : 1 colonne mobile, 2 colonnes md+ -->
-                        <div class="p-3 md:p-6 rounded-[10px] outline outline-1 outline-[#FFE9B5]/40 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-                            {roles.map((role) => (
-                                <button
-                                    class="role-card group relative w-full h-56 sm:h-64 md:h-72 rounded-xl md:rounded-2xl overflow-hidden cursor-pointer bg-transparent border-none transition-all duration-300 hover:outline hover:outline-1 hover:outline-[#FFE9B5]/60 hover:shadow-[0_0_20px_rgba(251,191,36,0.25)]"
-                                    data-role-slug={role.slug}
-                                    data-role-title={role.title}
-                                >
-                                    <div class="absolute inset-x-4 md:inset-x-6 inset-y-3 md:inset-y-4 bg-zinc-700 rounded-[10px]"></div>
-                                    <img
-                                        src={role.image.src}
-                                        alt={role.title}
-                                        class="role-img absolute left-1/2 -translate-x-1/2 top-3 md:top-4 h-[calc(100%-0.75rem)] md:h-[calc(100%-1rem)] w-auto object-contain z-10 transition-transform duration-500 group-hover:scale-105"
-                                    />
-                                    <div class="absolute inset-x-4 md:inset-x-6 bottom-3 md:bottom-4 h-16 md:h-20 bg-black rounded-[10px] z-20 flex flex-col items-center justify-center gap-1">
-                                        <div class="absolute top-0 inset-x-0 h-0.5 bg-[#FFE9B5]/80"></div>
-                                        <span class="text-white text-sm md:text-base font-heading2 tracking-wide text-center">
-                                            {role.title}
-                                        </span>
-                                        <p class="text-white/60 text-[0.65rem] md:text-xs font-body leading-tight text-center px-2 hidden sm:block">
-                                            {role.description}
-                                        </p>
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
+                            <h3 class="text-xl md:text-2xl font-semibold text-center mb-4 text-amber-100 tracking-wide">
+                                {biome.title}
+                            </h3>
 
-                    </div>
-                </div>
-            </div>
+                            <!-- Ornement inférieur -->
+                            <div class="flex items-center justify-center gap-2 mb-4">
+                                <div class="h-px w-16 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+                                <span class="size-1 rotate-45 bg-amber-200/70"></span>
+                                <span class="size-2 rotate-45 bg-amber-200/90 shadow-[0_0_8px_rgba(251,191,36,0.5)]"></span>
+                                <span class="size-1 rotate-45 bg-amber-200/70"></span>
+                                <div class="h-px w-16 bg-gradient-to-l from-transparent to-amber-200/50"></div>
+                            </div>
 
-            <!-- ════════════ PANNEAU 3 — PRÊT À JOUER ════════════ -->
-            <div class="shrink-0 py-8 md:py-16 px-4 md:px-[5vw]" style="width:33.333%;">
-                <div class="max-w-7xl mx-auto rounded-[10px] outline outline-2 outline-[#FFE9B5]/60 p-6 md:p-14 flex flex-col items-center justify-center gap-6 md:gap-10">
-
-                    <!-- En-tête -->
-                    <div class="relative flex items-center justify-center w-full">
-                        <button
-                            id="confirm-back-btn"
-                            class="absolute left-0 flex items-center justify-center w-10 h-10 md:w-16 md:h-16 bg-transparent border-none cursor-pointer transition-opacity duration-200 hover:opacity-70"
-                            aria-label="Retour aux rôles"
-                        >
-                            <svg class="w-8 h-7 md:w-[62px] md:h-[57px]" viewBox="0 0 62 57" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M21.333 45.5c0-1.802-1.771-4.493-3.564-6.751-2.306-2.915-5.06-5.457-8.22-7.398C7.182 29.896 4.31 28.5 2 28.5m0 0c2.31 0 5.184-1.396 7.55-2.851 3.158-1.943 5.913-4.486 8.219-7.395 1.793-2.261 3.564-4.957 3.564-6.754M2 28.5h58" stroke="#FFE9B5" stroke-width="2" stroke-linecap="square"/>
-                            </svg>
-                        </button>
-                        <div class="text-center px-12 md:px-0">
-                            <h2 class="text-elyndra-gradient font-heading2 text-xl sm:text-2xl md:text-5xl uppercase tracking-[0.08em] md:tracking-[0.12em] mb-1 md:mb-2">
-                                Vous êtes prêt à jouer !
-                            </h2>
-                            <p class="text-xs md:text-sm uppercase tracking-[0.12em] md:tracking-[0.18em] text-white/80">
-                                Ton aventure commence maintenant
+                            <p class="text-sm text-center text-white/75 leading-relaxed">
+                                {biome.description}
                             </p>
                         </div>
                     </div>
-
-                    <!-- Récap encadré : empilé sur mobile, côte à côte sur md+ -->
-                    <div class="flex flex-col sm:flex-row items-stretch justify-center gap-4 md:gap-6 w-full max-w-2xl">
-                        <!-- Carte Monde -->
-                        <div class="flex-1 flex flex-col items-center gap-2 md:gap-3 px-4 md:px-8 py-4 md:py-6 border border-[#FFE9B5]/35 rounded-[10px] bg-gradient-to-b from-[#FFE9B5]/5 to-transparent backdrop-blur-sm shadow-[0_0_20px_rgba(178,158,94,0.1)]">
-                            <div class="flex items-center gap-2">
-                                <div class="h-px w-5 bg-[#FFE9B5]/40"></div>
-                                <span class="text-[0.6rem] md:text-[0.65rem] uppercase tracking-[0.2em] text-[#FFE9B5]/55 font-body">Monde</span>
-                                <div class="h-px w-5 bg-[#FFE9B5]/40"></div>
-                            </div>
-                            <span id="recap-biome" class="text-sm md:text-base text-[#FFE9B5] font-heading2 tracking-wide text-center leading-snug"></span>
-                        </div>
-
-                        <!-- Losange séparateur : horizontal sur mobile, vertical sur sm+ -->
-                        <div class="flex sm:flex-col items-center justify-center shrink-0">
-                            <span class="size-2.5 rotate-45 bg-[#FFE9B5]/50 block shadow-[0_0_8px_rgba(251,191,36,0.4)]"></span>
-                        </div>
-
-                        <!-- Carte Rôle -->
-                        <div class="flex-1 flex flex-col items-center gap-2 md:gap-3 px-4 md:px-8 py-4 md:py-6 border border-[#FFE9B5]/35 rounded-[10px] bg-gradient-to-b from-[#FFE9B5]/5 to-transparent backdrop-blur-sm shadow-[0_0_20px_rgba(178,158,94,0.1)]">
-                            <div class="flex items-center gap-2">
-                                <div class="h-px w-5 bg-[#FFE9B5]/40"></div>
-                                <span class="text-[0.6rem] md:text-[0.65rem] uppercase tracking-[0.2em] text-[#FFE9B5]/55 font-body">Rôle</span>
-                                <div class="h-px w-5 bg-[#FFE9B5]/40"></div>
-                            </div>
-                            <span id="recap-role" class="text-sm md:text-base text-[#FFE9B5] font-heading2 tracking-wide text-center leading-snug"></span>
-                        </div>
-                    </div>
-
-                    <!-- Bouton jouer -->
-                    <a
-                        id="play-btn"
-                        href="#"
-                        class="inline-flex items-center justify-center gap-3 px-6 md:px-10 py-4 md:py-5 bg-elyndra-3 rounded-[10px] no-underline transition-all duration-300 shadow-[0_0_20px_rgba(251,191,36,0.2)] hover:shadow-[0_0_35px_rgba(251,191,36,0.45)]"
-                    >
-                        <span class="text-text-color-2 text-base md:text-xl font-body font-semibold">
-                            Commencer le jeu
-                        </span>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4 md:size-5 text-text-color-2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                        </svg>
-                    </a>
-
-                    <!-- Recommencer -->
-                    <button
-                        id="restart-btn"
-                        class="bg-transparent border-none cursor-pointer text-sous-texte text-sm md:text-base font-body tracking-wide underline underline-offset-4 transition-colors duration-200 hover:text-white/75"
-                    >
-                        Ou recommencer vos choix
-                    </button>
-
-                </div>
-            </div>
-
+                </a>
+            ))}
         </div>
     </div>
-
+</section>
 </Layout>
 
-<script>
-    const track      = document.getElementById('steps-track') as HTMLElement;
-    const win        = document.getElementById('carousel-window') as HTMLElement;
-    const label      = document.getElementById('selected-biome-label') as HTMLElement;
-    const playBtn    = document.getElementById('play-btn') as HTMLAnchorElement;
-    const recapBiome = document.getElementById('recap-biome') as HTMLElement;
-    const recapRole  = document.getElementById('recap-role') as HTMLElement;
-
-    const isLoggedIn = win.dataset.logged === '1';
-
-    let biomeLink = '';
-    let biomeName = '';
-
-    function goToStep(step: number) {
-        track.style.transform = `translateX(${step * -33.333}%)`;
-        const top = win.getBoundingClientRect().top + window.scrollY - 60;
-        window.scrollTo({ top, behavior: 'smooth' });
-    }
-
-    document.querySelectorAll<HTMLElement>('.biome-card').forEach(card => {
-        card.addEventListener('click', () => {
-            document.querySelectorAll<HTMLElement>('.biome-card').forEach(c => {
-                c.classList.remove('border-[#FFE9B5]', 'shadow-[0_0_25px_rgba(251,191,36,0.5)]');
-                c.querySelector<HTMLElement>('.biome-badge')?.classList.add('hidden');
-            });
-            card.classList.add('border-[#FFE9B5]', 'shadow-[0_0_25px_rgba(251,191,36,0.5)]');
-            card.querySelector<HTMLElement>('.biome-badge')?.classList.remove('hidden');
-            biomeLink = card.dataset.biomeLink ?? '';
-            biomeName = card.dataset.biomeTitle ?? '';
-            label.textContent = biomeName;
-            goToStep(1);
-        });
-    });
-
-    document.querySelectorAll<HTMLElement>('.role-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const roleName = card.dataset.roleTitle ?? '';
-            recapBiome.textContent = biomeName;
-            recapRole.textContent  = roleName;
-            const dest = `${biomeLink}?role=${encodeURIComponent(roleName)}`;
-            playBtn.href = dest;
-            // Stocker la destination pour l'intercepteur
-            playBtn.dataset.dest = dest;
-            goToStep(2);
-        });
-    });
-
-    // Intercepter le clic sur "Commencer le jeu"
-    playBtn.addEventListener('click', (e) => {
-        if (!isLoggedIn) {
-            e.preventDefault();
-            const dest = playBtn.dataset.dest ?? playBtn.href;
-            window.location.href = `/login?redirect=${encodeURIComponent(dest)}`;
-        }
-    });
-
-    document.getElementById('role-back-btn')?.addEventListener('click', () => goToStep(0));
-    document.getElementById('confirm-back-btn')?.addEventListener('click', () => goToStep(1));
-
-    document.getElementById('restart-btn')?.addEventListener('click', () => {
-        document.querySelectorAll<HTMLElement>('.biome-card').forEach(c => {
-            c.classList.remove('border-[#FFE9B5]', 'shadow-[0_0_25px_rgba(251,191,36,0.5)]');
-            c.querySelector<HTMLElement>('.biome-badge')?.classList.add('hidden');
-        });
-        biomeLink = '';
-        biomeName = '';
-        label.textContent = '';
-        goToStep(0);
-    });
-</script>
