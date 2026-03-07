@@ -1,0 +1,145 @@
+---
+import Layout from '../layout/Layout.astro';
+---
+
+<Layout title="Contactez-nous">
+  <div class="pt-9 pb-240 bg-[#0a0a0a] min-h-screen">
+    
+    <!-- Header -->
+    <div class="text-center mb-20 px-4">
+      <h1 class="text-Or-clair text-5xl font-bold tracking-[5.40px] mb-6">
+        CONTACTEZ-NOUS
+      </h1>
+      <p class="text-Blanc text-xl max-w-4xl mx-auto">
+        Chaque grande aventure commence par un premier pas. Partagez-nous votre projet, et écrivons ensemble le premier chapitre de votre histoire.
+      </p>
+    </div>
+
+    <!-- Content -->
+    <div class="max-w-6xl mx-auto flex flex-wrap gap-20 justify-center px-4">
+      
+      <!-- Left Section -->
+      <div class="w-48">
+        <div class="mb-20">
+          <h2 class="text-Blanc text-3xl font-bold mb-5">Email</h2>
+          <p class="text-Blanc text-base">elyndra@elyndra.com</p>
+        </div>
+        <div>
+          <h2 class="text-Blanc text-3xl font-bold mb-6">Socials</h2>
+          <div class="space-y-3">
+            <a href="#" class="block text-Blanc text-base underline hover:text-Or-clair">Instagram</a>
+            <a href="#" class="block text-Blanc text-base underline hover:text-Or-clair">Twitter</a>
+            <a href="#" class="block text-Blanc text-base underline hover:text-Or-clair">Facebook</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CADRE ULTRA-VISIBLE -->
+      <div class="w-[725px] h-[686px] relative bg-transparent">
+        
+        <!-- COUCHE 1 : CADRE DORÉ ÉPAIS AVEC BORDURE CARRÉE (z-10) -->
+        <div class="w-[725px] h-[686px] left-0 top-0 absolute bg-Bordure-foncée z-10 border-[12px] border-[#353120]"></div>
+        
+        <!-- COUCHE 2 : Carte intérieure noire avec coins arrondis (z-20) -->
+        <div class="w-[665px] h-[630px] left-[30px] top-[28px] absolute bg-Background-card rounded-[28px] z-20"></div>
+        
+        <!-- Boules aux coins du cadre (z-30) -->
+        <div class="w-11 h-11 left-0 top-0 absolute bg-[#353120] rounded-full z-30 shadow-lg"></div>
+        <div class="w-11 h-11 left-0 bottom-0 absolute bg-[#353120] rounded-full z-30 shadow-lg"></div>
+        <div class="w-11 h-11 right-0 top-0 absolute bg-[#353120] rounded-full z-30 shadow-lg"></div>
+        <div class="w-11 h-11 right-0 bottom-0 absolute bg-[#353120] rounded-full z-30 shadow-lg"></div>
+
+        <!-- COUCHE 4 : Formulaire (z-40) -->
+        <div class="w-[691px] h-[656px] left-[17px] top-[15px] absolute z-40 flex flex-col justify-center items-center gap-7 p-6">
+          <form id="contact-form" class="contents">
+            
+            <!-- Prénom -->
+            <div class="flex flex-col justify-start items-start gap-3.5 w-[563px]">
+              <label class="text-Blanc text-sm font-normal font-body">Prénom</label>
+              <input 
+                type="text" 
+                name="prenom" 
+                required 
+                class="w-full h-11 bg-zinc-900 rounded-[5px] border-2 border-Or-clair px-4 text-Blanc font-body focus:outline-none focus:border-Or-clair focus:ring-2 focus:ring-Or-clair/50 placeholder:text-sous-texte" 
+              />
+            </div>
+
+            <!-- Nom -->
+            <div class="flex flex-col justify-start items-start gap-3.5 w-[563px]">
+              <label class="text-Blanc text-sm font-normal font-body">Nom</label>
+              <input 
+                type="text" 
+                name="nom" 
+                required 
+                class="w-full h-11 bg-neutral-800 rounded-[5px] border-2 border-Or-clair px-4 text-Blanc font-body focus:outline-none focus:border-Or-clair focus:ring-2 focus:ring-Or-clair/50 placeholder:text-sous-texte" 
+              />
+            </div>
+
+            <!-- Email -->
+            <div class="flex flex-col justify-start items-start gap-3.5 w-[563px]">
+              <label class="text-Blanc text-sm font-normal font-body">Email</label>
+              <input 
+                type="email" 
+                name="email" 
+                required 
+                class="w-full h-11 bg-zinc-900 rounded-[5px] border-2 border-Or-clair px-4 text-Blanc font-body focus:outline-none focus:border-Or-clair focus:ring-2 focus:ring-Or-clair/50 placeholder:text-sous-texte" 
+              />
+            </div>
+
+            <!-- Message -->
+            <div class="flex flex-col justify-start items-start gap-3.5 w-[563px]">
+              <label class="text-Blanc text-sm font-normal font-body">Message</label>
+              <textarea 
+                name="message" 
+                required 
+                class="w-full h-40 bg-neutral-800 rounded-[5px] border-2 border-Or-clair px-4 py-3 text-Blanc font-body resize-none focus:outline-none focus:border-Or-clair focus:ring-2 focus:ring-Or-clair/50 placeholder:text-sous-texte"
+              ></textarea>
+            </div>
+
+            <!-- Bouton CORRIGÉ -->
+             
+            <button 
+              type="submit"
+              class="group w-[563px] h-12 px-20 bg-Or-clair rounded-[5px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] border-2 border-Bordure-foncée inline-flex justify-center items-center transition-all duration-300 hover:bg-[#FBFBFBFF] hover:shadow-[0_6px_8px_rgba(0,0,0,0.35)] hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <span class="text-text-color-2 text-xl font-bold font-heading tracking-[0.1em] group-hover:text-[#0E0E0EFF]">
+                ENVOYER
+              </span>
+            </button>
+
+            <div id="message" class="hidden text-center text-sm font-body mt-2 w-[563px]"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import PocketBase from 'pocketbase';
+    
+    const pb = new PocketBase('http://127.0.0.1:8090');
+    const form = document.getElementById('contact-form') as HTMLFormElement;
+    const messageDiv = document.getElementById('message') as HTMLDivElement;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData);
+
+      try {
+        await pb.collection('messages').create(data);
+        messageDiv.textContent = 'Message envoyé avec succès !';
+        messageDiv.className = 'text-Or-clair text-center text-sm mt-2 font-body font-bold';
+        messageDiv.classList.remove('hidden');
+        form.reset();
+        
+        setTimeout(() => messageDiv.classList.add('hidden'), 5000);
+      } catch (error) {
+        messageDiv.textContent = 'Erreur lors de l\'envoi';
+        messageDiv.className = 'text-red-400 text-center text-sm mt-2 font-body font-bold';
+        messageDiv.classList.remove('hidden');
+      }
+    });
+  </script>
+</Layout>
