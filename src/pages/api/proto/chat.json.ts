@@ -3,6 +3,14 @@ import { listInventory, createItem, updateItem, deleteItem } from "../../../../b
 import { listCollections, addGamestate } from "../../../../backend/functions/proto/weaviate";
 import { object } from "astro:schema";
 
+//Define what a tool is
+interface Tool {
+  name: string;
+  description: string;
+  parameters: any;
+  execute: (args: any, id: string) => Promise<any>;
+}
+
 //get API key and URL
 const API_KEY = import.meta.env.LABAI_API_KEY;
 const API_URL = "https://lab-ia.umlp.fr/api/chat/completions";
@@ -10,158 +18,91 @@ const API_URL = "https://lab-ia.umlp.fr/api/chat/completions";
 //we keep the system prompt out of the POST for readability
 const systemPrompt: string = "Tu es un assistant IA, répond aux requêtes de l'utilisateur de la manière la plus simple et directe possible."+
 "Tu peux utiliser des tool call pour aider l'utilisateur à gérer ses collections inventory, entity, player et gamestate dans une base de données."+
-"Ne fais pas plusieurs tool call dans la même requête, fais les un par un."+
-"Quand tu ne connais pas l'id d'une entrée sur laquelle tu veux agir, liste d'abords la collection pour trouver le bon id";
+"Tu ne connais pas les id, utilise les fonctions de liste pour les trouver.";
 
-//array of tools the LLM as access to
-const toolsArray = [
-    //Inventory
-    {
-        type: "function",
-        function: {
-            name: "listInventory",
-            description: "Liste tous les objets présent dans l'inventaire de l'utilisateur",
-            parameters: {
-                type: "object",
-                properties: {},
-                required: [],
-            },
-        },
+//array defining our tools
+const tools: Tool[] = [
+  {
+    name: "listInventory",
+    description: "Liste tous les objets présent dans l'inventaire de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {},
+      required: [],
     },
-    {
-        type: "function",
-        function: {
-            name: "createItem",
-            description: "Ajoute un objet à l'inventaire de l'utilisateur",
-            parameters: {
-                type: "object",
-                properties: {
-                    data: {
-                        type: "object",
-                        description: "Propriétés de l'objet",
-                        properties: {
-                            name: {
-                                type: "string",
-                                description: "Nom de l'objet"
-                            },
-                            desc: {
-                                type: "string",
-                                description: "Description de l'objet"
-                            },
-                            amount: {
-                                type: "integer",
-                                description: "Quantité d'objets à ajouter à l'inventaire",
-                                minimum: 1,
-                            },
-                        }
-                    }
-                },
-                required: ["data"],
-            },
+    execute: async (args, id) => listInventory(id),
+  },
+  {
+    name: "createItem",
+    description: "Ajoute un objet à l'inventaire de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        data: {
+          type: "object",
+          description: "Propriétés de l'objet",
+          properties: {
+            name: { type: "string", description: "Nom de l'objet" },
+            desc: { type: "string", description: "Description de l'objet" },
+            amount: { type: "integer", description: "Quantité d'objets à ajouter à l'inventaire", minimum: 1 },
+          },
         },
+      },
+      required: ["data"],
     },
-    {
-        type: "function",
-        function: {
-            name: "updateItem",
-            description: "Modifie un objet déjà présent dans l'inventaire de l'utilisateur",
-            parameters: {
-                type: "object",
-                properties: {
-                    itemId: {
-                        type: "string",
-                        description: "ID de l'objet à modifier dans la base de donnée"
-                    },
-                    data: {
-                        type: "object",
-                        description: "Propriétés de l'objet",
-                        properties: {
-                            name: {
-                                type: "string",
-                                description: "Nom de l'objet"
-                            },
-                            desc: {
-                                type: "string",
-                                description: "Description de l'objet"
-                            },
-                            amount: {
-                                type: "integer",
-                                description: "Quantité d'objets à ajouter à l'inventaire",
-                                minimum: 1,
-                            },
-                        }
-                    }
-                },
-                required: ["itemId", "data"],
-            },
+    execute: async (args, id) => createItem(id, args.data),
+  },
+  {
+    name: "updateItem",
+    description: "Modifie un objet déjà présent dans l'inventaire de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        itemId: { type: "string", description: "ID de l'objet à modifier dans la base de donnée" },
+        data: {
+          type: "object",
+          description: "Propriétés de l'objet",
+          properties: {
+            name: { type: "string", description: "Nom de l'objet" },
+            desc: { type: "string", description: "Description de l'objet" },
+            amount: { type: "integer", description: "Quantité d'objets à ajouter à l'inventaire", minimum: 1 },
+          },
         },
+      },
+      required: ["itemId", "data"],
     },
-    {
-        type: "function",
-        function: {
-            name: "deleteItem",
-            description: "Supprime un objet présent dans l'inventaire de l'utilisateur",
-            parameters: {
-                type: "object",
-                properties: {
-                    itemId: {
-                        type: "string",
-                        description: "ID de l'objet à modifier dans la base de donnée"
-                    },
-                },
-                required: ["itemId"],
-            },
-        },
+    execute: async (args, id) => updateItem(id, args.itemId, args.data),
+  },
+  {
+    name: "deleteItem",
+    description: "Supprime un objet présent dans l'inventaire de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        itemId: { type: "string", description: "ID de l'objet à modifier dans la base de donnée" },
+      },
+      required: ["itemId"],
     },
-    //Entity
-    
-]
+    execute: async (args, id) => deleteItem(id, args.itemId),
+  },
+];
+
+const toolMap = new Map(tools.map((tool) => [tool.name, tool]));
+
+//array generated for the LLM stating the tool it has access to
+const toolsArray = tools.map((tool) => ({
+  type: "function",
+  function: {
+    name: tool.name,
+    description: tool.description,
+    parameters: tool.parameters,
+  },
+}));
 
 //we can define the max amount of call the LLM can make before we force it to stop calling tools
-const maxToolCallAmount : number = 5;
+const maxToolCallAmount : number = 10;
 
-// //parse the [TOOL_CALLS] request, should be able to handle multiple call in a single request
-// function parseToolCalls(request : string): Array<{ name: string; args: any }> | null {
-//     console.log("[parseToolCalls] Parsing request looking for tool call")
-//     const TAG : string = "[TOOL_CALLS]";
-//     const toolCalls : Array<{ name: string; args: any }> = [];
-    
-//     if (!request.includes(TAG)) {
-//         console.log("[parseToolCalls] No tool call found in request")
-//         return null;
-//     }
-
-//     //split the request into different sections delimited by the TAG, filter removes empty values
-//     const splittedRequests : Array<string> = request.split(TAG).filter(d => d);
-//     console.log("[parseToolCalls] Found",splittedRequests.length,"tool call in request")
-
-//     //for each call, get the name of the function called and the arguments
-//     splittedRequests.forEach(call => {
-//         const nameMatch = call.match(/^([a-zA-Z0-9_]+)/);
-//         if (!nameMatch) return null;
-//         const name = nameMatch[1];
-
-//         const argsJSON = call.slice(name.length);
-//         const args = checkValidJSON(argsJSON) ? JSON.parse(argsJSON) : {};
-
-//         toolCalls.push({ name, args });
-//         console.log("[parseToolCalls] Added a call for",name,"to the list of toolCalls")
-//     });
-
-//     return toolCalls;
-// }
-
-// //simple helper function that check if a string is valid JSON format
-// function checkValidJSON(string : string) {
-//     try {
-//         JSON.parse(string);
-//     } catch (e) {
-//         return false;
-//     }
-//     return true;
-// }
-
-//new parser used to parse content of the request when the LLM is too dumb to use its integrated tool_call response
+//new parser used to parse content when the LLM is too dumb to use its integrated tool_call response
 function parseToolCalls(content: string): Array<{ function: { name: string; arguments: string } }> | null {
     const toolNames = toolsArray.map(t => t.function.name);
     const results: Array<{ function: { name: string; arguments: string } }> = [];
@@ -295,14 +236,12 @@ export const POST: APIRoute = async ({locals, request}) => {
                     try {
                         const name = toolCall.function.name;
                         const args = JSON.parse(toolCall.function.arguments);
-                        if (name === "listInventory") {
-                            toolResult = await listInventory(id);
-                        } else if (name === "createItem") {
-                            toolResult = await createItem(id, args.data);
-                        } else if (name === "updateItem") {
-                            toolResult = await updateItem(id, args.itemId, args.data);
-                        } else if (name === "deleteItem") {
-                            toolResult = await deleteItem(id, args.itemId);
+                        
+                        const tool = toolMap.get(name);
+                        if (tool) {
+                            toolResult = await tool.execute(args, id);
+                        } else {
+                            toolResult = { error: `Unknown tool: ${name}`}
                         }
                     } catch (e) {
                         toolResult = { error: String(e) };

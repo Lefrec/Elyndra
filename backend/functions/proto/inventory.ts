@@ -16,7 +16,11 @@ export async function listInventory(id: string) {
         const items = await pb.collection(collectionName).getFullList();
         console.log("[listInventory] Listed inventory");
         pb.authStore.clear();
-        return items;
+        if (items.length == 0) {
+            return "Inventory is empty";
+        } else {
+            return items;
+        };
     } catch (e) {
         console.log("[listInventory] Failed");
         return e;
@@ -58,7 +62,7 @@ export async function deleteItem(id: string, itemId: string) {
         const item = await pb.collection(collectionName).delete(itemId);
         console.log("[deleteItem] Deleted item");
         pb.authStore.clear();
-        return item;
+        return `Item was deleted successfuly : ${item}`;
     } catch (e) {
         console.log("[deleteItem] Failed");
         return e;
