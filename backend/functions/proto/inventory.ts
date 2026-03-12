@@ -27,10 +27,10 @@ export async function createItem(id: string, data: Item) {
     try {
         await authAdmin();
         const collectionName = "Inventory_"+id;
-        await pb.collection(collectionName).create(data);
+        const item = await pb.collection(collectionName).create(data);
         console.log("[createItem] Added item "+data.name);
         pb.authStore.clear();
-        return;
+        return item;
     } catch (e) {
         console.log("[createItem] Failed");
         return e;

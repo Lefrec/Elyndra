@@ -9,7 +9,9 @@ const API_URL = "https://lab-ia.umlp.fr/api/chat/completions";
 
 //we keep the system prompt out of the POST for readability
 const systemPrompt: string = "Tu es un assistant IA, répond aux requêtes de l'utilisateur de la manière la plus simple et directe possible."+
-"Tu peux utiliser des tool call pour aider l'utilisateur à gérer ses collections inventory, entity, player et gamestate dans une base de données.";
+"Tu peux utiliser des tool call pour aider l'utilisateur à gérer ses collections inventory, entity, player et gamestate dans une base de données."+
+"Ne fais pas plusieurs tool call dans la même requête, fais les un par un."+
+"Quand tu ne connais pas l'id d'une entrée sur laquelle tu veux agir, liste d'abords la collection pour trouver le bon id";
 
 //array of tools the LLM as access to
 const toolsArray = [
@@ -115,45 +117,105 @@ const toolsArray = [
 //we can define the max amount of call the LLM can make before we force it to stop calling tools
 const maxToolCallAmount : number = 5;
 
-//parse the [TOOL_CALLS] request, should be able to handle multiple call in a single request
-function parseToolCalls(request : string): Array<{ name: string; args: any }> | null {
-    console.log("[parseToolCalls] Parsing request looking for tool call")
-    const TAG : string = "[TOOL_CALLS]";
-    const toolCalls : Array<{ name: string; args: any }> = [];
+// //parse the [TOOL_CALLS] request, should be able to handle multiple call in a single request
+// function parseToolCalls(request : string): Array<{ name: string; args: any }> | null {
+//     console.log("[parseToolCalls] Parsing request looking for tool call")
+//     const TAG : string = "[TOOL_CALLS]";
+//     const toolCalls : Array<{ name: string; args: any }> = [];
     
-    if (!request.includes(TAG)) {
-        console.log("[parseToolCalls] No tool call found in request")
-        return null;
+//     if (!request.includes(TAG)) {
+//         console.log("[parseToolCalls] No tool call found in request")
+//         return null;
+//     }
+
+//     //split the request into different sections delimited by the TAG, filter removes empty values
+//     const splittedRequests : Array<string> = request.split(TAG).filter(d => d);
+//     console.log("[parseToolCalls] Found",splittedRequests.length,"tool call in request")
+
+//     //for each call, get the name of the function called and the arguments
+//     splittedRequests.forEach(call => {
+//         const nameMatch = call.match(/^([a-zA-Z0-9_]+)/);
+//         if (!nameMatch) return null;
+//         const name = nameMatch[1];
+
+//         const argsJSON = call.slice(name.length);
+//         const args = checkValidJSON(argsJSON) ? JSON.parse(argsJSON) : {};
+
+//         toolCalls.push({ name, args });
+//         console.log("[parseToolCalls] Added a call for",name,"to the list of toolCalls")
+//     });
+
+//     return toolCalls;
+// }
+
+// //simple helper function that check if a string is valid JSON format
+// function checkValidJSON(string : string) {
+//     try {
+//         JSON.parse(string);
+//     } catch (e) {
+//         return false;
+//     }
+//     return true;
+// }
+
+//new parser used to parse content of the request when the LLM is too dumb to use its integrated tool_call response
+function parseToolCalls(content: string): Array<{ function: { name: string; arguments: string } }> | null {
+    const toolNames = toolsArray.map(t => t.function.name);
+    const results: Array<{ function: { name: string; arguments: string } }> = [];
+    let i = 0;
+    while (i < content.length) {
+        let found = false;
+        for (const name of toolNames) {
+            if (content.startsWith(name, i)) {
+                i += name.length;
+                // now parse JSON from i
+                let braceCount = 0;
+                let start = i;
+                let inString = false;
+                let escaped = false;
+                while (i < content.length) {
+                    const char = content[i];
+                    if (inString) {
+                        if (escaped) {
+                            escaped = false;
+                        } else if (char === '\\') {
+                            escaped = true;
+                        } else if (char === '"') {
+                            inString = false;
+                        }
+                    } else {
+                        if (char === '"') {
+                            inString = true;
+                        } else if (char === '{') {
+                            braceCount++;
+                        } else if (char === '}') {
+                            braceCount--;
+                            if (braceCount === 0) {
+                                i++;
+                                break;
+                            }
+                        }
+                    }
+                    i++;
+                }
+                if (braceCount === 0) {
+                    const jsonStr = content.substring(start, i);
+                    try {
+                        JSON.parse(jsonStr); // validate
+                        results.push({ function: { name, arguments: jsonStr } });
+                        found = true;
+                    } catch (e) {
+                        // invalid JSON, skip
+                    }
+                }
+                break;
+            }
+        }
+        if (!found) {
+            i++; // move to next char if no tool found
+        }
     }
-
-    //split the request into different sections delimited by the TAG, filter removes empty values
-    const splittedRequests : Array<string> = request.split(TAG).filter(d => d);
-    console.log("[parseToolCalls] Found",splittedRequests.length,"tool call in request")
-
-    //for each call, get the name of the function called and the arguments
-    splittedRequests.forEach(call => {
-        const nameMatch = call.match(/^([a-zA-Z0-9_]+)/);
-        if (!nameMatch) return null;
-        const name = nameMatch[1];
-
-        const argsJSON = call.slice(name.length);
-        const args = checkValidJSON(argsJSON) ? JSON.parse(argsJSON) : {};
-
-        toolCalls.push({ name, args });
-        console.log("[parseToolCalls] Added a call for",name,"to the list of toolCalls")
-    });
-
-    return toolCalls;
-}
-
-//simple helper function that check if a string is valid JSON format
-function checkValidJSON(string : string) {
-    try {
-        JSON.parse(string);
-    } catch (e) {
-        return false;
-    }
-    return true;
+    return results.length > 0 ? results : null;
 }
 
 export const POST: APIRoute = async ({locals, request}) => {
@@ -207,7 +269,12 @@ export const POST: APIRoute = async ({locals, request}) => {
 
                 //checking for tool call
                 console.log("[chat] Checking for tool call in response",i);
-                const toolCalls = choice.message.tool_calls;
+                let toolCalls;
+                if (choice.message.tool_calls) {
+                    toolCalls = choice.message.tool_calls;
+                } else {
+                    toolCalls = parseToolCalls(choice.message.content);
+                }
                 console.log("[chat] Tool call of response",i,":",toolCalls);
 
                 if (!toolCalls || toolCalls.length === 0 ) {
@@ -222,10 +289,9 @@ export const POST: APIRoute = async ({locals, request}) => {
                 // Execute all tools in this response
                 for (const toolCall of toolCalls) {
                     let toolResult: any = null;
-                    console.log("[chat] toolCall : ",toolCall);
                     try {
                         const name = toolCall.function.name;
-                        const args = toolCall.function.arguments;
+                        const args = JSON.parse(toolCall.function.arguments);
                         if (name === "listInventory") {
                             toolResult = await listInventory(id);
                         } else if (name === "createItem") {
@@ -239,7 +305,7 @@ export const POST: APIRoute = async ({locals, request}) => {
                         toolResult = { error: String(e) };
                     };
         
-                    // Add tool result to messages and continue loopù
+                    // Add tool result to messages and continue loop
                     console.log("[chat] Tool result :",toolResult)
                     chatMessages.push({ role: "user", content: `Tool result: ${JSON.stringify(toolResult)}` });
                 };
