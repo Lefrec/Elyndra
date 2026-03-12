@@ -15,6 +15,7 @@ const systemPrompt: string = "Tu es un assistant IA, répond aux requêtes de l'
 
 //array of tools the LLM as access to
 const toolsArray = [
+    //Inventory
     {
         type: "function",
         function: {
@@ -112,6 +113,8 @@ const toolsArray = [
             },
         },
     },
+    //Entity
+    
 ]
 
 //we can define the max amount of call the LLM can make before we force it to stop calling tools

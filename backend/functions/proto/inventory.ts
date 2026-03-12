@@ -41,10 +41,10 @@ export async function updateItem(id: string, itemId: string, data: Item) {
     try {
         await authAdmin();
         const collectionName = "Inventory_"+id;
-        await pb.collection(collectionName).update(itemId, data);
+        const item = await pb.collection(collectionName).update(itemId, data);
         console.log("[updateItem] Updated item");
         pb.authStore.clear();
-        return;
+        return item;
     } catch (e) {
         console.log("[updateItem] Failed");
         return e;
@@ -55,10 +55,10 @@ export async function deleteItem(id: string, itemId: string) {
     try {
         await authAdmin();
         const collectionName = "Inventory_"+id;
-        await pb.collection(collectionName).delete(itemId);
+        const item = await pb.collection(collectionName).delete(itemId);
         console.log("[deleteItem] Deleted item");
         pb.authStore.clear();
-        return;
+        return item;
     } catch (e) {
         console.log("[deleteItem] Failed");
         return e;

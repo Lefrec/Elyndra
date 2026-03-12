@@ -91,10 +91,12 @@ async function setupPlayer(id: string) {
                 ]
             })
         } else {
-            console.log("[setupPlayer] Truncate collection");
-            await pb.collections.truncate(collectionName)
+            console.log("[setupPlayer] Retiring old characters");
+            const currentPlayers = await pb.collection(collectionName).getFullList();
+            currentPlayers.forEach( async (player) => {
+                await pb.collection(collectionName).update(player.id, {isCurrent: false});
+            });
         }
-
         return;
     } catch (e) {
         console.log("[setupPlayer] Failed")
