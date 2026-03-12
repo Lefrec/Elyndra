@@ -9,7 +9,7 @@ const API_URL = "https://lab-ia.umlp.fr/api/chat/completions";
 
 //we keep the system prompt out of the POST for readability
 const systemPrompt: string = "Tu es un assistant IA, répond aux requêtes de l'utilisateur de la manière la plus simple et directe possible."+
-"Tu peux utiliser des tools pour aider l'utilisateur à gérer ses collections inventory, entity, player et gamestate dans une base de données.";
+"Tu peux utiliser des tool call pour aider l'utilisateur à gérer ses collections inventory, entity, player et gamestate dans une base de données.";
 
 //array of tools the LLM as access to
 const toolsArray = [
