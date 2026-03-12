@@ -1,47 +1,89 @@
 ---
 import Layout from '../layout/Layout.astro';
 import CreditPackCard from '../components/CreditPackCard.astro';
+import heroImage from "../assets/hero_boutique.webp";
 ---
+
 <Layout title="Boutique - Elyndra" description="Découvrez nos packs de crédits pour profiter pleinement de votre expérience sur Elyndra. Rechargez vos crédits avec bonus et accédez à des fonctionnalités exclusives.">
-<div class="py-16 px-4 md:px-8 max-w-6xl mx-auto">
-  <div class="text-center mb-20">
-    <h1 class="text-4xl md:text-6xl font-black text-[#FFE9B5] mb-4">Packs de Crédits</h1>
-    <p class="text-[#9C9C9C] text-lg max-w-lg mx-auto">Rechargez vos crédits avec bonus</p>
-  </div>
-  
-  <div class="carousel-container overflow-x-auto pb-8 -mx-4 md:-mx-6 snap-x snap-mandatory scrollbar-hide">
-    <div class="flex gap-4 md:gap-6 lg:gap-8 px-4 md:px-6 snap-x snap-center">
-      
-      <CreditPackCard name="Starter" credits={500} price="4,99€" image="/src/assets/starter-pack.svg" />
-      <CreditPackCard name="Pack Standard" credits={1200} price="9,99€" image="/src/assets/pack-standard.svg" isPopular={true} />
-      <CreditPackCard name="Pack Premium" credits={2500} price="19,99€" image="/src/assets/pack-premium.svg" />
-      <CreditPackCard name="Pack Elite" credits={6000} price="44,99€" image="/src/assets/pack-elite.svg" />
-      
+
+<!-- Hero (inchangé) -->
+<section class="hero flex items-center justify-center min-h-[400px] sm:min-h-[450px] md:min-h-[550px] lg:min-h-[600px]">
+    <div class="w-full relative h-full">
+        <!-- Image de fond -->
+        <img
+            src={heroImage.src}
+            alt="Hero background"
+            class="absolute inset-0 w-full h-full object-cover object-center"
+        />
+
+        <!-- Overlay assombrissement + vignette -->
+        <div class="absolute inset-0 bg-slate-950/40"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_20%,rgba(0,0,0,0.7)_80%)]"></div>
+
+        <!-- Contenu -->
+        <div class="relative py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center gap-4 sm:gap-6">
+            <!-- Ornement supérieur -->
+            <div class="flex items-center justify-center gap-2">
+                <div class="h-px w-16 sm:w-20 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+                <span class="size-1.5 sm:size-2 rotate-45 bg-amber-200/70"></span>
+                <span class="size-2 sm:size-2.5 rotate-45 bg-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
+                <span class="size-1.5 sm:size-2 rotate-45 bg-amber-200/70"></span>
+                <div class="h-px w-16 sm:w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
+            </div>
+
+            <!-- Titre principal -->
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold uppercase tracking-[0.1em] sm:tracking-[0.15em] text-elyndra-gradient drop-shadow-[0_2px_20px_rgba(0,0,0,0.8)] leading-tight">
+                La Boutique d'Elyndra
+            </h1>
+
+            <!-- Ornement inférieur -->
+            <div class="flex items-center justify-center gap-2">
+                <div class="h-px w-16 sm:w-20 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+                <span class="size-1.5 sm:size-2 rotate-45 bg-amber-200/70"></span>
+                <span class="size-2 sm:size-2.5 rotate-45 bg-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
+                <span class="size-1.5 sm:size-2 rotate-45 bg-amber-200/70"></span>
+                <div class="h-px w-16 sm:w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
+            </div>
+
+            <!-- Description -->
+            <p class="text-xs sm:text-sm md:text-base uppercase tracking-[0.15em] sm:tracking-[0.2em] max-w-xl sm:max-w-2xl leading-relaxed text-white/90 px-4">
+                Crédits, avatars, DLC : tout ce qu'il faut pour booster ton expérience.
+            </p>
+        </div>
     </div>
-  </div>
-</div>
+</section>
+
+<!-- Section Packs -->
+<section class="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+    <!-- Titre et texte à gauche -->
+    <div class="text-left mb-12 sm:mb-16 md:mb-20">
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#FFE9B5] mb-4 sm:mb-6 leading-tight">Packs de Crédits</h2>
+        <p class="text-[#9C9C9C] text-base sm:text-lg md:text-xl max-w-lg leading-relaxed">Rechargez vos crédits pour débloquer du contenu exclusif</p>
+    </div>
+
+    <!-- GRILLE : moins large + centrée sur mobile -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 justify-items-center sm:justify-items-start mx-auto max-w-[280px] sm:max-w-none">
+        <CreditPackCard name="Starter" credits={500} price="4,99€" image="/src/assets/starter-pack.svg" />
+        <CreditPackCard name="Pack Standard" credits={1200} price="9,99€" image="/src/assets/pack-standard.svg" />
+        <CreditPackCard name="Pack Premium" credits={2500} price="19,99€" image="/src/assets/pack-premium.svg" />
+        <CreditPackCard name="Pack Elite" credits={6000} price="44,99€" image="/src/assets/pack-elite.svg" />
+    </div>
+</section>
 
 <style>
-  .carousel-container {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  
-  .carousel-container::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .credit-card {
-    flex: 0 0 280px;
-    max-width: 280px;
-    min-height: 320px;
-  }
-  
-  @media (max-width: 768px) {
     .credit-card {
-      flex: 0 0 260px;
-      min-height: 280px;
+        width: 100%;
+        max-width: 260px; /* Moins large sur mobile */
+        min-height: 260px;
+        margin: 0 auto; /* Centré */
     }
-  }
+    
+    @media (min-width: 640px) {
+        .credit-card {
+            max-width: none; /* Pleine largeur sur sm+ */
+            min-height: 300px;
+            margin: 0; /* Plus de centrage */
+        }
+    }
 </style>
 </Layout>
