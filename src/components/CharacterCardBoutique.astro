@@ -1,0 +1,93 @@
+---
+const { 
+  id, name, title, description, image, rarity, price, credits, powers, stats 
+} = Astro.props;
+
+const getRarityColor = (rarity) => {
+  return rarity === "Légendaire" ? "#FFE9B5" : "#9DD0FA";
+};
+---
+
+<div class="character-card bg-gradient-to-b from-[#0E0E0E] to-[#090D13] border-[1px] rounded-2xl overflow-hidden shadow-2xl transition-none flex flex-col h-full group min-w-[320px] sm:min-w-[360px]">
+  
+  <!-- Image + Overlay + Badge -->
+  <div class="relative h-72 overflow-hidden">
+    <img src={image} alt={name} class="w-full h-full object-cover" />
+    <div class="absolute inset-0 bg-gradient-to-t from-[#090D13]/90 via-transparent to-transparent" />
+    
+    <!-- Badge Rareté -->
+    <div class="absolute top-4 right-4 px-4 py-1.5 rounded-md font-bold text-sm shadow-lg z-10" 
+         style={{ backgroundColor: getRarityColor(rarity), color: rarity === "Légendaire" ? "#00234B" : "#E8E5D8" }}>
+      {rarity}
+    </div>
+    
+    <!-- Nom Overlay -->
+    <div class="absolute bottom-0 left-0 right-0 p-6">
+      <h3 class="text-2xl font-black mb-1" style={{ color: '#E8E5D8' }}>{name}</h3>
+      <p class="font-semibold text-sm" style={{ color: '#FFE9B5' }}>{title}</p>
+    </div>
+  </div>
+
+  <!-- Contenu -->
+  <div class="p-6 flex-1 flex flex-col">
+    <!-- Description -->
+    <p class="text-sm mb-4 leading-relaxed" style={{ color: '#9C9C9C' }}>
+      {description}
+    </p>
+
+    <!-- Stats -->
+    <div class="mb-4 pb-4" style={{ borderBottom: '1px solid #353120' }}>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 bg-[#FFE9B5] rounded-full"></div>
+          <span class="text-xs" style={{ color: '#9C9C9C' }}>Attaque:</span>
+          <span class="text-sm font-bold" style={{ color: '#E8E5D8' }}>{stats.attack}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 bg-[#9DD0FA] rounded-full"></div>
+          <span class="text-xs" style={{ color: '#9C9C9C' }}>Défense:</span>
+          <span class="text-sm font-bold" style={{ color: '#E8E5D8' }}>{stats.defense}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 bg-[#9DD0FA] rounded-full"></div>
+          <span class="text-xs" style={{ color: '#9C9C9C' }}>Magie:</span>
+          <span class="text-sm font-bold" style={{ color: '#E8E5D8' }}>{stats.magic}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 bg-[#FFE9B5] rounded-full"></div>
+          <span class="text-xs" style={{ color: '#9C9C9C' }}>Vitesse:</span>
+          <span class="text-sm font-bold" style={{ color: '#E8E5D8' }}>{stats.speed}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pouvoirs -->
+    <div class="mb-6">
+      <h4 class="text-sm font-semibold mb-3" style={{ color: '#FFE9B5' }}>Pouvoirs Uniques</h4>
+      <div class="space-y-2 text-xs" style={{ color: '#9C9C9C' }}>
+        {powers.map((power, index) => (
+          <div key={index} class="flex items-start gap-2">
+            <div class="w-1.5 h-1.5 bg-[#FFE9B5] rounded-full mt-1.5 flex-shrink-0"></div>
+            <span>{power}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Prix & Bouton -->
+    <div class="space-y-3">
+      <div class="flex items-center justify-between text-sm">
+        <div class="flex items-center gap-2 font-semibold" style={{ color: '#FFE9B5' }}>
+          <div class="w-4 h-4 bg-yellow-400 rounded-full"></div>
+          <span>{credits} crédits</span>
+        </div>
+        <span class="text-xl font-bold" style={{ color: '#E8E5D8' }}>{price}€</span>
+      </div>
+
+      <button class={`w-full bg-[#FFE9B5] text-[#090D13] font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-lg uppercase text-xs sm:text-sm hover:bg-yellow-400 transition-colors mt-auto
+        ${rarity === 'Légendaire' ? '' : 'opacity-90 hover:opacity-100'}`}>
+        Ajouter au panier
+      </button>
+    </div>
+  </div>
+</div>

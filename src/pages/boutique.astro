@@ -1,7 +1,53 @@
 ---
 import Layout from '../layout/Layout.astro';
 import CreditPackCard from '../components/CreditPackCard.astro';
+import CharacterCard from '../components/CharacterCardBoutique.astro';
 import heroImage from "../assets/hero_boutique.webp";
+
+const characters = [
+  {
+    id: 1, name: "Kaelith Ombrefer", title: "Seigneur des Ombres", rarity: "Légendaire", credits: 1500, price: "24.99",
+    description: "Maître de l'obscurité et des illusions, Kaelith peut se déplacer entre les dimensions d'ombre et invoquer des créatures des ténèbres.",
+    image: "https://copilot.microsoft.com/th/id/BCO.77e142f8-d2fc-495d-ba25-0f4a7340fbdd.png",
+    powers: ["Marche de l'Ombre : Téléportation à courte distance", "Invocation des Ombres : Crée des clones illusoires", "Faille Dimensionnelle : Bannit les ennemis temporairement"],
+    stats: { attack: 85, defense: 60, magic: 95, speed: 90 }
+  },
+  {
+    id: 2, name: "Celestria Luminis", title: "Archimage Céleste", rarity: "Légendaire", credits: 1500, price: "24.99",
+    description: "Gardienne de la magie ancienne, elle maîtrise les arts arcaniques les plus puissants et peut manipuler le temps et l'espace.",
+    image: "https://copilot.microsoft.com/th/id/BCO.b6ee6d74-498b-4b43-97cc-b86cfc6eb4e9.png",
+    powers: ["Distorsion Temporelle : Ralentit le temps pour les ennemis", "Météores Arcaniques : Invoque une pluie de météores magiques", "Bouclier Astral : Immunité aux dégâts magiques pendant 5s"],
+    stats: { attack: 70, defense: 55, magic: 100, speed: 75 }
+  },
+  {
+    id: 3, name: "Vex l'Insaisissable", title: "Maître Assassin", rarity: "Épique", credits: 1200, price: "19.99",
+    description: "Assassin légendaire d'Elyndra, Vex combine vitesse surhumaine et techniques mortelles pour éliminer ses cibles sans être détecté.",
+    image: "https://copilot.microsoft.com/th/id/BCO.4ae63c68-22e2-4def-b18a-58f3e3236918.png",
+    powers: ["Pas Fantôme : Invisibilité totale pendant 8 secondes", "Exécution Silencieuse : Coup critique instantané dans le dos", "Lames Empoisonnées : Dégâts sur la durée mortels"],
+    stats: { attack: 95, defense: 50, magic: 40, speed: 100 }
+  },
+  {
+    id: 4, name: "Pyraxis le Dévoreur", title: "Élémentaliste de Feu", rarity: "Épique", credits: 1200, price: "19.99",
+    description: "Incarnation vivante du feu primordial, Pyraxis brûle tout sur son passage et peut transformer son corps en flammes pures.",
+    image: "https://copilot.microsoft.com/th/id/BCO.82d77312-022d-475a-b4cc-4bc7aa058797.png",
+    powers: ["Forme Élémentaire : Transforme le corps en feu, immune aux attaques physiques", "Nova Incendiaire : Explosion massive de flammes", "Chaînes de Magma : Emprisonne et brûle plusieurs ennemis"],
+    stats: { attack: 90, defense: 65, magic: 88, speed: 70 }
+  },
+  {
+    id: 5, name: "Morven le Sépulcral", title: "Nécromancien Suprême", rarity: "Légendaire", credits: 1500, price: "24.99",
+    description: "Seigneur des morts-vivants qui commande une armée de créatures spectrales et peut drainer la force vitale de ses ennemis.",
+    image: "https://copilot.microsoft.com/th/id/BCO.e6c38b32-8a99-4ca6-b6ac-9a1b3aad890d.png",
+    powers: ["Armée des Damnés : Invoque 5 guerriers morts-vivants", "Drain de Vie : Absorbe la vie des ennemis pour se soigner", "Malédiction de Décomposition : Affaiblit tous les ennemis proches"],
+    stats: { attack: 75, defense: 70, magic: 92, speed: 60 }
+  },
+  {
+    id: 6, name: "Aurelia la Radieuse", title: "Paladine Céleste", rarity: "Épique", credits: 1200, price: "19.99",
+    description: "Championne de la lumière divine, Aurelia protège ses alliés avec des barrières sacrées et peut ressusciter les tombés au combat.",
+    image: "https://copilot.microsoft.com/th/id/BCO.eee1f523-890a-4f3a-aa0d-177e1b86e60d.png",
+    powers: ["Résurrection Divine : Ramène un allié à la vie avec 50% HP", "Jugement Sacré : Dégâts massifs aux créatures corrompues", "Aura de Protection : Réduit les dégâts de tous les alliés de 40%"],
+    stats: { attack: 80, defense: 90, magic: 85, speed: 65 }
+  }
+];
 ---
 
 <Layout title="Boutique - Elyndra" description="Découvrez nos packs de crédits pour profiter pleinement de votre expérience sur Elyndra. Rechargez vos crédits avec bonus et accédez à des fonctionnalités exclusives.">
@@ -16,9 +62,11 @@ import heroImage from "../assets/hero_boutique.webp";
             class="absolute inset-0 w-full h-full object-cover object-center"
         />
 
+
         <!-- Overlay assombrissement + vignette -->
         <div class="absolute inset-0 bg-slate-950/40"></div>
         <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_20%,rgba(0,0,0,0.7)_80%)]"></div>
+
 
         <!-- Contenu -->
         <div class="relative py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center gap-4 sm:gap-6">
@@ -31,10 +79,12 @@ import heroImage from "../assets/hero_boutique.webp";
                 <div class="h-px w-16 sm:w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
             </div>
 
+
             <!-- Titre principal -->
             <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold uppercase tracking-[0.1em] sm:tracking-[0.15em] text-elyndra-gradient drop-shadow-[0_2px_20px_rgba(0,0,0,0.8)] leading-tight">
                 La Boutique d'Elyndra
             </h1>
+
 
             <!-- Ornement inférieur -->
             <div class="flex items-center justify-center gap-2">
@@ -45,6 +95,7 @@ import heroImage from "../assets/hero_boutique.webp";
                 <div class="h-px w-16 sm:w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
             </div>
 
+
             <!-- Description -->
             <p class="text-xs sm:text-sm md:text-base uppercase tracking-[0.15em] sm:tracking-[0.2em] max-w-xl sm:max-w-2xl leading-relaxed text-white/90 px-4">
                 Crédits, avatars, DLC : tout ce qu'il faut pour booster ton expérience.
@@ -53,13 +104,15 @@ import heroImage from "../assets/hero_boutique.webp";
     </div>
 </section>
 
+
 <!-- Section Packs -->
 <section class="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
     <!-- Titre et texte à gauche -->
-    <div class="text-left mb-12 sm:mb-16 md:mb-20">
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#FFE9B5] mb-4 sm:mb-6 leading-tight">Packs de Crédits</h2>
-        <p class="text-[#9C9C9C] text-base sm:text-lg md:text-xl max-w-lg leading-relaxed">Rechargez vos crédits pour débloquer du contenu exclusif</p>
-    </div>
+<div class="text-left mb-16">
+  <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#FFE9B5] mb-4 sm:mb-6 leading-tight">Packs de Crédits</h2>
+  <p class="text-[#9C9C9C] text-base sm:text-lg md:text-xl max-w-lg leading-relaxed">Rechargez vos crédits pour débloquer du contenu exclusif</p>
+</div>
+
 
     <!-- GRILLE : moins large + centrée sur mobile -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 justify-items-center sm:justify-items-start mx-auto max-w-[280px] sm:max-w-none">
@@ -70,6 +123,65 @@ import heroImage from "../assets/hero_boutique.webp";
     </div>
 </section>
 
+<!-- Section Personnages Premium (carrousel sans hover) -->
+<section class="py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto relative overflow-hidden">
+<div class="text-left mb-16">
+  <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#FFE9B5] mb-4 sm:mb-6 leading-tight">Personnages Premium</h2>
+  <p class="text-[#9C9C9C] text-base sm:text-lg md:text-xl max-w-lg leading-relaxed">Découvrez des héros légendaires pour dominer Elyndra</p>
+</div>
+
+  <!-- Carrousel -->
+  <div
+    id="carousel"
+    class="flex items-stretch gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-hide md:overflow-hidden justify-start pl-14 pr-14 md:pl-16 md:pr-16 h-[680px] md:h-[720px]"
+  >
+    {characters.map((character) => (
+      <div
+        class="snap-center flex-shrink-0 w-[85%] sm:w-[60%] md:w-[26%] xl:w-[24%] min-w-[320px] sm:min-w-[360px] transition-none mr-4 last:mr-0"
+      >
+        <CharacterCard {...character} />
+      </div>
+    ))}
+  </div>
+
+  <!-- Boutons navigation (desktop uniquement) -->
+  <button
+    id="prevBtn"
+    class="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 bg-[#FFE9B5]/80 hover:bg-[#FFE9B5] text-[#090D13] text-4xl font-bold rounded-full w-16 h-16 items-center justify-center shadow-lg transition-all"
+    aria-label="Précédent"
+  >
+    ‹
+  </button>
+
+  <button
+    id="nextBtn"
+    class="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 bg-[#FFE9B5]/80 hover:bg-[#FFE9B5] text-[#090D13] text-4xl font-bold rounded-full w-16 h-16 items-center justify-center shadow-lg transition-all"
+    aria-label="Suivant"
+  >
+    ›
+  </button>
+
+  <!-- Script de navigation -->
+  <script>
+    const carousel = document.getElementById('carousel');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function scrollCarousel(direction) {
+      const card = carousel.querySelector('div');
+      if (!card) return;
+      const style = window.getComputedStyle(card);
+      const gap = parseFloat(style.marginRight) || 0;
+      const cardWidth = card.offsetWidth + gap; // largeur d'une carte + écart
+      carousel.scrollBy({ left: direction * cardWidth, behavior: 'smooth' }); // défilement 1 carte à la fois
+    }
+
+    prevBtn?.addEventListener('click', () => scrollCarousel(-1));
+    nextBtn?.addEventListener('click', () => scrollCarousel(1));
+  </script>
+</section>
+
+
 <style>
     .credit-card {
         width: 100%;
@@ -77,7 +189,7 @@ import heroImage from "../assets/hero_boutique.webp";
         min-height: 260px;
         margin: 0 auto; /* Centré */
     }
-    
+   
     @media (min-width: 640px) {
         .credit-card {
             max-width: none; /* Pleine largeur sur sm+ */
@@ -85,5 +197,6 @@ import heroImage from "../assets/hero_boutique.webp";
             margin: 0; /* Plus de centrage */
         }
     }
+
 </style>
 </Layout>
