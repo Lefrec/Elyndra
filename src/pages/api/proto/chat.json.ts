@@ -1,7 +1,6 @@
 import { type APIRoute } from "astro";
-import { listInventory, createItem, updateItem, deleteItem } from "../../../../backend/functions/proto/inventory"; 
-import { listCollections, addGamestate } from "../../../../backend/functions/proto/weaviate";
-import { object } from "astro:schema";
+import { listInventory, createItem, updateItem, deleteItem } from "../../../../backend/functions/proto/inventory";
+import { listPlayer, getPlayer, createPlayer, updatePlayer, deletePlayer } from "../../../../backend/functions/proto/player"; 
 
 //Define what a tool is
 interface Tool {
@@ -18,10 +17,11 @@ const API_URL = "https://lab-ia.umlp.fr/api/chat/completions";
 //we keep the system prompt out of the POST for readability
 const systemPrompt: string = "Tu es un assistant IA, répond aux requêtes de l'utilisateur de la manière la plus simple et directe possible."+
 "Tu peux utiliser des tool call pour aider l'utilisateur à gérer ses collections inventory, entity, player et gamestate dans une base de données."+
-"Tu ne connais pas les id, utilise les fonctions de liste pour les trouver.";
+"Tu ne connais pas les id, utilise les fonctions de liste pour les trouver avant d'agir.";
 
 //array defining our tools
 const tools: Tool[] = [
+  //Inventory
   {
     name: "listInventory",
     description: "Liste tous les objets présent dans l'inventaire de l'utilisateur",
@@ -84,6 +84,92 @@ const tools: Tool[] = [
       required: ["itemId"],
     },
     execute: async (args, id) => deleteItem(id, args.itemId),
+  },
+  //Player
+  {
+    name: "listPlayer",
+    description: "Liste tous les personnages de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+    execute: async (args, id) => listPlayer(id),
+  },
+  {
+    name: "getPlayer",
+    description: "Récupère uniquement le personnage actuel de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+    execute: async (args, id) => getPlayer(id),
+  },
+  {
+    name: "createPlayer",
+    description: "Crée un nouveau personnage pour l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        data: {
+          type: "object",
+          description: "Propriétés du personnage",
+          properties: {
+            name: { type: "string", description: "Nom du personnage" },
+            class: { type: "string", enum: ["chevalier","mage","alchimiste","ombre"], description: "Classe du personnage" },
+            maxHP: { type: "integer", description: "Points de vie maximum" },
+            currentHP: { type: "integer", description: "Points de vie actuels" },
+            for: { type: "integer", description: "Force" },
+            def: { type: "integer", description: "Défense" },
+            mag: { type: "integer", description: "Magie" },
+            agi: { type: "integer", description: "Agilité" },
+            isCurrent: { type: "boolean", description: "Si c'est le personnage actuel" },
+          },
+        },
+      },
+      required: ["data"],
+    },
+    execute: async (args, id) => createPlayer(id, args.data),
+  },
+  {
+    name: "updatePlayer",
+    description: "Modifie un personnage existant de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        playerId: { type: "string", description: "ID du personnage à modifier" },
+        data: {
+          type: "object",
+          description: "Propriétés du personnage",
+          properties: {
+            name: { type: "string", description: "Nom du personnage" },
+            class: { type: "string", enum: ["chevalier","mage","alchimiste","ombre"], description: "Classe du personnage" },
+            maxHP: { type: "integer", description: "Points de vie maximum" },
+            currentHP: { type: "integer", description: "Points de vie actuels" },
+            for: { type: "integer", description: "Force" },
+            def: { type: "integer", description: "Défense" },
+            mag: { type: "integer", description: "Magie" },
+            agi: { type: "integer", description: "Agilité" },
+            isCurrent: { type: "boolean", description: "Si c'est le personnage actuel" },
+          },
+        },
+      },
+      required: ["playerId", "data"],
+    },
+    execute: async (args, id) => updatePlayer(id, args.playerId, args.data),
+  },
+  {
+    name: "deletePlayer",
+    description: "Supprime un personnage de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        playerId: { type: "string", description: "ID du personnage à supprimer" },
+      },
+      required: ["playerId"],
+    },
+    execute: async (args, id) => deletePlayer(id, args.playerId),
   },
 ];
 
