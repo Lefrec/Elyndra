@@ -84,7 +84,7 @@ const getRarityColor = (rarity) => {
         <span class="text-xl font-bold" style={{ color: '#E8E5D8' }}>{price}€</span>
       </div>
 
-      <button class={`w-full bg-[#FFE9B5] text-[#090D13] font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-lg uppercase text-xs sm:text-sm hover:bg-yellow-400 transition-colors mt-auto
+      <button data-char-id={id} class={`add-to-cart-btn w-full bg-[#FFE9B5] text-[#090D13] font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-lg uppercase text-xs sm:text-sm hover:bg-yellow-400 transition-colors mt-auto
         ${rarity === 'Légendaire' ? '' : 'opacity-90 hover:opacity-100'}`}>
         Ajouter au panier
       </button>

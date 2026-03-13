@@ -28,30 +28,44 @@ const pseudo     = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
                     <a href="/a_propos" class="hover:underline font-heading text-sm tracking-widest">À Propos</a>
                 </li>
                 <li>
-                    <a href="/contact" class="hover:underline font-heading text-sm tracking-widest">Contact</a>
+                    <a href="/boutique" class="hover:underline font-heading text-sm tracking-widest">Boutique</a>
                 </li>
                 <li>
-                    {isLoggedIn ? (
-                        <div class="flex items-center gap-3">
-                            <span class="text-[#FFE9B5] text-sm font-heading tracking-widest">{pseudo}</span>
-                            <button
-                                id="logout-btn"
-                                class="text-white/60 hover:text-[#FFE9B5] text-xs font-body tracking-widest uppercase border border-white/20 hover:border-[#FFE9B5]/50 px-3 py-1.5 rounded-[6px] transition-all"
-                            >
-                                Se déconnecter
-                            </button>
-                        </div>
-                    ) : (
-                        <a href="/login" class="hover:opacity-80">
-                            <svg width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M28.195 29.653s0-1.459-.487-3.403c-.588-2.356-1.944-3.889-4.86-3.889H12.152c-2.917 0-4.273 1.533-4.861 3.889-.486 1.944-.486 3.403-.486 3.403h21.389zM12.639 12.639c0 1.81.263 3.796.972 4.861.905 1.358 2.44 1.944 3.89 1.944 1.504 0 2.982-.586 3.888-1.944.71-1.065.972-3.05.972-4.861 0-1.358-.486-5.833-4.86-5.833-4.376 0-4.862 3.57-4.862 5.833z" fill="#D0CFCE"/>
-                                <path d="M28.195 29.167s0-.973-.487-2.917c-.588-2.356-1.944-3.889-4.86-3.889H12.152c-2.917 0-4.273 1.533-4.861 3.889-.486 1.944-.486 2.917-.486 2.917" stroke="#000" stroke-width=".5" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M12.639 12.639c0 1.81.262 3.796.972 4.861.905 1.358 2.44 1.944 3.889 1.944 1.505 0 2.983-.586 3.889-1.944.71-1.065.972-3.05.972-4.861 0-1.358-.486-5.833-4.861-5.833s-4.861 3.57-4.861 5.833z" stroke="#000" stroke-width=".5" stroke-linejoin="round"/>
-                            </svg>
-                        </a>
-                    )}
+                    <a href="/contact" class="hover:underline font-heading text-sm tracking-widest">Contact</a>
                 </li>
             </ul>
+
+            <!-- Icône panier -->
+            <a href="/panier" class="relative hover:opacity-80 transition-opacity">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-[#FFE9B5]" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="8" cy="21" r="1"></circle>
+                    <circle cx="19" cy="21" r="1"></circle>
+                    <path d="m2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+                </svg>
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-[#FFE9B5] text-black text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+            </a>
+
+            <li>
+                {isLoggedIn ? (
+                    <div class="flex items-center gap-3">
+                        <span class="text-[#FFE9B5] text-sm font-heading tracking-widest">{pseudo}</span>
+                        <button
+                            id="logout-btn"
+                            class="text-white/60 hover:text-[#FFE9B5] text-xs font-body tracking-widest uppercase border border-white/20 hover:border-[#FFE9B5]/50 px-3 py-1.5 rounded-[6px] transition-all"
+                        >
+                            Se déconnecter
+                        </button>
+                    </div>
+                ) : (
+                    <a href="/login" class="hover:opacity-80">
+                        <svg width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M28.195 29.653s0-1.459-.487-3.403c-.588-2.356-1.944-3.889-4.86-3.889H12.152c-2.917 0-4.273 1.533-4.861 3.889-.486 1.944-.486 3.403-.486 3.403h21.389zM12.639 12.639c0 1.81.263 3.796.972 4.861.905 1.358 2.44 1.944 3.89 1.944 1.504 0 2.982-.586 3.888-1.944.71-1.065.972-3.05.972-4.861 0-1.358-.486-5.833-4.86-5.833-4.376 0-4.862 3.57-4.862 5.833z" fill="#D0CFCE"/>
+                            <path d="M28.195 29.167s0-.973-.487-2.917c-.588-2.356-1.944-3.889-4.86-3.889H12.152c-2.917 0-4.273 1.533-4.861 3.889-.486 1.944-.486 2.917-.486 2.917" stroke="#000" stroke-width=".5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12.639 12.639c0 1.81.262 3.796.972 4.861.905 1.358 2.44 1.944 3.889 1.944 1.505 0 2.983-.586 3.889-1.944.71-1.065.972-3.05.972-4.861 0-1.358-.486-5.833-4.861-5.833s-4.861 3.57-4.861 5.833z" stroke="#000" stroke-width=".5" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                )}
+            </li>
         </nav>
 
         <!-- Boutons mobile : login + hamburger -->
@@ -97,8 +111,20 @@ const pseudo     = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
             <a href="/a_propos" class="hover:text-[#FFE9B5] font-heading text-sm uppercase tracking-widest transition-colors">
                 À Propos
             </a>
+            <a href="/boutique" class="hover:text-[#FFE9B5] font-heading text-sm uppercase tracking-widest transition-colors">
+                Boutique
+            </a>
             <a href="/contact" class="hover:text-[#FFE9B5] font-heading text-sm uppercase tracking-widest transition-colors">
                 Contact
+            </a>
+            <a href="/panier" class="relative hover:text-[#FFE9B5] font-heading text-sm uppercase tracking-widest transition-colors flex items-center gap-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-current" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="8" cy="21" r="1"></circle>
+                    <circle cx="19" cy="21" r="1"></circle>
+                    <path d="m2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+                </svg>
+                Panier
+                <span id="cart-count-mobile" class="bg-[#FFE9B5] text-black text-xs font-bold rounded-full px-2 py-0.5 hidden">0</span>
             </a>
         </nav>
     </div>
@@ -132,6 +158,37 @@ const pseudo     = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
             bar3?.classList.remove('-rotate-45', '-translate-y-2');
         }
     });
+
+    // Fonction pour mettre à jour le compteur du panier
+    function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem('elyndra_cart') || '[]');
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const cartCount = document.getElementById('cart-count');
+        const cartCountMobile = document.getElementById('cart-count-mobile');
+
+        if (totalItems > 0) {
+            cartCount.textContent = totalItems;
+            cartCount.classList.remove('hidden');
+            cartCountMobile.textContent = totalItems;
+            cartCountMobile.classList.remove('hidden');
+        } else {
+            cartCount.classList.add('hidden');
+            cartCountMobile.classList.add('hidden');
+        }
+    }
+
+    // Mettre à jour au chargement
+    updateCartCount();
+
+    // Écouter les changements du localStorage (pour les autres onglets)
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'elyndra_cart') {
+            updateCartCount();
+        }
+    });
+
+    // Écouter les mises à jour du panier sur la même page
+    window.addEventListener('cartUpdated', updateCartCount);
 
     // Déconnexion
     async function logout() {
