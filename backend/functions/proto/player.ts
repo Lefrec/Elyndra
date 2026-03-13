@@ -78,7 +78,7 @@ export async function deletePlayer(id: string, playerId: string) {
         const player = await pb.collection(collectionName).delete(playerId);
         console.log("[deletePlayer] Deleted player");
         pb.authStore.clear();
-        return player;
+        return `Item was deleted successfuly : ${player}`;
     } catch (e) {
         console.log("[deletePlayer] Failed");
         return e;

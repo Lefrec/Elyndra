@@ -1,6 +1,8 @@
 import { type APIRoute } from "astro";
 import { listInventory, createItem, updateItem, deleteItem } from "../../../../backend/functions/proto/inventory";
-import { listPlayer, getPlayer, createPlayer, updatePlayer, deletePlayer } from "../../../../backend/functions/proto/player"; 
+import { listPlayer, getPlayer, createPlayer, updatePlayer, deletePlayer } from "../../../../backend/functions/proto/player";
+import { listCollections, setupGamestate, addGamestate, listGamestate, deleteGamestate, getLoreRAG, getGamestateRAG } from "../../../../backend/functions/proto/weaviate";
+import { listEntity, createEntity, updateEntity, deleteEntity } from "../../../../backend/functions/proto/entity"; 
 
 //Define what a tool is
 interface Tool {
@@ -170,6 +172,144 @@ const tools: Tool[] = [
       required: ["playerId"],
     },
     execute: async (args, id) => deletePlayer(id, args.playerId),
+  },
+  //Gamestate and Lore
+  {
+    name: "addGamestate",
+    description: "Ajoute un élément au gamestate de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        data: {
+          type: "object",
+          description: "Propriétés de l'élément gamestate",
+          properties: {
+            type: { type: "string", description: "Type de l'élément" },
+            name: { type: "string", description: "Nom de l'élément" },
+            desc: { type: "string", description: "Description de l'élément" },
+          },
+        },
+      },
+      required: ["data"],
+    },
+    execute: async (args, id) => addGamestate(id, args.data),
+  },
+  {
+    name: "deleteGamestate",
+    description: "Supprime un élément au gamestate de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        gamestateId: {
+          type: "string",
+          description: "identifiant unique (uuid) de l'élément à supprimer",
+        },
+      },
+      required: ["gamestateId"],
+    },
+    execute: async (args, id) => deleteGamestate(id, args.gamestateId),
+  },
+  {
+    name: "listGamestate",
+    description: "Liste tous les éléments du gamestate de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+    execute: async (args, id) => listGamestate(id),
+  },
+  {
+    name: "getLoreRAG",
+    description: "Recherche dans la base de connaissances lore en utilisant la similarité vectorielle",
+    parameters: {
+      type: "object",
+      properties: {
+        query: { type: "string", description: "La requête de recherche" },
+        size: { type: "integer", description: "Nombre de résultats à retourner", default: 5 },
+      },
+      required: ["query"],
+    },
+    execute: async (args, id) => getLoreRAG(args.query, args.size || 5),
+  },
+  {
+    name: "getGamestateRAG",
+    description: "Recherche dans le gamestate de l'utilisateur en utilisant la similarité vectorielle",
+    parameters: {
+      type: "object",
+      properties: {
+        query: { type: "string", description: "La requête de recherche" },
+        size: { type: "integer", description: "Nombre de résultats à retourner", default: 5 },
+      },
+      required: ["query"],
+    },
+    execute: async (args, id) => getGamestateRAG(id, args.query, args.size || 5),
+  },
+  //Entity
+  {
+    name: "listEntity",
+    description: "Liste toutes les entités de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+    execute: async (args, id) => listEntity(id),
+  },
+  {
+    name: "createEntity",
+    description: "Crée une nouvelle entité pour l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        data: {
+          type: "object",
+          description: "Propriétés de l'entité",
+          properties: {
+            name: { type: "string", description: "Nom de l'entité" },
+            desc: { type: "string", description: "Description de l'entité" },
+            maxHP: { type: "integer", description: "Points de vie maximum" },
+            currentHP: { type: "integer", description: "Points de vie actuels" },
+          },
+        },
+      },
+      required: ["data"],
+    },
+    execute: async (args, id) => createEntity(id, args.data),
+  },
+  {
+    name: "updateEntity",
+    description: "Modifie une entité existante de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        entityId: { type: "string", description: "ID de l'entité à modifier" },
+        data: {
+          type: "object",
+          description: "Propriétés de l'entité",
+          properties: {
+            name: { type: "string", description: "Nom de l'entité" },
+            desc: { type: "string", description: "Description de l'entité" },
+            maxHP: { type: "integer", description: "Points de vie maximum" },
+            currentHP: { type: "integer", description: "Points de vie actuels" },
+          },
+        },
+      },
+      required: ["entityId", "data"],
+    },
+    execute: async (args, id) => updateEntity(id, args.entityId, args.data),
+  },
+  {
+    name: "deleteEntity",
+    description: "Supprime une entité de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        entityId: { type: "string", description: "ID de l'entité à supprimer" },
+      },
+      required: ["entityId"],
+    },
+    execute: async (args, id) => deleteEntity(id, args.entityId),
   },
 ];
 

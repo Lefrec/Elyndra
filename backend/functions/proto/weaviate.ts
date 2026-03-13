@@ -53,12 +53,26 @@ export async function addGamestate(id: string, data: Gamestate) {
     try {
         const client: WeaviateClient = await weaviate.connectToLocal();
         const collectionName = 'Gamestate_'+id;
-        await client.collections.get(collectionName).data.insert(data);
+        const gamestate = await client.collections.get(collectionName).data.insert(data);
         await client.close();
         console.log("[addGamestate] Added to gamestate");
-        return;
+        return gamestate;
     } catch (e) {
         console.log("[addGamestate] Failed");
+        return e;
+    }
+}
+
+export async function deleteGamestate(id: string, gamestateId: string) {
+    try {
+        const client: WeaviateClient = await weaviate.connectToLocal();
+        const collectionName = 'Gamestate_'+id;
+        const gamestate = await client.collections.get(collectionName).data.deleteById(gamestateId);
+        await client.close();
+        console.log("[deleteGamestate] Deleted entry in gamestate");
+        return gamestate;
+    } catch (e) {
+        console.log("[deleteGamestate] Failed");
         return e;
     }
 }
@@ -68,33 +82,35 @@ export async function listGamestate(id: string) {
         const client: WeaviateClient = await weaviate.connectToLocal();
         const collectionName = 'Gamestate_'+id;
         const collection = client.collections.get(collectionName);
+        let gamestateItems : Array<any> = [];
         for await (let items of collection.iterator()) {
+            gamestateItems.push(items);
             console.log("[listGamestate] ", items.uuid, items.properties);
         }
         await client.close();
-        return;
+        return gamestateItems;
     } catch (e) {
         console.log("[listGamestate] Failed");
         return e;
     }
 }
 
-export async function deleteGamestate(id: string) {
+export async function deleteGamestateCol(id: string) {
     try {
         const client: WeaviateClient = await weaviate.connectToLocal();
         const collectionName = 'Gamestate_'+id;
         const exist = await client.collections.exists(collectionName);
         if (!exist) {
-            console.log("[deleteGamestate] Collection doesn't exist");
+            console.log("[deleteGamestateCol] Collection doesn't exist");
             await client.close();
             return;
         }
         await client.collections.delete(collectionName);
         await client.close();
-        console.log("[deleteGamestate] Deleted gamestate");
+        console.log("[deleteGamestateCol] Deleted gamestate collection");
         return;
     } catch (e) {
-        console.log("[deleteGamestate] Failed");
+        console.log("[deleteGamestateCol] Failed");
         return e;
     }
 }
@@ -104,9 +120,9 @@ export async function getLoreRAG(query: string, size: number = 5) : Promise<stri
         console.log("[getLoreRAG] Searching in Lore RAG for query : '",query,"' with a result size of ",size);
         const client: WeaviateClient = await weaviate.connectToLocal();
         const results = await client.collections.use('Lore').query.nearText(query, {limit: size});
-        let message = "";
+        let message = [];
         for (let object of results.objects) {
-            message += (JSON.stringify(object.properties))+" | ";
+            message.push(object);
         };
         await client.close();
         return message;
@@ -128,9 +144,9 @@ export async function getGamestateRAG(id :string, query: string, size: number = 
             return;
         }
         const results = await client.collections.use(collectionName).query.nearText(query, {limit: size});
-        let message = "";
+        let message = [];
         for (let object of results.objects) {
-            message += (JSON.stringify(object.properties))+" | ";
+            message.push(object);
         };
         await client.close();
         return message;

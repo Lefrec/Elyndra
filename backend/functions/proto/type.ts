@@ -7,6 +7,7 @@ export type Item = {
 export type Entity = {
     name?: string;
     desc?: string;
+    maxHP?: number;
     currentHP?: number;
 }
 
