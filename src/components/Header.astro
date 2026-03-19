@@ -8,7 +8,7 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
 const pseudo     = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
 ---
 
-<header id="site-header" class={`bg-black backdrop-blur-sm px-4 md:px-8 py-2 sticky z-50 w-full border-b border-[#FFE9B5]/10 ${bannerOffset ? 'top-[52px]' : 'top-0'}`}>
+<header id="site-header" class={`bg-black backdrop-blur-sm px-4 md:px-8 py-2 sticky z-50 w-full border-b border-Or-clair/10 transition-transform duration-300 ${bannerOffset ? 'top-[52px]' : 'top-0'}`}>
     <div class="max-w-7xl mx-auto h-16 flex justify-between items-center">
 
         <!-- Logo -->
@@ -33,10 +33,10 @@ const pseudo     = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
                 <li>
                     {isLoggedIn ? (
                         <div class="flex items-center gap-3">
-                            <span class="text-[#FFE9B5] text-sm font-heading tracking-widest">{pseudo}</span>
+                            <a href="/profile" class="text-Or-clair text-sm font-heading tracking-widest hover:underline hover:opacity-80 transition-opacity">{pseudo}</a>
                             <button
                                 id="logout-btn"
-                                class="text-white/60 hover:text-[#FFE9B5] text-xs font-body tracking-widest uppercase border border-white/20 hover:border-[#FFE9B5]/50 px-3 py-1.5 rounded-[6px] transition-all"
+                                class="text-white/60 hover:text-Or-clair text-xs font-body tracking-widest uppercase border border-white/20 hover:border-Or-clair/50 px-3 py-1.5 rounded-[6px] transition-all"
                             >
                                 Se déconnecter
                             </button>
@@ -58,8 +58,8 @@ const pseudo     = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
         <div class="flex md:hidden items-center gap-4">
             {isLoggedIn ? (
                 <div class="flex items-center gap-2">
-                    <span class="text-[#FFE9B5] text-xs font-heading tracking-widest">{pseudo}</span>
-                    <button id="logout-btn-mobile" class="text-white/60 hover:text-[#FFE9B5] text-[0.6rem] uppercase border border-white/20 px-2 py-1 rounded-[5px] transition-all">
+                    <a href="/profile" class="text-Or-clair text-xs font-heading tracking-widest hover:underline hover:opacity-80 transition-opacity">{pseudo}</a>
+                    <button id="logout-btn-mobile" class="text-white/60 hover:text-Or-clair text-[0.6rem] uppercase border border-white/20 px-2 py-1 rounded-[5px] transition-all">
                         Quitter
                     </button>
                 </div>
@@ -77,9 +77,9 @@ const pseudo     = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
                 class="flex flex-col justify-center items-center gap-1.5 w-8 h-8 bg-transparent border-none cursor-pointer"
                 aria-label="Ouvrir le menu"
             >
-                <span id="bar1" class="block w-6 h-0.5 bg-[#FFE9B5] transition-all duration-300"></span>
-                <span id="bar2" class="block w-6 h-0.5 bg-[#FFE9B5] transition-all duration-300"></span>
-                <span id="bar3" class="block w-6 h-0.5 bg-[#FFE9B5] transition-all duration-300"></span>
+                <span id="bar1" class="block w-6 h-0.5 bg-Or-clair transition-all duration-300"></span>
+                <span id="bar2" class="block w-6 h-0.5 bg-Or-clair transition-all duration-300"></span>
+                <span id="bar3" class="block w-6 h-0.5 bg-Or-clair transition-all duration-300"></span>
             </button>
         </div>
 
@@ -88,16 +88,16 @@ const pseudo     = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
     <!-- Menu mobile déroulant -->
     <div
         id="mobile-menu"
-        class="md:hidden hidden flex-col gap-0 bg-black border-t border-[#FFE9B5]/10 overflow-hidden transition-all duration-300"
+        class="md:hidden hidden flex-col gap-0 bg-black border-t border-Or-clair/10 overflow-hidden transition-all duration-300"
     >
         <nav class="px-4 py-6 flex flex-col gap-5">
-            <a href="/choixbiome" class="hover:text-[#FFE9B5] font-heading text-sm uppercase tracking-widest transition-colors">
+            <a href="/choixbiome" class="hover:text-Or-clair font-heading text-sm uppercase tracking-widest transition-colors">
                 Le Jeu
             </a>
-            <a href="/a_propos" class="hover:text-[#FFE9B5] font-heading text-sm uppercase tracking-widest transition-colors">
+            <a href="/a_propos" class="hover:text-Or-clair font-heading text-sm uppercase tracking-widest transition-colors">
                 À Propos
             </a>
-            <a href="/contact" class="hover:text-[#FFE9B5] font-heading text-sm uppercase tracking-widest transition-colors">
+            <a href="/contact" class="hover:text-Or-clair font-heading text-sm uppercase tracking-widest transition-colors">
                 Contact
             </a>
         </nav>
@@ -140,4 +140,29 @@ const pseudo     = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
     }
     document.getElementById('logout-btn')?.addEventListener('click', logout);
     document.getElementById('logout-btn-mobile')?.addEventListener('click', logout);
+
+    // Header cachable au scroll (Mobile uniquement)
+    let lastScrollY = window.scrollY;
+    const header = document.getElementById('site-header');
+
+    window.addEventListener('scroll', () => {
+        // Appliquer uniquement sur mobile (largeur < 768px pour coller au 'md' de Tailwind)
+        if (window.innerWidth >= 768) {
+            if (header) header.style.transform = 'translateY(0)';
+            return;
+        }
+
+        // On ne cache pas le header si le menu hamburger est ouvert
+        if (isOpen) return;
+
+        if (window.scrollY > lastScrollY && window.scrollY > 80) {
+            // L'utilisateur scrolle vers le bas (et a passé le haut de la page) -> On cache
+            if (header) header.style.transform = 'translateY(-100%)';
+        } else {
+            // L'utilisateur scrolle vers le haut -> On affiche
+            if (header) header.style.transform = 'translateY(0)';
+        }
+        
+        lastScrollY = window.scrollY;
+    }, { passive: true });
 </script>

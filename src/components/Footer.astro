@@ -1,3 +1,10 @@
+---
+import discordImg from '../assets/footer/discord.webp';
+import instaImg from '../assets/footer/insta.webp';
+import linkedinImg from '../assets/footer/linkedin.webp';
+import twitterImg from '../assets/footer/twitter.webp';
+---
+
 <footer class="bg-black text-white">
     <div class="max-w-7xl mx-auto px-4 md:px-6 py-8">
 
@@ -43,10 +50,18 @@
                     Rejoignez notre univers
                 </h3>
                 <div class="flex gap-3 justify-center sm:justify-start">
-                    <a href="#" class="w-9 h-9 bg-amber-200 rounded hover:bg-amber-300 transition-colors" aria-label="Facebook"></a>
-                    <a href="#" class="w-9 h-9 bg-amber-200 rounded hover:bg-amber-300 transition-colors" aria-label="Twitter"></a>
-                    <a href="#" class="w-9 h-9 bg-amber-200 rounded hover:bg-amber-300 transition-colors" aria-label="Instagram"></a>
-                    <a href="#" class="w-9 h-9 bg-amber-200 rounded hover:bg-amber-300 transition-colors" aria-label="Discord"></a>
+                    <a href="#" class="w-9 h-9 flex items-center justify-center p-1.5" aria-label="LinkedIn">
+                        <img src={linkedinImg.src} alt="LinkedIn" class="w-full h-full object-contain" />
+                    </a>
+                    <a href="#" class="w-9 h-9 flex items-center justify-center p-1.5" aria-label="Twitter">
+                        <img src={twitterImg.src} alt="Twitter" class="w-full h-full object-contain" />
+                    </a>
+                    <a href="#" class="w-9 h-9 flex items-center justify-center p-1.5" aria-label="Instagram">
+                        <img src={instaImg.src} alt="Instagram" class="w-full h-full object-contain" />
+                    </a>
+                    <a href="#" class="w-9 h-9 flex items-center justify-center p-1.5" aria-label="Discord">
+                        <img src={discordImg.src} alt="Discord" class="w-full h-full object-contain" />
+                    </a>
                 </div>
             </div>
 

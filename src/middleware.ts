@@ -16,6 +16,7 @@ function getUserIdFromToken(token: string): string | null {
 const PROTECTED_ROUTES = [
     "/interface_jeu",
     "/start_game",
+    "/profile",
 ];
 
 export const onRequest = defineMiddleware(async ({ cookies, url, redirect, locals }, next) => {

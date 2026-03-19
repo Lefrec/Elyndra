@@ -4,19 +4,19 @@ const { img, title, lieu, type, description } = Astro.props;
 
 <div class="relative group">
     <!-- Fond gradient horizontal (côtés) -->
-    <div class="absolute inset-0 bg-gradient-to-r from-amber-100/40 via-amber-100/10 to-amber-100/40 rounded-2xl"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-amber-100/40 via-amber-100/10 to-amber-100/40 rounded-2xl md:rounded-xl"></div>
     
     <!-- Carte -->
-    <div class="relative bg-slate-950/80 rounded-2xl border border-amber-100/20 p-6 ">
-        <div class="flex gap-10">
-            <!-- Image à gauche -->
-            <div class="flex-shrink-0">
-                <img src={img} alt={title} class="w-40 h-40 object-contain rounded-lg" />
+    <div class="relative bg-slate-950/80 rounded-2xl md:rounded-xl border border-amber-100/20 p-6 md:p-8">
+        <div class="flex flex-col md:flex-row gap-6 md:gap-10 items-center md:items-start text-center md:text-left">
+            <!-- Image à gauche sur PC / En haut sur Mobile -->
+            <div class="flex-shrink-0 flex justify-center">
+                <img src={img} alt={title} class="w-32 h-32 md:w-40 md:h-40 object-contain rounded-lg" />
             </div>
             
-            <!-- Informations à droite -->
-            <div class="flex flex-col gap-3 flex-1">
-                <h3 class="text-2xl font-heading2 text-[#FFE9B5FF]">
+            <!-- Informations à droite sur PC / En bas sur Mobile -->
+            <div class="flex flex-col gap-3 flex-1 h-full justify-center">
+                <h3 class="text-2xl font-heading2 text-Or-clair">
                     {title}
                 </h3>
                 <p class="text-sm font-body italic text-amber-200">

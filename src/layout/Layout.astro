@@ -6,8 +6,9 @@ import "/src/styles/global.css";
 interface Props {
     showBanner?: boolean;
     title?: string;
+    hideHeaderFooter?: boolean;
 }
-const { showBanner = false } = Astro.props;
+const { showBanner = false, hideHeaderFooter = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -18,10 +19,10 @@ const { showBanner = false } = Astro.props;
     <title>Elyndra</title>
   </head>
   <body>
-    <Header bannerOffset={showBanner} />
+    {!hideHeaderFooter && <Header bannerOffset={showBanner} />}
     <main class="flex-1 min-w-0">
       <slot />
     </main>
-    <Footer />
+    {!hideHeaderFooter && <Footer />}
   </body>
 </html>
