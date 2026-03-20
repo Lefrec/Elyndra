@@ -279,7 +279,7 @@ const biomesDataForClient = Object.fromEntries(
                         <!-- Bouton membre -->
                         <a
                             href="/"
-                            class="w-full px-4 py-3 bg-yellow-700 hover:bg-yellow-600 transition-colors rounded-[10px] text-center"
+                            class="w-full px-4 py-3 bg-elyndra-3 hover:bg-yellow-600 transition-colors rounded-[10px] text-center"
                         >
                             <span class="text-white text-xs"
                                 >Découvrez nos offres pour plus de Verbomnes !</span
@@ -564,7 +564,7 @@ const biomesDataForClient = Object.fromEntries(
                         <div class="flex-1 grid grid-cols-2 lg:grid-cols-1 gap-2 lg:gap-2.5">
                         <!-- Statistiques -->
                         <div class="text-center relative max-w-[280px] mx-auto lg:max-w-none w-full flex flex-col justify-center h-full">
-                            <h3 class="text-white text-xs mb-2">
+                            <h3 class="text-Or-clair text-ms mb-2">
                                 Statistiques
                             </h3>
 
@@ -952,7 +952,7 @@ const biomesDataForClient = Object.fromEntries(
                             class="border border-Or-clair rounded p-3 h-full flex flex-col min-h-[150px] lg:min-h-0"
                         >
                             <h3
-                                class="text-center text-xs font-['Almendra'] mb-2 shrink-0"
+                                class="text-Or-clair text-ms mb-2 shrink-0 text-center"
                             >
                                 Inventaire
                             </h3>
@@ -1083,6 +1083,20 @@ const biomesDataForClient = Object.fromEntries(
                         diceResult.style.opacity = '1';
                         isRolling = false;
                     };
+                });
+            }
+
+            // Écouteur pour le bouton de test DEV (utilise window.changeBiome de game.js)
+            const devBtn = document.getElementById('dev-biome-btn');
+            const devSelect = document.getElementById('dev-biome-select');
+            
+            if (devBtn && devSelect) {
+                devBtn.addEventListener('click', () => {
+                    if(typeof window.changeBiome === 'function') {
+                        window.changeBiome(devSelect.value);
+                    } else {
+                        console.error('La fonction changeBiome est introuvable.');
+                    }
                 });
             }
         });

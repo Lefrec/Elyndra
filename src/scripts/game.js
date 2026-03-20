@@ -100,6 +100,7 @@ const messages = [
             "- Récompense les actions créatives et solutions ingénieuses du joueur." +
             "- Le ton doit être immersif, fluide et agréable. Tu équilibres description et rythme sans faire de textes trop longs ni trop laconiques." +
             "- Tu n'es pas un adversaire du joueur, mais un narrateur impartial favorisant l'immersion et le plaisir du jeu." +
+            "- De temps en temps, tu peux proposer subtilement au joueur de voyager vers un autre biome (parmi Lunel, Solarys, Auralis, Elyndra). S'il EXPRIME CLAIREMENT sa volonté de s'y rendre, tu dois OBLIGATOIREMENT terminer ta réponse par la balise [NEW_BIOME: nom_du_biome]. Ex: [NEW_BIOME: solarys]" +
             `- L'aventure se déroule dans le biome de ${biomeData.fullName}.`,
     },
 ];
@@ -154,7 +155,20 @@ async function sendMessage(userMessage) {
         });
 
         const data = await response.json();
-        const aiResponse = data.choices[0].message.content;
+        let aiResponse = data.choices[0].message.content;
+
+        // Vérification de changement de biome demandé par l'IA
+        const biomeMatch = aiResponse.match(/\[NEW_BIOME:\s*(lunel|solarys|auralis|elyndra)\]/i);
+        if (biomeMatch) {
+            const nextBiome = biomeMatch[1].toLowerCase();
+            // Nettoyage de la balise dans le texte affiché
+            aiResponse = aiResponse.replace(/\[NEW_BIOME:\s*.*?\]/ig, '').trim();
+            
+            // On déclenche le changement visuel
+            if (typeof window.changeBiome === 'function') {
+                window.changeBiome(nextBiome);
+            }
+        }
 
         // Ajouter la réponse à l'historique
         messages.push({
@@ -190,7 +204,17 @@ async function startGame() {
         });
 
         const data = await response.json();
-        const aiResponse = data.choices[0].message.content;
+        let aiResponse = data.choices[0].message.content;
+
+        // Vérification de changement de biome (sécurité aussi au démarrage)
+        const biomeMatch = aiResponse.match(/\[NEW_BIOME:\s*(lunel|solarys|auralis|elyndra)\]/i);
+        if (biomeMatch) {
+            const nextBiome = biomeMatch[1].toLowerCase();
+            aiResponse = aiResponse.replace(/\[NEW_BIOME:\s*.*?\]/ig, '').trim();
+            if (typeof window.changeBiome === 'function') {
+                window.changeBiome(nextBiome);
+            }
+        }
 
         messages.push({
             role: "assistant",
