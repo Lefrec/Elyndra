@@ -19,34 +19,27 @@ const PROTECTED_ROUTES = [
     "/profile",
 ];
 
-export const onRequest = defineMiddleware(async ({ cookies, url, redirect, locals }, next) => {
-    const isProtected = PROTECTED_ROUTES.some(route =>
-        url.pathname.startsWith(route)
-    );
+export const onRequest = defineMiddleware(async ({locals, request, isPrerendered}:any, next: ()=> any) => {
 
-    if (isProtected) {
-        const token = cookies.get("elyndra_session")?.value;
+    console.log("[middleware]");
 
-        if (!token) {
-            const fullPath = url.pathname + url.search;
-            return redirect(`/login?redirect=${encodeURIComponent(fullPath)}`);
-        }
+    locals.pb = new pb("http://127.0.0.1:8090");
 
-        // Vérifier le token auprès de PocketBase
-        const pb = new PocketBase(POCKETBASE_URL);
-        pb.authStore.save(token, null);
-
+    if (!isPrerendered) {
+        locals.pb.authStore.loadFromCookie(request.headers.get('cookie')||'');
+        
         try {
-            await pb.collection("users").authRefresh();
-            // Rendre l'utilisateur disponible dans toutes les pages
-            (locals as Record<string, unknown>).user = pb.authStore.record;
-        } catch {
-            // Token expiré ou invalide → on renvoie vers le login
-            cookies.delete("elyndra_session", { path: "/" });
-            const fullPath = url.pathname + url.search;
-            return redirect(`/login?redirect=${encodeURIComponent(fullPath)}`);
+            locals.pb.authStore.isValid && await locals.pb.collection('users').authRefresh();
+        } catch (error) {
+            locals.pb.authStore.clear();
         }
     }
 
-    return next();
-});
+    const response = await next();
+
+    if (!isPrerendered) {
+        response.headers.append('set-cookie', locals.pb.authStore.exportToCookie());
+    }
+
+    return response;
+})

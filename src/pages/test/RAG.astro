@@ -1,0 +1,63 @@
+---
+import "/src/styles/global.css";
+
+import Layout from "../../layout/Layout.astro";
+---
+
+<Layout>
+  <h1>RAG Test</h1>
+  <h3>Input</h3>
+  <input type="text" name="input" id="input" />
+  <button id="button">Submit</button>
+  <h3>Answer</h3>
+  <div id="answer"></div>
+
+  <!-- chat script -->
+  <script>
+    const button = document.getElementById("button");
+    const input = document.getElementById("input") as HTMLInputElement | null;
+    const answer = document.getElementById("answer") as HTMLDivElement | null;
+
+    const messages = [
+      {
+        role: "system",
+        content:
+          "You are the narrator of a role-playing game in the world of Elyndra, the user is playing a character in this world",
+      },
+    ];
+
+    if (button && input && answer) {
+      button.addEventListener("click", async () => {
+        //add input value to messages
+        messages.push({ role: "user", content: input.value });
+        console.log(messages);
+
+        //call api endpoint
+        const res = await fetch("/api/RAGtest.json", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages }),
+        });
+
+        //streaming
+        const reader = res.body?.getReader();
+        const decoder = new TextDecoder();
+        let fullText = "";
+        let systemMessageContent = "";
+
+        if (reader) {
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            const chunk = decoder.decode(value, { stream: true });
+            fullText += chunk;
+            answer.textContent = fullText;
+          }
+        }
+        //add response to messages and print it
+        messages.push({ role: "assistant", content: fullText });
+        console.log(messages);
+      });
+    }
+  </script>
+</Layout>

@@ -5,33 +5,51 @@ import lunel from "../assets/biomes/lunel.webp";
 import solarys from "../assets/biomes/solarys.webp";
 import auralis from "../assets/biomes/auralis.webp";
 import elyndra from "../assets/biomes/elyndra.webp";
-import chevalier from "../assets/chevalier.webp";
-import mage from "../assets/mage.webp";
-import alchimiste from "../assets/alchimiste.webp";
-import ombre from "../assets/ombre.webp";
-
-const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
 
 const biomes = [
-    { id: 1, title: "Le Cœur Sylvestre de Lunel", description: "Une jungle oppressante avec des cités perchées et des dangers au sol", image: lunel, link: "/interface_jeu/lunel" },
-    { id: 2, title: "Les Dunes ardentes de Solarys", description: "Une immensité aride avec un oasis solitaire et un monde souterrain", image: solarys, link: "/interface_jeu/solarys" },
-    { id: 3, title: "Le Village Gelé d'Auralis", description: "Un refuge givré avec des vents mordants et des spectres de glace", image: auralis, link: "/interface_jeu/auralis" },
-    { id: 4, title: "Les Ruines Oubliées d'Élyndra", description: "Une cité perdue avec des pierres runiques et des légendes oubliées", image: elyndra, link: "/interface_jeu/elyndra" }
-];
-
-const roles = [
-    { id: 1, slug: "Chevalier", title: "Le Chevalier", description: "Un guerrier en armure forgé dans l'acier et la bravoure", image: chevalier },
-    { id: 2, slug: "Mage", title: "La Mage", description: "Tisseuse de sorts, elle plie les éléments à sa volonté", image: mage },
-    { id: 3, slug: "Chimiste", title: "Le Chimiste", description: "Maître des potions et des runes, il transforme la nature en arme", image: alchimiste },
-    { id: 4, slug: "Ombre", title: "L'Ombre", description: "Assassin des ténèbres, il frappe vite et disparaît sans laisser de traces", image: ombre }
+    {
+        id: 1,
+        title: "Le Cœur Sylvestre de Lunel",
+        description: "Une jungle oppressante avec des cités perchées et des dangers au sol",
+        image: lunel,
+        link: "/biomes/lunel"
+    },
+    {
+        id: 2,
+        title: "Les Dunes ardentes de Solarys",
+        description: "Une immensité aride avec un oasis solitaire et un monde souterrain",
+        image: solarys,
+        link: "/biomes/solarys"
+    },
+    {
+        id: 3,
+        title: "Le Village Gelé d'Auralis",
+        description: "Un refuge givré avec des vents mordants et des spectres de glace",
+        image: auralis,
+        link: "/biomes/auralis"
+    },
+    {
+        id: 4,
+        title: "Les Ruines Oubliées d'Élyndra",
+        description: "Une cité perdue avec des pierres runiques et des légendes oubliées",
+        image: elyndra,
+        link: "/biomes/elyndra"
+    }
 ];
 ---
 
 <Layout>
+<!-- Hero -->
+<section class="hero flex items-center justify-center min-h-[500px] md:min-h-[550px]">
+    <div class="w-full relative h-full">
+        <!-- Image de fond -->
+        <img
+            src={heroImage.src}
+            alt="Hero background"
+            class="absolute inset-0 w-full h-full object-cover"
+        />
 
-    <!-- ═══ HERO ═══ -->
-    <section class="relative min-h-[380px] md:min-h-[500px] flex items-center justify-center">
-        <img src={heroImage.src} alt="Hero" class="absolute inset-0 w-full h-full object-cover" />
+        <!-- Overlay assombrissement + vignette -->
         <div class="absolute inset-0 bg-slate-950/40"></div>
         <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_20%,rgba(0,0,0,0.7)_80%)]"></div>
 
@@ -45,7 +63,8 @@ const roles = [
                 <div class="h-px w-12 md:w-20 bg-gradient-to-l from-transparent to-Or-clair/50"></div>
             </div>
 
-            <h1 class="text-elyndra-gradient text-3xl sm:text-4xl md:text-6xl lg:text-[4.5rem] font-bold uppercase tracking-[0.1em] md:tracking-[0.15em]">
+            <!-- Titre principal -->
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold uppercase tracking-[0.15em] text-elyndra-gradient drop-shadow-[0_2px_20px_rgba(0,0,0,0.8)]">
                 Début de l'Aventure
             </h1>
 
@@ -58,11 +77,13 @@ const roles = [
                 <div class="h-px w-12 md:w-20 bg-gradient-to-l from-transparent to-Or-clair/50"></div>
             </div>
 
-            <p class="text-xs md:text-sm uppercase tracking-[0.15em] md:tracking-[0.2em] max-w-xs md:max-w-2xl leading-loose text-white/90 mt-2 md:mt-4">
+            <!-- Description -->
+            <p class="text-sm md:text-base uppercase tracking-[0.2em] max-w-2xl leading-relaxed text-white/90 mt-4">
                 Tout ce que vous devez savoir pour commencer l'aventure
             </p>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- ═══ SÉPARATEUR ═══ -->
     <div class="relative w-full py-6 md:py-8">
@@ -147,8 +168,19 @@ const roles = [
                             </button>
                         ))}
                     </div>
-                </div>
-            </div>
+
+                    <!-- Contenu de la carte -->
+                    <div class="absolute inset-0 flex flex-col justify-end p-6">
+                        <!-- Cadre avec titre et description -->
+                        <div class="border border-amber-200/40 rounded-xl p-6 backdrop-blur-sm bg-slate-950/30 transition-all duration-300 group-hover:border-amber-200/70 group-hover:bg-slate-950/50">
+                            <!-- Ornement supérieur -->
+                            <div class="flex items-center justify-center gap-2 mb-4">
+                                <div class="h-px w-16 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+                                <span class="size-1 rotate-45 bg-amber-200/70"></span>
+                                <span class="size-2 rotate-45 bg-amber-200/90 shadow-[0_0_8px_rgba(251,191,36,0.5)]"></span>
+                                <span class="size-1 rotate-45 bg-amber-200/70"></span>
+                                <div class="h-px w-16 bg-gradient-to-l from-transparent to-amber-200/50"></div>
+                            </div>
 
             <!-- ════════════ PANNEAU 2 — RÔLES ════════════ -->
             <div class="shrink-0 py-8 md:py-16 px-4 md:px-[5vw]" style="width:33.333%;">
@@ -292,7 +324,7 @@ const roles = [
 
         </div>
     </div>
-
+</section>
 </Layout>
 
 <script>

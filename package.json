@@ -7,8 +7,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "testing": "node --loader ts-node/esm testing.ts",
-    "lore": "node --loader ts-node/esm lore.ts"
+    "lore": "node --loader ts-node/esm lore.ts",
+    "test": "node --loader ts-node/esm ./backend/testBack.ts",
+    "type": "npx pocketbase-typegen --db ./backend/pb_data/data.db --out ./src/utils/type.ts"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.1",
