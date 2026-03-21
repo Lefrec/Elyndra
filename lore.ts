@@ -6,19 +6,29 @@ import { histoiresBiomes } from './histoires_biomes.ts';
 const BestiaireItems = [];
 for (const [biome, monstres] of Object.entries(bestiaire)) {
 	for (const monstre of monstres) {
+		let description = `${monstre.description} Habituellement rencontré dans : ${biome}.`;
+		if (monstre.stats) {
+			description += ` Stats - Force: ${monstre.stats.force}, Endurance: ${monstre.stats.endurance}, Intelligence: ${monstre.stats.intelligence}.`;
+		}
 		BestiaireItems.push({
 			type: "Monstre",
 			name: monstre.nom,
-			desc: `${monstre.description} Habituellement rencontré dans : ${biome}. Attaques : ${monstre.attaques.map(a => `${a.nom} (${a.effet})`).join(", ")}`,
+			desc: description,
 		});
 	}
 }
 
-const AutresPersonnagesItems = autresPersonnages.map(p => ({
-	type: "Personnage",
-	name: p.nom,
-	desc: `${p.role} que l'on rencontre dans ${p.biome}. ${p.description} ${p.interaction}`,
-}));
+const AutresPersonnagesItems = autresPersonnages.map(p => {
+	let description = `${p.role} que l'on rencontre dans ${p.biome}. ${p.description}`;
+	if (p.stats) {
+		description += ` Stats - Force: ${p.stats.force}, Endurance: ${p.stats.endurance}, Intelligence: ${p.stats.intelligence}.`;
+	}
+	return {
+		type: "Personnage",
+		name: p.nom,
+		desc: description,
+	};
+});
 
 const HistoiresBiomesItems = histoiresBiomes.map(b => ({
 	type: "Histoire Biome",

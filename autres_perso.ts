@@ -1,58 +1,13 @@
-export const autresPersonnages = [
-  {
-    nom: "Elara, l'Archéologue de l'Aube",
-    biome: "Les Ruines Oubliées d'Élyndra",
-    role: "Érudite survivante",
-    description: "Une jeune femme téméraire qui a dédié sa vie à décrypter les gravures d'Aelyon. Ses vêtements sont couverts de poussière de pierre.",
-    interaction: "Vous donne des indices vitaux sur les énigmes des ruines de pierre. Octroie un bonus temporaire aux jets d'intelligence ou de perception si vous l'aidez."
-  },
-  {
-    nom: "Ancienne Mira",
-    biome: "Le Village Gelé d'Auralis",
-    role: "Cheffe spirituelle",
-    description: "Une femme âgée enveloppée dans d'épaisses fourrures. Ses yeux voilés semblent scruter les aurores boréales et voir au-delà du monde matériel.",
-    interaction: "Offre un abri sûr et peut soigner les afflictions magiques (comme le gel de l'âme) grâce à ses incantations dédiées à Lunara."
-  },
-  {
-    nom: "Kaelen, le Traqueur des Glaces",
-    biome: "Le Village Gelé d'Auralis",
-    role: "Chasseur",
-    description: "Un guerrier taciturne armé d'un arc en os. Il traque les bêtes ombreuses sans relâche depuis que la corruption a touché son village.",
-    interaction: "Peut servir de guide dans le blizzard pour éviter les rencontres mortelles ou fournir des équipements conférant un bonus de résistance au froid."
-  },
-  {
-    nom: "Orn, le Chaman Fou",
-    biome: "Le Cœur Sylvestre de Lunel",
-    role: "Ermite prophétique",
-    description: "Un vieil homme à la barbe tressée de racines vivantes, babillant des vérités cosmiques cryptiques au milieu des murmures de la forêt.",
-    interaction: "Propose une 'Potion révélatrice'. Exige un jet de constitution : en cas de réussite, octroie une vision révélant un secret majeur sur l'intrigue ; en cas d'échec, inflige des hallucinations (malus)."
-  },
-  {
-    nom: "Lyra, l'Étincelle Sylvestre",
-    biome: "Le Cœur Sylvestre de Lunel",
-    role: "Dryade résistante",
-    description: "L'une des rares entités de la forêt à ne pas avoir succombé à la corruption. Son corps émet une faible bioluminescence d'un vert pur.",
-    interaction: "Purifie les objets corrompus par Vorathys et peut ouvrir des passages sûrs à travers les ronces ténébreuses."
-  },
-  {
-    nom: "Zahir, le Marcheur des Cendres",
-    biome: "Les Dunes Ardentes de Solarys",
-    role: "Marchand nomade",
-    description: "Un voyageur du désert couvert de voiles dorés et rouges pour se protéger d'un soleil implacable, accompagné d'une lourde bête à écailles.",
-    interaction: "Vend des onguents curatifs contre les brûlures graves, des réserves d'eau pure, ou de rares miroirs solaires brisés utiles pour explorer les temples."
-  },
-  {
-    nom: "Maître-Forge Kaelgard",
-    biome: "Les Ruines Oubliées d'Élyndra",
-    role: "Forgeron maudit",
-    description: "Un colosse de pierre et de chair, son âme est partiellement piégée dans une ancienne forge d'Aelyon. Il frappe inlassablement une enclume divine.",
-    interaction: "Peut améliorer définitivement l'équipement de l'Élu (bonus permanent sur les jets de dégâts), à condition qu'on lui ramène du minerai non corrompu."
-  },
-  {
-    nom: "Le Murmureur Sans-Nom",
-    biome: "Rencontre aléatoire (Tous biomes)",
-    role: "Marchand de pactes",
-    description: "Une figure encapuchonnée qui apparaît toujours dans les angles morts. Sa voix résonne directement dans l'esprit du joueur, distillant une froide promesse.",
-    interaction: "Propose des avantages mécaniques majeurs (comme ignorer un échec critique ou obtenir un objet légendaire) en échange d'un Sacrifice permanent (perte de max PV, trahison d'un compagnon, ou malediction à retardement)."
-  }
+﻿export const autresPersonnages = [
+  { nom: "Lysandre, Archiviste Déchu", biome: "Les Ruines Oubliées d'Élyndra", role: "Compagnon", description: "Ancien érudit d’Elyndra, mort lors de la chute de la capitale, son spectre accompagne le joueur pour retrouver ses propres souvenirs et comprendre ce qui a réellement détruit la ville. Il est sérieux, mélancolique, parfois ironique, et offre surtout des scènes de dialogue et de révélations de lore.", stats: null },
+  { nom: "Piko, Corbeau à Trois Yeux", biome: "Les Ruines Oubliées d'Élyndra", role: "Mascotte", description: "Petit corbeau noir doté d’un troisième œil lumineux, il suit le joueur de loin, se perche sur les ruines et répète quelques sons étranges. C’est une créature étrange du lieu, qui sert de symbole iconique des ruines.", stats: null },
+  { nom: "Elder Mira", biome: "Le Village Gelé d'Auralis", role: "Personnage secondaire", description: "Villageoise du village d’Auralis, premier personnage avec lequel le joueur a une interaction.", stats: { force: 20, endurance: 30, intelligence: 70 } },
+  { nom: "Frey, Apprenti Gardien des Feux", biome: "Le Village Gelé d'Auralis", role: "Compagnon", description: "Adolescent du village chargé d’entretenir les brasiers qui empêchent le froid de tout geler, il part avec le joueur pour prouver qu’il peut devenir un véritable protecteur d’Auralis. Son arc narratif tourne autour du courage, de la responsabilité et de la peur de perdre ceux qu’il aime.", stats: null },
+  { nom: "Miki, Pingouin Écarlate", biome: "Le Village Gelé d'Auralis", role: "Mascotte", description: "Petit pingouin au ventre rouge vif qui adore glisser sur la glace et chaparder des objets brillants. Il apparaît dans plusieurs scènes comme touche d’humour visuelle et peut devenir l’icône mignonne d’Auralis.", stats: null },
+  { nom: "Chaman fou", biome: "Le Cœur Sylvestre de Lunel", role: "Personnage secondaire", description: "Mystique dérangé installé au cœur du village perché de Lunel, il pratique des rituels instables qui effraient autant les villageois que les esprits de la forêt.", stats: { force: 20, endurance: 25, intelligence: 60 } },
+  { nom: "Naya, Guide des Cimes", biome: "Le Cœur Sylvestre de Lunel", role: "Compagnon", description: "Habitante du village perché, elle connaît chaque passerelle et chaque plateforme en bois, et décide d’accompagner le joueur pour montrer qu’on peut encore protéger la forêt sans la fuir. Son histoire parle de loyauté envers son peuple et de la difficulté de rester optimiste face à la corruption.", stats: null },
+  { nom: "Tilu, Luciole Géante", biome: "Le Cœur Sylvestre de Lunel", role: "Mascotte", description: "Insecte lumineux de la taille d’un chat, qui se contente de flotter autour des clairières, attiré par la musique et la magie. Tilu ne dépend pas du village : il représente simplement la part de magie pure qui subsiste encore dans Lunel.", stats: null },
+  { nom: "Marchand mystérieux", biome: "Les Dunes Ardentes de Solarys", role: "Personnage secondaire", description: "Voyageur encapuchonné installé près de l’unique oasis, il survit en vendant reliques brûlées par le sable et informations douteuses aux aventuriers égarés.", stats: { force: 15, endurance: 35, intelligence: 60 } },
+  { nom: "Samir, Errant des Mirages", biome: "Les Dunes Ardentes de Solarys", role: "Compagnon", description: "Voyageur du désert qui a renoncé à vivre sous terre à Kalem, il accompagne le joueur parce qu’il cherche lui aussi une raison de croire que Solarys n’a pas totalement abandonné ces terres. Son arc explore la foi, le regret et le besoin d’avancer malgré la culpabilité de son passé.", stats: null },
+  { nom: "Kaa, Petit Fennec Masqué", biome: "Les Dunes Ardentes de Solarys", role: "Mascotte", description: "Renard du désert aux grandes oreilles et à un motif sombre autour des yeux comme un masque, il suit les caravanes pour grappiller de la nourriture. Il est juste devenu une présence familière des voyageurs, parfait comme tête d’affiche mignonne des Dunes Ardentes.", stats: null }
 ];
