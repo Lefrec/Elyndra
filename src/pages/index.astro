@@ -47,7 +47,7 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
 
             <!-- Contenu -->
             <div
-                class="relative py-30 px-8 flex flex-col items-center text-center gap-8"
+                class="relative py-16 md:py-20 px-8 flex flex-col items-center text-center gap-8"
             >
                 <!-- Titre principal -->
                 <h1
@@ -64,68 +64,14 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
                     Le temps presse : trouvez la vérité avant que le monde ne
                     s'éteigne pour toujours.
                 </p>
-
-                <!-- Statistiques -->
-                <div
-                    class="flex flex-col md:flex-row gap-8 md:gap-16 px-8 md:px-12 py-6 rounded-3xl md:rounded-full border border-slate-700 relative bg-[#270447]/22"
-                >
-                    <div class="flex items-center gap-3">
-                        <svg
-                            class="w-8 h-8"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <rect x="3" y="3" width="7" height="7" rx="1"
-                            ></rect>
-                            <rect x="14" y="3" width="7" height="7" rx="1"
-                            ></rect>
-                            <rect x="3" y="14" width="7" height="7" rx="1"
-                            ></rect>
-                            <rect x="14" y="14" width="7" height="7" rx="1"
-                            ></rect>
-                        </svg>
-                        <div class="text-left">
-                            <div class="text-2xl font-bold">4</div>
-                            <div class="text-sm text-gray-300">Biomes</div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-3">
-                        <svg
-                            class="w-8 h-8"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                            ></path>
-                        </svg>
-                        <div class="text-left">
-                            <div class="text-2xl font-bold">100+</div>
-                            <div class="text-sm text-gray-300">Quêtes</div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-3">
-                        <svg
-                            class="w-8 h-8"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                d="M17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12Z"
-                            ></path>
-                            <path d="M12 2V7M12 17V22M2 12H7M17 12H22"></path>
-                        </svg>
-                        <div class="text-left">
-                            <div class="text-2xl font-bold">∞</div>
-                            <div class="text-sm text-gray-300">
-                                Possibilités
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Incentives inscription -->
+                 <span class="text-Or-clair/80 tracking-wide text-center mt-2 font-bold">Le gardien t'invite dans des mondes infinis...</span>
+                <div class="flex flex-wrap justify-center gap-x-8 gap-y-2 mt-2">
+                    <span class="text-sm text-Or-clair/80 tracking-wide"> 200 aventures dès ton premier voyage !</span>
+                    <span class="text-sm text-Or-clair/80 tracking-wide"> + 100 crédits gratuits chaque jour</span>
+                    <span class="text-sm text-Or-clair/80 tracking-wide"> + 150 crédits par ami invité</span>
                 </div>
-
+                <span class="text-Or-clair/80 tracking-wide text-center mt-2 font-bold">Le guide IA est à tes côtés pour créer ton histoire unique.</span>
                 <!-- Boutons -->
                 <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full sm:w-auto mt-4 px-4 sm:px-0">
                     <a
@@ -147,13 +93,6 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
                     >
                         Comprendre le jeu
                     </a>
-                </div>
-
-                <!-- Incentives inscription -->
-                <div class="flex flex-wrap justify-center gap-x-8 gap-y-2 mt-2">
-                    <span class="text-sm text-Or-clair/80 tracking-wide">🎁 150 aventures dès ton premier voyage !</span>
-                    <span class="text-sm text-Or-clair/80 tracking-wide">✨ + 50 crédits gratuits chaque jour</span>
-                    <span class="text-sm text-Or-clair/80 tracking-wide">👥 + 50 crédits par ami invité</span>
                 </div>
             </div>
         </div>
@@ -296,7 +235,7 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 items-end justify-items-center"
             >
                 <!-- Ombre -->
-                <div class="w-full flex justify-center relative group cursor-pointer min-h-[300px]" onclick="this.classList.toggle('clicked')">
+                <div class="w-full flex justify-center relative group min-h-[300px]" onclick="this.classList.toggle('clicked')">
                     <img
                         src={ombreImage.src}
                         alt="Ombre"
@@ -309,7 +248,7 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
                 </div>
 
                 <!-- Mage -->
-                <div class="w-full flex justify-center relative group cursor-pointer min-h-[300px]" onclick="this.classList.toggle('clicked')">
+                <div class="w-full flex justify-center relative group min-h-[300px]" onclick="this.classList.toggle('clicked')">
                     <img
                         src={mageImage.src}
                         alt="Mage"
@@ -322,7 +261,7 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
                 </div>
 
                 <!-- Chevalier -->
-                <div class="w-full flex justify-center relative group cursor-pointer min-h-[300px]" onclick="this.classList.toggle('clicked')">
+                <div class="w-full flex justify-center relative group min-h-[300px]" onclick="this.classList.toggle('clicked')">
                     <img
                         src={chevalierImage.src}
                         alt="Chevalier"
@@ -335,7 +274,7 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
                 </div>
 
                 <!-- Alchimiste -->
-                <div class="w-full flex justify-center relative group cursor-pointer min-h-[300px]" onclick="this.classList.toggle('clicked')">
+                <div class="w-full flex justify-center relative group min-h-[300px]" onclick="this.classList.toggle('clicked')">
                     <img
                         src={alchimisteImage.src}
                         alt="Alchimiste"
