@@ -1,47 +1,350 @@
 ---
 import Layout from '../layout/Layout.astro';
 import CreditPackCard from '../components/CreditPackCard.astro';
+import CharacterCard from '../components/CharacterCardBoutique.astro';
+import heroImage from "../assets/hero_boutique.webp";
+import DLCSection from '../components/DLCSection.astro';
+
+const characters = [
+  {
+    id: 1, name: "Kaelith Ombrefer", title: "Seigneur des Ombres", rarity: "Légendaire", credits: 1500, price: "24.99",
+    description: "Maître de l'obscurité et des illusions, Kaelith peut se déplacer entre les dimensions d'ombre et invoquer des créatures des ténèbres.",
+    image: "https://copilot.microsoft.com/th/id/BCO.77e142f8-d2fc-495d-ba25-0f4a7340fbdd.png",
+    powers: ["Marche de l'Ombre : Téléportation à courte distance", "Invocation des Ombres : Crée des clones illusoires", "Faille Dimensionnelle : Bannit les ennemis temporairement"],
+    stats: { attack: 85, defense: 60, magic: 95, speed: 90 }
+  },
+  {
+    id: 2, name: "Celestria Luminis", title: "Archimage Céleste", rarity: "Légendaire", credits: 1500, price: "24.99",
+    description: "Gardienne de la magie ancienne, elle maîtrise les arts arcaniques les plus puissants et peut manipuler le temps et l'espace.",
+    image: "https://copilot.microsoft.com/th/id/BCO.b6ee6d74-498b-4b43-97cc-b86cfc6eb4e9.png",
+    powers: ["Distorsion Temporelle : Ralentit le temps pour les ennemis", "Météores Arcaniques : Invoque une pluie de météores magiques", "Bouclier Astral : Immunité aux dégâts magiques pendant 5s"],
+    stats: { attack: 70, defense: 55, magic: 100, speed: 75 }
+  },
+  {
+    id: 3, name: "Vex l'Insaisissable", title: "Maître Assassin", rarity: "Épique", credits: 1200, price: "19.99",
+    description: "Assassin légendaire d'Elyndra, Vex combine vitesse surhumaine et techniques mortelles pour éliminer ses cibles sans être détecté.",
+    image: "https://copilot.microsoft.com/th/id/BCO.4ae63c68-22e2-4def-b18a-58f3e3236918.png",
+    powers: ["Pas Fantôme : Invisibilité totale pendant 8 secondes", "Exécution Silencieuse : Coup critique instantané dans le dos", "Lames Empoisonnées : Dégâts sur la durée mortels"],
+    stats: { attack: 95, defense: 50, magic: 40, speed: 100 }
+  },
+  {
+    id: 4, name: "Pyraxis le Dévoreur", title: "Élémentaliste de Feu", rarity: "Épique", credits: 1200, price: "19.99",
+    description: "Incarnation vivante du feu primordial, Pyraxis brûle tout sur son passage et peut transformer son corps en flammes pures.",
+    image: "https://copilot.microsoft.com/th/id/BCO.82d77312-022d-475a-b4cc-4bc7aa058797.png",
+    powers: ["Forme Élémentaire : Transforme le corps en feu, immune aux attaques physiques", "Nova Incendiaire : Explosion massive de flammes", "Chaînes de Magma : Emprisonne et brûle plusieurs ennemis"],
+    stats: { attack: 90, defense: 65, magic: 88, speed: 70 }
+  },
+  {
+    id: 5, name: "Morven le Sépulcral", title: "Nécromancien Suprême", rarity: "Légendaire", credits: 1500, price: "24.99",
+    description: "Seigneur des morts-vivants qui commande une armée de créatures spectrales et peut drainer la force vitale de ses ennemis.",
+    image: "https://copilot.microsoft.com/th/id/BCO.e6c38b32-8a99-4ca6-b6ac-9a1b3aad890d.png",
+    powers: ["Armée des Damnés : Invoque 5 guerriers morts-vivants", "Drain de Vie : Absorbe la vie des ennemis pour se soigner", "Malédiction de Décomposition : Affaiblit tous les ennemis proches"],
+    stats: { attack: 75, defense: 70, magic: 92, speed: 60 }
+  },
+  {
+    id: 6, name: "Aurelia la Radieuse", title: "Paladine Céleste", rarity: "Épique", credits: 1200, price: "19.99",
+    description: "Championne de la lumière divine, Aurelia protège ses alliés avec des barrières sacrées et peut ressusciter les tombés au combat.",
+    image: "https://copilot.microsoft.com/th/id/BCO.eee1f523-890a-4f3a-aa0d-177e1b86e60d.png",
+    powers: ["Résurrection Divine : Ramène un allié à la vie avec 50% HP", "Jugement Sacré : Dégâts massifs aux créatures corrompues", "Aura de Protection : Réduit les dégâts de tous les alliés de 40%"],
+    stats: { attack: 80, defense: 90, magic: 85, speed: 65 }
+  }
+];
 ---
+
 <Layout title="Boutique - Elyndra" description="Découvrez nos packs de crédits pour profiter pleinement de votre expérience sur Elyndra. Rechargez vos crédits avec bonus et accédez à des fonctionnalités exclusives.">
-<div class="py-16 px-4 md:px-8 max-w-6xl mx-auto">
-  <div class="text-center mb-20">
-    <h1 class="text-4xl md:text-6xl font-black text-[#FFE9B5] mb-4">Packs de Crédits</h1>
-    <p class="text-[#9C9C9C] text-lg max-w-lg mx-auto">Rechargez vos crédits avec bonus</p>
-  </div>
-  
-  <div class="carousel-container overflow-x-auto pb-8 -mx-4 md:-mx-6 snap-x snap-mandatory scrollbar-hide">
-    <div class="flex gap-4 md:gap-6 lg:gap-8 px-4 md:px-6 snap-x snap-center">
-      
-      <CreditPackCard name="Starter" credits={500} price="4,99€" image="/src/assets/starter-pack.svg" />
-      <CreditPackCard name="Pack Standard" credits={1200} price="9,99€" image="/src/assets/pack-standard.svg" isPopular={true} />
-      <CreditPackCard name="Pack Premium" credits={2500} price="19,99€" image="/src/assets/pack-premium.svg" />
-      <CreditPackCard name="Pack Elite" credits={6000} price="44,99€" image="/src/assets/pack-elite.svg" />
-      
+
+<!-- Hero (inchangé) -->
+<section class="hero flex items-center justify-center min-h-[400px] sm:min-h-[450px] md:min-h-[550px] lg:min-h-[600px]">
+    <div class="w-full relative h-full">
+        <!-- Image de fond -->
+        <img
+            src={heroImage.src}
+            alt="Hero background"
+            class="absolute inset-0 w-full h-full object-cover object-center"
+        />
+
+
+        <!-- Overlay assombrissement + vignette -->
+        <div class="absolute inset-0 bg-slate-950/40"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_20%,rgba(0,0,0,0.7)_80%)]"></div>
+
+
+        <!-- Contenu -->
+        <div class="relative py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center gap-4 sm:gap-6">
+            <!-- Ornement supérieur -->
+            <div class="flex items-center justify-center gap-2">
+                <div class="h-px w-16 sm:w-20 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+                <span class="size-1.5 sm:size-2 rotate-45 bg-amber-200/70"></span>
+                <span class="size-2 sm:size-2.5 rotate-45 bg-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
+                <span class="size-1.5 sm:size-2 rotate-45 bg-amber-200/70"></span>
+                <div class="h-px w-16 sm:w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
+            </div>
+
+
+            <!-- Titre principal -->
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold uppercase tracking-[0.1em] sm:tracking-[0.15em] text-elyndra-gradient drop-shadow-[0_2px_20px_rgba(0,0,0,0.8)] leading-tight">
+                La Boutique d'Elyndra
+            </h1>
+
+
+            <!-- Ornement inférieur -->
+            <div class="flex items-center justify-center gap-2">
+                <div class="h-px w-16 sm:w-20 bg-gradient-to-r from-transparent to-amber-200/50"></div>
+                <span class="size-1.5 sm:size-2 rotate-45 bg-amber-200/70"></span>
+                <span class="size-2 sm:size-2.5 rotate-45 bg-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
+                <span class="size-1.5 sm:size-2 rotate-45 bg-amber-200/70"></span>
+                <div class="h-px w-16 sm:w-20 bg-gradient-to-l from-transparent to-amber-200/50"></div>
+            </div>
+
+
+            <!-- Description -->
+            <p class="text-xs sm:text-sm md:text-base uppercase tracking-[0.15em] sm:tracking-[0.2em] max-w-xl sm:max-w-2xl leading-relaxed text-white/90 px-4">
+                Crédits, avatars, DLC : tout ce qu'il faut pour booster ton expérience.
+            </p>
+        </div>
     </div>
-  </div>
+</section>
+
+
+<!-- Section Packs -->
+<section class="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+    <!-- Titre et texte à gauche -->
+<div class="text-left mb-16">
+  <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#FFE9B5] mb-4 sm:mb-6 leading-tight">Packs de Crédits</h2>
+  <p class="text-[#9C9C9C] text-base sm:text-lg md:text-xl max-w-lg leading-relaxed">Rechargez vos crédits pour débloquer du contenu exclusif</p>
 </div>
 
-<style>
-  .carousel-container {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  
-  .carousel-container::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .credit-card {
-    flex: 0 0 280px;
-    max-width: 280px;
-    min-height: 320px;
-  }
-  
-  @media (max-width: 768px) {
-    .credit-card {
-      flex: 0 0 260px;
-      min-height: 280px;
+
+    <!-- GRILLE : moins large + centrée sur mobile -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 justify-items-center sm:justify-items-start mx-auto max-w-[280px] sm:max-w-none">
+        <CreditPackCard name="Starter" credits={500} price="4,99€" image="/src/assets/starter-pack.svg" />
+        <CreditPackCard name="Pack Standard" credits={1200} price="9,99€" image="/src/assets/pack-standard.svg" />
+        <CreditPackCard name="Pack Premium" credits={2500} price="19,99€" image="/src/assets/pack-premium.svg" />
+        <CreditPackCard name="Pack Elite" credits={6000} price="44,99€" image="/src/assets/pack-elite.svg" />
+    </div>
+</section>
+
+<!-- Section Personnages Premium (carrousel sans hover) -->
+<section class="py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto relative overflow-hidden">
+<div class="text-left mb-16">
+  <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#FFE9B5] mb-4 sm:mb-6 leading-tight">Personnages Premium</h2>
+  <p class="text-[#9C9C9C] text-base sm:text-lg md:text-xl max-w-lg leading-relaxed">Découvrez des héros légendaires pour dominer Elyndra</p>
+</div>
+
+  <!-- Carrousel -->
+  <div
+    id="carousel"
+    class="flex items-stretch gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth md:overflow-hidden justify-start pl-14 pr-14 md:pl-16 md:pr-16 h-[680px] md:h-[720px] pb-3"
+  >
+    {characters.map((character) => (
+      <div
+        class="snap-center flex-shrink-0 w-[85%] sm:w-[60%] md:w-[26%] xl:w-[24%] min-w-[320px] sm:min-w-[360px] transition-none mr-4 last:mr-0"
+      >
+        <CharacterCard {...character} />
+      </div>
+    ))}
+  </div>
+
+  <!-- Boutons navigation (desktop uniquement) -->
+  <button
+    id="prevBtn"
+    class="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 bg-[#FFE9B5]/80 hover:bg-[#FFE9B5] text-[#090D13] text-4xl font-bold rounded-full w-16 h-16 items-center justify-center shadow-lg transition-all"
+    aria-label="Précédent"
+  >
+    ‹
+  </button>
+
+  <button
+    id="nextBtn"
+    class="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 bg-[#FFE9B5]/80 hover:bg-[#FFE9B5] text-[#090D13] text-4xl font-bold rounded-full w-16 h-16 items-center justify-center shadow-lg transition-all"
+    aria-label="Suivant"
+  >
+    ›
+  </button>
+
+  <!-- Script de navigation -->
+  <script>
+    const carousel = document.getElementById('carousel');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function scrollCarousel(direction) {
+      const card = carousel.querySelector('div');
+      if (!card) return;
+      const style = window.getComputedStyle(card);
+      const gap = parseFloat(style.marginRight) || 0;
+      const cardWidth = card.offsetWidth + gap; // largeur d'une carte + écart
+      carousel.scrollBy({ left: direction * cardWidth, behavior: 'smooth' }); // défilement 1 carte à la fois
     }
-  }
+
+    prevBtn?.addEventListener('click', () => scrollCarousel(-1));
+    nextBtn?.addEventListener('click', () => scrollCarousel(1));
+  </script>
+</section>
+
+ <DLCSection />
+
+  <!-- Notification -->
+  <div id="notification" class="fixed top-4 right-4 bg-[#090D13] text-[#FFE9B5] p-4 rounded-lg shadow-lg hidden z-50 max-w-sm border border-[#353120]">
+    <p id="notification-text" class="font-bold"></p>
+  </div>
+
+<style>
+    .credit-card {
+        width: 100%;
+        max-width: 260px; /* Moins large sur mobile */
+        min-height: 260px;
+        margin: 0 auto; /* Centré */
+    }
+   
+    @media (min-width: 640px) {
+        .credit-card {
+            max-width: none; /* Pleine largeur sur sm+ */
+            min-height: 300px;
+            margin: 0; /* Plus de centrage */
+        }
+    }
+
+    #carousel::-webkit-scrollbar {
+        height: 6px;
+    }
+    #carousel::-webkit-scrollbar-track {
+        background: #090D13;
+    }
+    #carousel::-webkit-scrollbar-thumb {
+        background: #FFE9B5;
+        border-radius: 3px;
+    }
+    #carousel::-webkit-scrollbar-thumb:hover {
+        background: #E8E5D8;
+    }
 </style>
+
+<script>
+  // Fonction pour afficher les notifications
+  function showNotification(message) {
+    document.getElementById('notification-text').textContent = message;
+    const notif = document.getElementById('notification');
+    notif.classList.remove('hidden');
+    setTimeout(() => notif.classList.add('hidden'), 3000);
+  }
+
+  // Données des personnages
+  const characters = [
+    {
+      id: 1, name: "Kaelith Ombrefer", title: "Seigneur des Ombres", rarity: "Légendaire", credits: 1500, price: 24.99,
+      description: "Maître de l'obscurité et des illusions, Kaelith peut se déplacer entre les dimensions d'ombre et invoquer des créatures des ténèbres.",
+      image: "https://copilot.microsoft.com/th/id/BCO.77e142f8-d2fc-495d-ba25-0f4a7340fbdd.png",
+      powers: ["Marche de l'Ombre : Téléportation à courte distance", "Invocation des Ombres : Crée des clones illusoires", "Faille Dimensionnelle : Bannit les ennemis temporairement"],
+      stats: { attack: 85, defense: 60, magic: 95, speed: 90 }
+    },
+    {
+      id: 2, name: "Celestria Luminis", title: "Archimage Céleste", rarity: "Légendaire", credits: 1500, price: 24.99,
+      description: "Gardienne de la magie ancienne, elle maîtrise les arts arcaniques les plus puissants et peut manipuler le temps et l'espace.",
+      image: "https://copilot.microsoft.com/th/id/BCO.b6ee6d74-498b-4b43-97cc-b86cfc6eb4e9.png",
+      powers: ["Distorsion Temporelle : Ralentit le temps pour les ennemis", "Météores Arcaniques : Invoque une pluie de météores magiques", "Bouclier Astral : Immunité aux dégâts magiques pendant 5s"],
+      stats: { attack: 70, defense: 55, magic: 100, speed: 75 }
+    },
+    {
+      id: 3, name: "Vex l'Insaisissable", title: "Maître Assassin", rarity: "Épique", credits: 1200, price: 19.99,
+      description: "Assassin légendaire d'Elyndra, Vex combine vitesse surhumaine et techniques mortelles pour éliminer ses cibles sans être détecté.",
+      image: "https://copilot.microsoft.com/th/id/BCO.4ae63c68-22e2-4def-b18a-58f3e3236918.png",
+      powers: ["Pas Fantôme : Invisibilité totale pendant 8 secondes", "Exécution Silencieuse : Coup critique instantané dans le dos", "Lames Empoisonnées : Dégâts sur la durée mortels"],
+      stats: { attack: 95, defense: 50, magic: 40, speed: 100 }
+    },
+    {
+      id: 4, name: "Pyraxis le Dévoreur", title: "Élémentaliste de Feu", rarity: "Épique", credits: 1200, price: 19.99,
+      description: "Incarnation vivante du feu primordial, Pyraxis brûle tout sur son passage et peut transformer son corps en flammes pures.",
+      image: "https://copilot.microsoft.com/th/id/BCO.82d77312-022d-475a-b4cc-4bc7aa058797.png",
+      powers: ["Forme Élémentaire : Transforme le corps en feu, immune aux attaques physiques", "Nova Incendiaire : Explosion massive de flammes", "Chaînes de Magma : Emprisonne et brûle plusieurs ennemis"],
+      stats: { attack: 90, defense: 65, magic: 88, speed: 70 }
+    },
+    {
+      id: 5, name: "Morven le Sépulcral", title: "Nécromancien Suprême", rarity: "Légendaire", credits: 1500, price: 24.99,
+      description: "Seigneur des morts-vivants qui commande une armée de créatures spectrales et peut drainer la force vitale de ses ennemis.",
+      image: "https://copilot.microsoft.com/th/id/BCO.e6c38b32-8a99-4ca6-b6ac-9a1b3aad890d.png",
+      powers: ["Armée des Damnés : Invoque 5 guerriers morts-vivants", "Drain de Vie : Absorbe la vie des ennemis pour se soigner", "Malédiction de Décomposition : Affaiblit tous les ennemis proches"],
+      stats: { attack: 75, defense: 70, magic: 92, speed: 60 }
+    },
+    {
+      id: 6, name: "Aurelia la Radieuse", title: "Paladine Céleste", rarity: "Épique", credits: 1200, price: 19.99,
+      description: "Championne de la lumière divine, Aurelia protège ses alliés avec des barrières sacrées et peut ressusciter les tombés au combat.",
+      image: "https://copilot.microsoft.com/th/id/BCO.eee1f523-890a-4f3a-aa0d-177e1b86e60d.png",
+      powers: ["Résurrection Divine : Ramène un allié à la vie avec 50% HP", "Jugement Sacré : Dégâts massifs aux créatures corrompues", "Aura de Protection : Réduit les dégâts de tous les alliés de 40%"],
+      stats: { attack: 80, defense: 90, magic: 85, speed: 65 }
+    }
+  ];
+
+  // Données des DLC
+  const dlcData = [
+    {
+      id: 1, title: "Les Légendes Oubliées", description: "Découvrez l'histoire ancienne d'Elyndra à travers des quêtes épiques. Rencontrez les héros légendaires du passé et révélez les secrets de ce monde mystique.", price: 14.99, credits: 800, image: "https://images.unsplash.com/photo-1766879240548-f8ae84ef6e68?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxteXN0aWNhbCUyMGZhbnRhc3klMjB3b21hbiUyMHBvcnRyYWl0JTIwZGFya3xlbnwxfHx8fDE3NzI3MjIzMjh8MA&ixlib=rb-4.1.0&q=80&w=1080", isNew: true, featured: true
+    },
+    {
+      id: 2, title: "Les Profondeurs d'Azurea", description: "Plongez dans les océans mystérieux d'Elyndra et explorez le royaume sous-marin d'Azurea. Découvrez des créatures aquatiques légendaires et maîtrisez les pouvoirs de l'eau.", price: 16.99, credits: 900, image: "https://images.unsplash.com/photo-1685908359279-abe004f8fbfe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1bmRlcndhdGVyJTIwb2NlYW4lMjBmYW50YXN5JTIwd29ybGR8ZW58MXx8fHwxNzcyNzIzMTAzfDA&ixlib=rb-4.1.0&q=80&w=1080", isNew: true, featured: true
+    },
+    {
+      id: 3, title: "Les Monts Volcaniques", description: "Affrontez les dangers des volcans d'Elyndra où règne la chaleur infernale. Domptez le feu primordial et découvrez les forges ancestrales des titans.", price: 13.99, credits: 750, image: "https://images.unsplash.com/photo-1760293877739-793b24020ff1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2xjYW5pYyUyMGxhdmElMjBtb3VudGFpbnMlMjBmaXJlfGVufDF8fHx8MTc3MjcyMzEwNHww&ixlib=rb-4.1.0&q=80&w=1080", isNew: true, featured: false
+    },
+    {
+      id: 4, title: "Neon Dreams", description: "Explorez les cités futuristes d'Elyndra dans cette extension cyberpunk. Nouvelles factions, personnages et choix narratifs qui changeront l'avenir du royaume.", price: 12.99, credits: 650, image: "https://images.unsplash.com/photo-1688377051459-aebb99b42bff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjeWJlcnB1bmslMjBuZW9uJTIwY2l0eSUyMG5pZ2h0fGVufDF8fHx8MTc3MjY2NDM5OHww&ixlib=rb-4.1.0&q=80&w=1080", isNew: false, featured: false
+    },
+    {
+      id: 5, title: "La Forêt Éternelle", description: "Aventurez-vous dans les terres sauvages d'Elyndra où la magie primordiale règne. Rencontrez les gardiens ancestraux et domptez les forces de la nature.", price: 9.99, credits: 500, image: "https://images.unsplash.com/photo-1763321402439-41eb2a0c7e7b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxteXN0ZXJpb3VzJTIwZXRoZXJlYWwlMjBmb3Jlc3QlMjBuaWdodHxlbnwxfHx8fDE3NzI3MjIzMjl8MA&ixlib=rb-4.1.0&q=80&w=1080", isNew: false, featured: false
+    },
+  ];
+
+  // Données des packs de crédits
+  const creditPacks = [
+    { name: "Starter", credits: 500, price: "4,99€", image: "/src/assets/starter-pack.svg" },
+    { name: "Pack Standard", credits: 1200, price: "9,99€", image: "/src/assets/pack-standard.svg" },
+    { name: "Pack Premium", credits: 2500, price: "19,99€", image: "/src/assets/pack-premium.svg" },
+    { name: "Pack Elite", credits: 6000, price: "44,99€", image: "/src/assets/pack-elite.svg" }
+  ];
+
+  // Fonction pour ajouter au panier
+  function addToCart(item, type) {
+    const cart = JSON.parse(localStorage.getItem('elyndra_cart') || '[]');
+    const existingItem = cart.find(cartItem => cartItem.type === type && (cartItem.id === item.id || cartItem.name === item.name));
+    
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      const cartItem = { ...item, type, quantity: 1 };
+      if (type === 'credit') {
+        cartItem.price = parseFloat(item.price.replace(',', '.').replace('€', ''));
+      }
+      cart.push(cartItem);
+    }
+    
+    localStorage.setItem('elyndra_cart', JSON.stringify(cart));
+    showNotification(`${item.name || item.title} ajouté au panier !`);
+    // Dispatch event pour mettre à jour le header
+    window.dispatchEvent(new Event('cartUpdated'));
+  }
+
+  // Écouteurs d'événements
+  document.addEventListener('click', (e) => {
+    if (e.target.matches('[data-char-id]')) {
+      const id = parseInt(e.target.dataset.charId);
+      const character = characters.find(c => c.id === id);
+      if (character) {
+        addToCart(character, 'character');
+      }
+    } else if (e.target.matches('[data-dlc-id]')) {
+      const id = parseInt(e.target.dataset.dlcId);
+      const dlc = dlcData.find(d => d.id === id);
+      if (dlc) {
+        addToCart(dlc, 'dlc');
+      }
+    } else if (e.target.matches('[data-credit-name]')) {
+      const name = e.target.dataset.creditName;
+      const creditPack = creditPacks.find(c => c.name === name);
+      if (creditPack) {
+        addToCart(creditPack, 'credit');
+      }
+    }
+  });
+</script>
+
 </Layout>
