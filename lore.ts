@@ -1,4 +1,73 @@
 import weaviate, { type WeaviateClient, dataType, vectors } from 'weaviate-client';
+import { bestiaire } from './bestiaire.ts';
+import { autresPersonnages } from './autres_perso.ts';
+import { histoiresBiomes } from './histoires_biomes.ts';
+import { typesEvenements } from './type_evenement.ts';
+import { patternsBoss, combatsBoss } from './boss.ts';
+import { patternsEvenementsAleatoires, EvenementsDarkFantasy } from './evenements_aleatoires.ts';
+
+const BestiaireItems = [];
+for (const [biome, monstres] of Object.entries(bestiaire)) {
+	for (const monstre of monstres) {
+		let description = `${monstre.description} Habituellement rencontré dans : ${biome}.`;
+		if (monstre.stats) {
+			description += ` Stats - Force: ${monstre.stats.force}, Endurance: ${monstre.stats.endurance}, Intelligence: ${monstre.stats.intelligence}.`;
+		}
+		BestiaireItems.push({
+			type: "Monstre",
+			name: monstre.nom,
+			desc: description,
+		});
+	}
+}
+
+const AutresPersonnagesItems = autresPersonnages.map(p => {
+	let description = `${p.role} que l'on rencontre dans ${p.biome}. ${p.description}`;
+	if (p.stats) {
+		description += ` Stats - Force: ${p.stats.force}, Endurance: ${p.stats.endurance}, Intelligence: ${p.stats.intelligence}.`;
+	}
+	return {
+		type: "Personnage",
+		name: p.nom,
+		desc: description,
+	};
+});
+
+const HistoiresBiomesItems = histoiresBiomes.map(b => ({
+	type: "Histoire Biome",
+	name: b.biome,
+	desc: `${b.histoire}`,
+}));
+
+const TypeEvenementItems = typesEvenements.map(e => ({
+	type: "Concept Narratif",
+	name: e.nom,
+	desc: `${e.description} Pourquoi c'est apprécié par les joueurs : ${e.pourquoiApprecie}`,
+}));
+
+const PatternsBossItems = patternsBoss.map(p => ({
+	type: "Mécanique de Combat",
+	name: p.nom,
+	desc: `Pattern de game design pour encounter de Boss : ${p.description}`,
+}));
+
+const BossLoreItems = combatsBoss.map(b => ({
+	type: "Boss Epique",
+	name: b.nom,
+	desc: `Boss épique lié à : ${b.biome}. Mécanique et Lore : ${b.description}`,
+}));
+
+const PatternsEvenementsAleatoiresItems = patternsEvenementsAleatoires.map(p => ({
+	type: "Pattern Événement Aléatoire",
+	name: p.nom,
+	desc: `Mécanique d'événement dynamique : ${p.description}`,
+}));
+
+const EvenementsDarkFantasyItems2 = EvenementsDarkFantasy.map(e => ({
+	type: "d'Événement Aléatoire Dark Fantasy",
+	name: e.nom,
+	desc: e.description,
+}));
 
 //connect to local Weaviate DB
 const client: WeaviateClient = await weaviate.connectToLocal();
@@ -31,37 +100,37 @@ const Histoire = [
 	{
 		type : "Histoire",
 		name : "Élyndra",
-		desc : "Élyndra est un pays de fantaisie séparé en 4 régions et où reignait autrefois la joie, sous la protection des ses 5 dieux.",
+		desc : "Au pays d’Élyndra où régnait la joie, les forêts chantaient sous les rayons de Solarys et les récoltes abondaient en paix éternelle. Les cinq dieux et déesses d’Élyndra régnaient ensemble sur ce pays : Solarys, Lunara, Sylphéra, Aelyon et Vorathys.",
 	},
 	{
 		type : "Histoire",
 		name : "Mythologie",
-		desc : "Le monde d'Élyndra était autrefois sous la protection de 5 dieux : Solarys, Lunara, Sylphéra, Aelyon et Vorathys"
+		desc : "Les cinq dieux d'Élyndra sont : Solarys, dieu du soleil et de la lumière ; Lunara, déesse de la lune et des mystères nocturnes ; Sylphéra, déesse des forêts et des vents ; Aelyon, dieu de la sagesse et du destin ; Vorathys, dieu des profondeurs et des secrets enfouis. Chacun était vénéré et adoré par les Elyndriens."
 	},
 	{
 		type : "Histoire",
 		name : "Brèche",
-		desc : "Un jour, une ancienne brèche cosmique s'ouvrit dans les abysses que Vorathys protégeait, libérant la corruption. Vorathys fut submergé et fusionna à cette froce dévorante, transformant le gardien fidèle en un dieu déformé par le chaos inévitable",
+		desc : "Un jour, une ancienne brèche cosmique s’ouvrit dans les abysses que Vorathys protégeait, libérant une énergie primordiale de corruption pure. Incapable de la contenir seul malgré sa vigilance éternelle, Vorathys fut submergé et fusionné à cette force dévorante. Ses secrets devinrent ombres rampantes, ses profondeurs se muèrent en corruption instinctive, transformant le gardien fidèle en un dieu déformé par le chaos inévitable.",
 	},
 	{
 		type : "Histoire",
 		name : "Corruption de Vorathys",
-		desc : "Consumé par la puissance incontrôlable de la corruption, Vorathys s'empara du pouvoir des 4 autres dieux. Dans un hurlement cosmique il entoura chaque région d'Élyndra de ses créations monstrueuses",
+		desc : "Désormais consumé par cette puissance incontrôlable, Vorathys s’empara du pouvoir des quatre autres divinités et, dans un hurlement cosmique, entoura chaque biome d’Élyndra de ses créations monstrueuses, semant la mort et la désolation.",
 	},
 	{
 		type : "Histoire",
 		name : "La prophétie d'Aelyon",
-		desc : "Voyent le royaume au bord de l'anéantissement, Aelyon prononça la prophétie fatidique : Les étoiles s'aligneront pour l'Élu qui brisera les chaînes. Il révéla aux autres dieux que toute tentative de vaincre Vorathys entraînerait la destruction d'Élyndra",
+		desc : "Voyant le royaume au bord de l’anéantissement total, Aelyon prononça alors la prophétie fatidique : « Les étoiles s’aligneront pour l’Élu qui brisera les chaînes. » Il révéla aux autres dieux que toute tentative de vaincre Vorathys entraînerait la destruction complète d’Élyndra et la mort de tous ses habitants, car leurs puissances égales ne feraient que s’annuler mutuellement dans un cataclysme inévitable.",
 	},
 	{
 		type : "Histoire",
 		name : "Les dieux scellés",
-		desc : "Solarys, Lunara, Sylphéra et Aelyon choisir de se sceller volontairement dans des sanctuaires profonds, protégeant ainsi le pays de la destruction en attendant le jour de leur libération par l'Élu",
+		desc : "Le seul espoir de survie reposant dans l’attente de l’Élu, Solarys, Lunara, Sylphéra et Aelyon choisirent de se sceller volontairement dans des sanctuaires profonds. Ils protègent ainsi le pays de la casse totale en attendant le jour de la libération.",
 	},
 	{
 		type : "Histoire",
 		name : "L'Élu",
-		desc : "L'Élu annoncé par la prophétie d'Aelyon est le seul espoir d'Élyndra face à la corruption de Vorathys. Il est dit qu'il est porteur d'une force pure et inédite",
+		desc : "L'Élu annoncé par la prophétie d'Aelyon est porteur d'une force pure et inédite. Il est le seul espoir d'Élyndra pour briser les chaînes et vaincre la corruption de Vorathys.",
 	},
 ];
 
@@ -139,6 +208,7 @@ const Lieu = [
 	},
 ];
 
+
 //adding the objects sets into the DB
 const loreCol = client.collections.get('Lore');
 const histoire = await loreCol.data.insertMany(Histoire);
@@ -149,6 +219,22 @@ const groupe = await loreCol.data.insertMany(Groupe);
 console.log(`Imported & vectorized ${Groupe.length} objects into the Lore collection`);
 const lieu = await loreCol.data.insertMany(Lieu);
 console.log(`Imported & vectorized ${Lieu.length} objects into the Lore collection`);
+const monstresInsert = await loreCol.data.insertMany(BestiaireItems);
+console.log(`Imported & vectorized ${BestiaireItems.length} objects into the Lore collection`);
+const persosInsert = await loreCol.data.insertMany(AutresPersonnagesItems);
+console.log(`Imported & vectorized ${AutresPersonnagesItems.length} objects into the Lore collection`);
+const histoiresBiomesInsert = await loreCol.data.insertMany(HistoiresBiomesItems);
+console.log(`Imported & vectorized ${HistoiresBiomesItems.length} objects into the Lore collection`);
+const evenementsInsert = await loreCol.data.insertMany(TypeEvenementItems);
+console.log(`Imported & vectorized ${TypeEvenementItems.length} objects into the Lore collection`);
+const patternsBossInsert = await loreCol.data.insertMany(PatternsBossItems);
+console.log(`Imported & vectorized ${PatternsBossItems.length} objects into the Lore collection`);
+const bossLoreInsert = await loreCol.data.insertMany(BossLoreItems);
+console.log(`Imported & vectorized ${BossLoreItems.length} objects into the Lore collection`);
+const patternsEvenementsInsert = await loreCol.data.insertMany(PatternsEvenementsAleatoiresItems);
+console.log(`Imported & vectorized ${PatternsEvenementsAleatoiresItems.length} objects into the Lore collection`);
+const evenementsDarkFantasyInsert = await loreCol.data.insertMany(EvenementsDarkFantasyItems2);
+console.log(`Imported & vectorized ${EvenementsDarkFantasyItems2.length} objects into the Lore collection`);
 
 //close the client
 await client.close();

@@ -14,8 +14,8 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
 <Layout showBanner={!isLoggedIn}>
     <!-- BANDEAU FLOTTANT  -->
     {!isLoggedIn && (
-        <div id="promo-banner" class="fixed top-0 left-0 right-0 z-[60] flex items-center justify-center gap-4 px-4 py-3 bg-gradient-to-r from-[#110224] via-[#2d0f4e] to-[#110224] border-b border-[#FFE9B5]/30 shadow-lg shadow-black/40">
-            <span class="text-[#FFE9B5] text-sm md:text-base font-medium tracking-wide">
+        <div id="promo-banner" class="fixed top-0 left-0 right-0 z-[60] flex items-center justify-center gap-4 px-4 py-3 bg-gradient-to-r from-[#110224] via-[#2d0f4e] to-[#110224] border-b border-Or-clair/30 shadow-lg shadow-black/40">
+            <span class="text-Or-clair text-sm md:text-base font-medium tracking-wide">
                 🎁 Inscris-toi maintenant et reçois <strong>100 crédits de bienvenue</strong>
             </span>
             <a
@@ -27,7 +27,7 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
             <button
                 id="close-banner"
                 aria-label="Fermer le bandeau"
-                class="absolute right-4 text-[#FFE9B5]/60 hover:text-[#FFE9B5] transition-colors text-lg leading-none"
+                class="absolute right-4 text-Or-clair/60 hover:text-Or-clair transition-colors text-lg leading-none"
             >
                 ✕
             </button>
@@ -47,90 +47,36 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
 
             <!-- Contenu -->
             <div
-                class="relative py-30 px-8 flex flex-col items-center text-center gap-8"
+                class="relative py-16 md:py-20 px-8 flex flex-col items-center text-center gap-8"
             >
                 <!-- Titre principal -->
                 <h1
-                    class="text-7xl font-bold tracking-widest text-elyndra-gradient"
+                    class="text-5xl md:text-7xl font-bold tracking-widest text-elyndra-gradient"
                 >
                     ELYNDRA
                 </h1>
 
                 <!-- Description -->
-                <p class="text-lg max-w-2xl leading-relaxed">
+                <p class="text-base md:text-lg max-w-2xl leading-relaxed">
                     Le Gardien est devenu le Destructeur. Vorathys a sombré, et
                     avec lui, tout Élyndra. Quelle ombre a pu consumer un dieu
                     au point de lui faire détruire ce qu'il jurait de protéger ?
                     Le temps presse : trouvez la vérité avant que le monde ne
                     s'éteigne pour toujours.
                 </p>
-
-                <!-- Statistiques -->
-                <div
-                    class="flex gap-16 px-12 py-6 rounded-full border border-slate-700 relative bg-[#270447]/22"
-                >
-                    <div class="flex items-center gap-3">
-                        <svg
-                            class="w-8 h-8"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <rect x="3" y="3" width="7" height="7" rx="1"
-                            ></rect>
-                            <rect x="14" y="3" width="7" height="7" rx="1"
-                            ></rect>
-                            <rect x="3" y="14" width="7" height="7" rx="1"
-                            ></rect>
-                            <rect x="14" y="14" width="7" height="7" rx="1"
-                            ></rect>
-                        </svg>
-                        <div class="text-left">
-                            <div class="text-2xl font-bold">4</div>
-                            <div class="text-sm text-gray-300">Biomes</div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-3">
-                        <svg
-                            class="w-8 h-8"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                            ></path>
-                        </svg>
-                        <div class="text-left">
-                            <div class="text-2xl font-bold">100+</div>
-                            <div class="text-sm text-gray-300">Quêtes</div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-3">
-                        <svg
-                            class="w-8 h-8"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                d="M17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12Z"
-                            ></path>
-                            <path d="M12 2V7M12 17V22M2 12H7M17 12H22"></path>
-                        </svg>
-                        <div class="text-left">
-                            <div class="text-2xl font-bold">∞</div>
-                            <div class="text-sm text-gray-300">
-                                Possibilités
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Incentives inscription -->
+                 <span class="text-Or-clair/80 tracking-wide text-center mt-2 font-bold">Le gardien t'invite dans des mondes infinis...</span>
+                <div class="flex flex-wrap justify-center gap-x-8 gap-y-2 mt-2">
+                    <span class="text-sm text-Or-clair/80 tracking-wide"> 200 aventures dès ton premier voyage !</span>
+                    <span class="text-sm text-Or-clair/80 tracking-wide"> + 100 crédits gratuits chaque jour</span>
+                    <span class="text-sm text-Or-clair/80 tracking-wide"> + 150 crédits par ami invité</span>
                 </div>
-
+                <span class="text-Or-clair/80 tracking-wide text-center mt-2 font-bold">Le guide IA est à tes côtés pour créer ton histoire unique.</span>
                 <!-- Boutons -->
-                <div class="flex gap-6 mt-4">
+                <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full sm:w-auto mt-4 px-4 sm:px-0">
                     <a
                         href="/choixbiome"
-                        class="px-4 py-3.5 bg-elyndra-3 rounded-[10px] inline-flex justify-center items-center gap-3 overflow-hidden hover:opacity-90"
+                        class="px-4 py-3.5 bg-elyndra-3 rounded-[10px] sm:inline-flex flex justify-center items-center gap-3 overflow-hidden hover:opacity-90 w-full sm:w-auto"
                     >
                         <svg
                             class="w-5 h-5"
@@ -143,17 +89,10 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
                     </a>
                     <a
                         href="#explication"
-                        class="bg-gradient-to-t from-neutral-400 to-white rounded-[10px] hover:bg-gray-300 text-gray-900 px-8 py-3 hover:opacity-90 items-center inline-flex justify-center gap-3 overflow-hidden"
+                        class="bg-gradient-to-t from-neutral-400 to-white rounded-[10px] hover:bg-gray-300 text-Texte-bleu-fonce px-8 py-3 hover:opacity-90 flex sm:inline-flex items-center justify-center gap-3 overflow-hidden w-full sm:w-auto"
                     >
                         Comprendre le jeu
                     </a>
-                </div>
-
-                <!-- Incentives inscription -->
-                <div class="flex flex-wrap justify-center gap-x-8 gap-y-2 mt-2">
-                    <span class="text-sm text-[#FFE9B5]/80 tracking-wide">🎁 150 aventures dès ton premier voyage !</span>
-                    <span class="text-sm text-[#FFE9B5]/80 tracking-wide">✨ + 50 crédits gratuits chaque jour</span>
-                    <span class="text-sm text-[#FFE9B5]/80 tracking-wide">👥 + 50 crédits par ami invité</span>
                 </div>
             </div>
         </div>
@@ -161,13 +100,13 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
 
     <!-- Explication du jeu -->
     <section id="explication">
-        <div class="max-w-7xl mx-auto">
+        <div class="max-w-7xl mx-auto px-4 md:px-8">
             <!-- Titre avec décoration -->
-            <div class="flex flex-col items-center gap-10 mb-16">
+            <div class="flex flex-col items-center gap-10 mb-16 px-4">
                 <!-- Ligne décorative supérieure -->
                 <svg
-                    width="1440"
-                    height="26"
+                    viewBox="0 0 1440 26"
+                    class="w-full max-w-[1440px] h-auto"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     ><path
@@ -210,7 +149,7 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
                 >
                 <!-- Titre principal -->
                 <h2
-                    class="text-3xl font-heading text-[#FFE9B5FF] tracking-[6px] text-center"
+                    class="text-3xl font-heading text-Or-clair tracking-[6px] text-center"
                 >
                     COMMENT SE PASSE VOTRE VOYAGE ?
                 </h2>
@@ -243,8 +182,8 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
     <section class="py-16">
         <!-- Ligne décorative supérieure -->
         <svg
-            width="1440"
-            height="26"
+            viewBox="0 0 1440 26"
+            class="w-full max-w-[1440px] h-auto px-4"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             ><path
@@ -286,49 +225,65 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
             ></svg
         >
         <h3
-            class="text-3xl font-heading text-[#FFE9B5FF] tracking-[5px] text-center my-16"
+            class="text-3xl font-heading text-Or-clair tracking-[5px] text-center my-16"
         >
             Qui seriez-vous ?
         </h3>
 
-        <div class="max-w-7xl mx-auto">
+        <div class="max-w-7xl mx-auto px-4">
             <div
-                class="grid grid-cols-2 md:grid-cols-4 gap-8 items-end justify-items-center"
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 items-end justify-items-center"
             >
                 <!-- Ombre -->
-                <div class="flex flex-col items-center">
+                <div class="w-full flex justify-center relative group min-h-[300px]" onclick="this.classList.toggle('clicked')">
                     <img
                         src={ombreImage.src}
                         alt="Ombre"
-                        class="w-64 h-64 object-contain hover:scale-105 transition-transform cursor-pointer"
+                        class="w-full max-w-[16rem] h-auto object-contain transition-all duration-500 group-hover:opacity-0 group-hover:scale-90 group-[.clicked]:opacity-0 group-[.clicked]:scale-90"
                     />
+                    <div class="absolute inset-0 flex flex-col justify-center bg-slate-950/80 backdrop-blur-md border border-Or-clair/20 rounded-2xl p-6 opacity-0 group-hover:opacity-100 transition-all duration-500 scale-95 group-hover:scale-100 group-[.clicked]:opacity-100 group-[.clicked]:scale-100 text-center z-10 w-full max-w-[18rem] mx-auto h-full sm:h-[90%] my-auto">
+                        <h4 class="text-xl font-heading text-Or-clair mb-3 tracking-widest uppercase">L'Ombre</h4>
+                        <p class="text-sm text-gray-300 leading-relaxed">Si vous préférez contourner les dangers avec finesse et frapper vos cibles sans jamais laisser la moindre trace, l'Ombre sera votre meilleure alliée.</p>
+                    </div>
                 </div>
 
                 <!-- Mage -->
-                <div class="flex flex-col items-center">
+                <div class="w-full flex justify-center relative group min-h-[300px]" onclick="this.classList.toggle('clicked')">
                     <img
                         src={mageImage.src}
                         alt="Mage"
-                        class="w-80 h-72 object-contain hover:scale-105 transition-transform cursor-pointer"
+                        class="w-full max-w-[20rem] h-auto object-contain transition-all duration-500 group-hover:opacity-0 group-hover:scale-90 group-[.clicked]:opacity-0 group-[.clicked]:scale-90"
                     />
+                    <div class="absolute inset-0 flex flex-col justify-center bg-slate-950/80 backdrop-blur-md border border-Or-clair/20 rounded-2xl p-6 opacity-0 group-hover:opacity-100 transition-all duration-500 scale-95 group-hover:scale-100 group-[.clicked]:opacity-100 group-[.clicked]:scale-100 text-center z-10 w-full max-w-[18rem] mx-auto h-full sm:h-[90%] my-auto">
+                        <h4 class="text-xl font-heading text-Or-clair mb-3 tracking-widest uppercase">La Mage</h4>
+                        <p class="text-sm text-gray-300 leading-relaxed">Si pour vous, le savoir est la véritable arme et que manipuler la réalité vous fascine plus qu'une simple épée, la Mage est votre destinée.</p>
+                    </div>
                 </div>
 
                 <!-- Chevalier -->
-                <div class="flex flex-col items-center">
+                <div class="w-full flex justify-center relative group min-h-[300px]" onclick="this.classList.toggle('clicked')">
                     <img
                         src={chevalierImage.src}
                         alt="Chevalier"
-                        class="w-64 h-64 object-contain hover:scale-105 transition-transform cursor-pointer"
+                        class="w-full max-w-[16rem] h-auto object-contain transition-all duration-500 group-hover:opacity-0 group-hover:scale-90 group-[.clicked]:opacity-0 group-[.clicked]:scale-90"
                     />
+                    <div class="absolute inset-0 flex flex-col justify-center bg-slate-950/80 backdrop-blur-md border border-Or-clair/20 rounded-2xl p-6 opacity-0 group-hover:opacity-100 transition-all duration-500 scale-95 group-hover:scale-100 group-[.clicked]:opacity-100 group-[.clicked]:scale-100 text-center z-10 w-full max-w-[18rem] mx-auto h-full sm:h-[90%] my-auto">
+                        <h4 class="text-xl font-heading text-Or-clair mb-3 tracking-widest uppercase">Le Chevalier</h4>
+                        <p class="text-sm text-gray-300 leading-relaxed">Si vous préférez charger en première ligne et protéger vos alliés plutôt que de vous cacher dans l'ombre, choisissez la voie du Chevalier.</p>
+                    </div>
                 </div>
 
                 <!-- Alchimiste -->
-                <div class="flex flex-col items-center">
+                <div class="w-full flex justify-center relative group min-h-[300px]" onclick="this.classList.toggle('clicked')">
                     <img
                         src={alchimisteImage.src}
                         alt="Alchimiste"
-                        class="w-60 h-64 object-contain hover:scale-105 transition-transform cursor-pointer"
+                        class="w-full max-w-[15rem] h-auto object-contain transition-all duration-500 group-hover:opacity-0 group-hover:scale-90 group-[.clicked]:opacity-0 group-[.clicked]:scale-90"
                     />
+                    <div class="absolute inset-0 flex flex-col justify-center bg-slate-950/80 backdrop-blur-md border border-Or-clair/20 rounded-2xl p-6 opacity-0 group-hover:opacity-100 transition-all duration-500 scale-95 group-hover:scale-100 group-[.clicked]:opacity-100 group-[.clicked]:scale-100 text-center z-10 w-full max-w-[18rem] mx-auto h-full sm:h-[90%] my-auto">
+                        <h4 class="text-xl font-heading text-Or-clair mb-3 tracking-widest uppercase">L'Alchimiste</h4>
+                        <p class="text-sm text-gray-300 leading-relaxed">Si vous êtes du genre à toujours avoir le bon outil pour la bonne situation et à expérimenter avec l'inconnu, l'Alchimiste sera votre meilleur atout.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -379,8 +334,8 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
     <section>
         <!-- Ligne décorative inférieure -->
         <svg
-            width="1440"
-            height="26"
+            viewBox="0 0 1440 26"
+            class="w-full max-w-[1440px] h-auto px-4"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             ><path
@@ -422,7 +377,7 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
             ></svg
         >
         <h3
-            class="text-3xl text-[#FFE9B5FF] tracking-[5px] text-center my-16"
+            class="text-3xl text-Or-clair tracking-[5px] text-center my-16"
         >
             L'Art du Jeu Nararatif
         </h3>
@@ -470,7 +425,7 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
         <div class="flex justify-center py-16">
             <div class="text-center space-y-6">
                 <h4
-                    class="text-2xl font-heading text-[#FFE9B5FF] tracking-[3px]"
+                    class="text-2xl font-heading text-Or-clair tracking-[3px]"
                 >
                     Prêt à Écrire Votre Légende ?
                 </h4>

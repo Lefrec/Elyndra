@@ -14,6 +14,18 @@ html {
   --font-body: "Volkhov", serif;
   --font-heading2: "Cinzel", serif;
   --font-heading3: "Almendra", serif;
+
+  --color-Blanc: #E8E5D8;
+  --color-Or-clair: #FFE9B5;
+  --color-Background-dark-blue: #090D13;
+  --color-text-color-2: #292929;
+  --color-Fond-bleu-fonce: #16446B;
+  --color-Texte-bleu-clair: #9DD0FA;
+  --color-Texte-bleu-fonce: #00234B;
+  --color-sous-texte: #9C9C9C;
+  --color-Color: #FBFBFB;
+  --color-Bordure-foncee: #353120;
+  --color-Background-card: #0E0E0E;
 }
 
 @layer base {
@@ -47,7 +59,7 @@ html {
   }
 
   body {
-    @apply flex flex-col bg-[#090D13FF] font-body min-h-screen;
+    @apply flex flex-col bg-Background-dark-blue font-body min-h-screen;
   }
 }
 
@@ -74,7 +86,7 @@ html {
 
   .text-Or-clair,
   .border-Or-clair {
-    @apply text-[#FFE9B5FF];
+    @apply text-[#FFE9B5] border-[#FFE9B5];
   }
 }
 

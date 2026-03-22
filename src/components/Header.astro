@@ -8,7 +8,7 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
 const pseudo     = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
 ---
 
-<header id="site-header" class={`bg-black backdrop-blur-sm px-4 md:px-8 py-2 sticky z-50 w-full border-b border-[#FFE9B5]/10 ${bannerOffset ? 'top-[52px]' : 'top-0'}`}>
+<header id="site-header" class={`bg-black backdrop-blur-sm px-4 md:px-8 py-2 sticky z-50 w-full border-b border-Or-clair/10 transition-transform duration-300 ${bannerOffset ? 'top-[52px]' : 'top-0'}`}>
     <div class="max-w-7xl mx-auto h-16 flex justify-between items-center">
 
         <!-- Logo -->
@@ -25,13 +25,31 @@ const pseudo     = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
                     <a href="/choixbiome" class="hover:underline font-heading text-sm tracking-widest">Le Jeu</a>
                 </li>
                 <li>
-                    <a href="/a_propos" class="hover:underline font-heading text-sm tracking-widest">À Propos</a>
+                    <a href="/equipe" class="hover:underline font-heading text-sm tracking-widest">À Propos</a>
                 </li>
                 <li>
                     <a href="/boutique" class="hover:underline font-heading text-sm tracking-widest">Boutique</a>
                 </li>
                 <li>
-                    <a href="/contact" class="hover:underline font-heading text-sm tracking-widest">Contact</a>
+                    {isLoggedIn ? (
+                        <div class="flex items-center gap-3">
+                            <a href="/profile" class="text-Or-clair text-sm font-heading tracking-widest hover:underline hover:opacity-80 transition-opacity">{pseudo}</a>
+                            <button
+                                id="logout-btn"
+                                class="text-white/60 hover:text-Or-clair text-xs font-body tracking-widest uppercase border border-white/20 hover:border-Or-clair/50 px-3 py-1.5 rounded-[6px] transition-all"
+                            >
+                                Se déconnecter
+                            </button>
+                        </div>
+                    ) : (
+                        <a href="/login" class="hover:opacity-80">
+                            <svg width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M28.195 29.653s0-1.459-.487-3.403c-.588-2.356-1.944-3.889-4.86-3.889H12.152c-2.917 0-4.273 1.533-4.861 3.889-.486 1.944-.486 3.403-.486 3.403h21.389zM12.639 12.639c0 1.81.263 3.796.972 4.861.905 1.358 2.44 1.944 3.89 1.944 1.504 0 2.982-.586 3.888-1.944.71-1.065.972-3.05.972-4.861 0-1.358-.486-5.833-4.86-5.833-4.376 0-4.862 3.57-4.862 5.833z" fill="#D0CFCE"/>
+                                <path d="M28.195 29.167s0-.973-.487-2.917c-.588-2.356-1.944-3.889-4.86-3.889H12.152c-2.917 0-4.273 1.533-4.861 3.889-.486 1.944-.486 2.917-.486 2.917" stroke="#000" stroke-width=".5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12.639 12.639c0 1.81.262 3.796.972 4.861.905 1.358 2.44 1.944 3.889 1.944 1.505 0 2.983-.586 3.889-1.944.71-1.065.972-3.05.972-4.861 0-1.358-.486-5.833-4.861-5.833s-4.861 3.57-4.861 5.833z" stroke="#000" stroke-width=".5" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    )}
                 </li>
             </ul>
 
@@ -72,8 +90,8 @@ const pseudo     = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
         <div class="flex md:hidden items-center gap-4">
             {isLoggedIn ? (
                 <div class="flex items-center gap-2">
-                    <span class="text-[#FFE9B5] text-xs font-heading tracking-widest">{pseudo}</span>
-                    <button id="logout-btn-mobile" class="text-white/60 hover:text-[#FFE9B5] text-[0.6rem] uppercase border border-white/20 px-2 py-1 rounded-[5px] transition-all">
+                    <a href="/profile" class="text-Or-clair text-xs font-heading tracking-widest hover:underline hover:opacity-80 transition-opacity">{pseudo}</a>
+                    <button id="logout-btn-mobile" class="text-white/60 hover:text-Or-clair text-[0.6rem] uppercase border border-white/20 px-2 py-1 rounded-[5px] transition-all">
                         Quitter
                     </button>
                 </div>
@@ -91,9 +109,9 @@ const pseudo     = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
                 class="flex flex-col justify-center items-center gap-1.5 w-8 h-8 bg-transparent border-none cursor-pointer"
                 aria-label="Ouvrir le menu"
             >
-                <span id="bar1" class="block w-6 h-0.5 bg-[#FFE9B5] transition-all duration-300"></span>
-                <span id="bar2" class="block w-6 h-0.5 bg-[#FFE9B5] transition-all duration-300"></span>
-                <span id="bar3" class="block w-6 h-0.5 bg-[#FFE9B5] transition-all duration-300"></span>
+                <span id="bar1" class="block w-6 h-0.5 bg-Or-clair transition-all duration-300"></span>
+                <span id="bar2" class="block w-6 h-0.5 bg-Or-clair transition-all duration-300"></span>
+                <span id="bar3" class="block w-6 h-0.5 bg-Or-clair transition-all duration-300"></span>
             </button>
         </div>
 
@@ -102,13 +120,13 @@ const pseudo     = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
     <!-- Menu mobile déroulant -->
     <div
         id="mobile-menu"
-        class="md:hidden hidden flex-col gap-0 bg-black border-t border-[#FFE9B5]/10 overflow-hidden transition-all duration-300"
+        class="md:hidden hidden flex-col gap-0 bg-black border-t border-Or-clair/10 overflow-hidden transition-all duration-300"
     >
         <nav class="px-4 py-6 flex flex-col gap-5">
-            <a href="/choixbiome" class="hover:text-[#FFE9B5] font-heading text-sm uppercase tracking-widest transition-colors">
+            <a href="/choixbiome" class="hover:text-Or-clair font-heading text-sm uppercase tracking-widest transition-colors">
                 Le Jeu
             </a>
-            <a href="/a_propos" class="hover:text-[#FFE9B5] font-heading text-sm uppercase tracking-widest transition-colors">
+            <a href="/equipe" class="hover:text-Or-clair font-heading text-sm uppercase tracking-widest transition-colors">
                 À Propos
             </a>
             <a href="/boutique" class="hover:text-[#FFE9B5] font-heading text-sm uppercase tracking-widest transition-colors">
@@ -197,4 +215,29 @@ const pseudo     = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
     }
     document.getElementById('logout-btn')?.addEventListener('click', logout);
     document.getElementById('logout-btn-mobile')?.addEventListener('click', logout);
+
+    // Header cachable au scroll (Mobile uniquement)
+    let lastScrollY = window.scrollY;
+    const header = document.getElementById('site-header');
+
+    window.addEventListener('scroll', () => {
+        // Appliquer uniquement sur mobile (largeur < 768px pour coller au 'md' de Tailwind)
+        if (window.innerWidth >= 768) {
+            if (header) header.style.transform = 'translateY(0)';
+            return;
+        }
+
+        // On ne cache pas le header si le menu hamburger est ouvert
+        if (isOpen) return;
+
+        if (window.scrollY > lastScrollY && window.scrollY > 80) {
+            // L'utilisateur scrolle vers le bas (et a passé le haut de la page) -> On cache
+            if (header) header.style.transform = 'translateY(-100%)';
+        } else {
+            // L'utilisateur scrolle vers le haut -> On affiche
+            if (header) header.style.transform = 'translateY(0)';
+        }
+        
+        lastScrollY = window.scrollY;
+    }, { passive: true });
 </script>

@@ -12,13 +12,13 @@
     "type": "npx pocketbase-typegen --db ./backend/pb_data/data.db --out ./src/utils/type.ts"
   },
   "dependencies": {
-    "@astrojs/node": "^9.5.2",
-    "@astrojs/react": "^4.4.2",
+    "@astrojs/node": "^10.0.3",
+    "@astrojs/react": "^5.0.1",
     "@perplexity-ai/perplexity_ai": "^0.16.0",
     "@tailwindcss/vite": "^4.1.18",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "astro": "^5.18.0",
+    "astro": "^6.0.7",
     "openai": "^6.10.0",
     "pocketbase": "^0.26.8",
     "react": "^19.2.4",

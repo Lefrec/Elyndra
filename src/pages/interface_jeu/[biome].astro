@@ -5,7 +5,6 @@ import lunel from "../../assets/biomes/lunel.webp";
 import solarys from "../../assets/biomes/solarys.webp";
 import auralis from "../../assets/biomes/auralis.webp";
 import elyndra from "../../assets/biomes/elyndra.webp";
-import coeurIcon from "../../assets/interface_ia/coeur.svg";
 
 // Récupérer le paramètre de biome depuis l'URL
 const { biome } = Astro.params;
@@ -109,52 +108,73 @@ const biomesConfig = {
     },
 };
 
-// Vérifier si le biome existe, sinon rediriger ou utiliser un biome par défaut
+// Vérifie si le biome existe, sinon rediriger ou utiliser un biome par défaut
 const currentBiome =
     biomesConfig[biome as keyof typeof biomesConfig] || biomesConfig.lunel;
+
+// Récupère l'inventaire depuis PocketBase
+let inventoryRecords = [];
+try {
+    inventoryRecords = await Astro.locals.pb.collection("Inventory").getFullList({
+        sort: '-created',
+    });
+} catch (error) {
+    console.error("Erreur lors de la récupération de l'inventaire:", error);
+}
+
+// Extraire les données pour le client (sans les imports d'images qui posent problème)
+const biomesDataForClient = Object.fromEntries(
+    Object.entries(biomesConfig).map(([key, data]) => [
+        key,
+        {
+            name: data.name,
+            fullName: data.fullName,
+            description: data.description,
+            colors: data.colors,
+            startPrompt: data.startPrompt,
+        },
+    ]),
+);
 ---
 
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Elyndra</title>
-    </head>
-
+<Layout hideHeaderFooter={true}>
     <div class="min-h-screen bg-neutral-950">
-
         <!-- En-tête du biome -->
         <header
-            class="w-full mx-auto h-30 px-4 md:px-24 flex justify-between items-center relative"
+            class="w-full mx-auto min-h-[80px] py-4 px-4 md:px-12 lg:px-24 grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4"
         >
-            <button
-                id="verbomnes-button"
-                class={`px-4 py-3.5 ${currentBiome.colors.buttonBg} ${currentBiome.colors.buttonHover} transition-colors rounded-[10px] flex justify-center items-center`}
-            >
-                <span class="text-white text-base">Vos Verbomnes</span>
-            </button>
+            <div class="flex justify-start min-w-0">
+                <button
+                    id="verbomnes-button"
+                    class={`px-3 sm:px-4 py-2 sm:py-3.5 ${currentBiome.colors.buttonBg} ${currentBiome.colors.buttonHover} transition-colors rounded-[10px] flex justify-center items-center shrink-0 z-10`}
+                >
+                    <span class="text-white text-[11px] sm:text-base whitespace-nowrap">Vos Verbomnes</span>
+                </button>
+            </div>
 
-            <div class="flex flex-col justify-center items-center">
+            <div class="flex flex-col justify-center items-center min-w-0">
                 <h1
-                    class={`absolute left-1/2 -translate-x-1/2 text-center ${currentBiome.colors.primary} text-4xl md:text-6xl font-bold font-['Cinzel_Decorative']`}
+                    id="biome-title"
+                    class={`text-center ${currentBiome.colors.primary} text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-['Cinzel_Decorative'] truncate max-w-full px-2`}
                 >
                     {currentBiome.name}
                 </h1>
             </div>
 
             <!-- Menu hamburger avec SVG -->
-            <button
-                id="menu-toggle"
-                class="px-4 py-4 bg-zinc-950 hover:bg-zinc-900 transition-colors rounded flex justify-center items-center z-50 relative group"
-            >
-                <img
-                    src="/menu-hamburger.svg"
-                    alt="Menu"
-                    class="w-8 h-6 transition-transform duration-300 group-hover:scale-110"
-                    id="burger-icon"
-                />
-            </button>
+            <div class="flex justify-end min-w-0">
+                <button
+                    id="menu-toggle"
+                    class="px-3 sm:px-4 py-2 sm:py-4 bg-zinc-950 hover:bg-zinc-900 transition-colors rounded flex justify-center items-center z-50 relative group shrink-0"
+                >
+                    <img
+                        src="/menu-hamburger.svg"
+                        alt="Menu"
+                        class="w-6 h-5 sm:w-8 sm:h-6 transition-transform duration-300 group-hover:scale-110"
+                        id="burger-icon"
+                    />
+                </button>
+            </div>
         </header>
 
         <!-- Modal Verbomnes -->
@@ -206,26 +226,26 @@ const currentBiome =
                     class="flex flex-col md:flex-row gap-12 items-center justify-center mb-8"
                 >
                     <!-- Compteur de Verbomnes -->
-                    <div class="relative flex items-center justify-center">
+                    <div class="relative flex items-center justify-center py-8 md:py-0">
                         <!-- Cercle décoratif -->
                         <div
-                            class="absolute w-72 h-72 border border-Or-clair opacity-30 rounded-full shadow-[0px_4px_15px_0px_rgba(255,233,181,0.5)]"
+                            class="absolute w-56 h-56 sm:w-72 sm:h-72 border border-Or-clair opacity-30 rounded-full shadow-[0px_4px_15px_0px_rgba(255,233,181,0.5)]"
                         >
                         </div>
                         <div
-                            class="absolute w-60 h-56 border border-Or-clair opacity-20"
+                            class="absolute w-44 h-44 sm:w-60 sm:h-56 border border-Or-clair opacity-20"
                         >
                         </div>
 
                         <!-- Nombre et texte -->
                         <div class="relative text-center z-10">
                             <div
-                                class="text-Or-clair text-6xl font-['Cinzel_Decorative'] leading-[96px] mb-2"
+                                class="text-Or-clair text-5xl sm:text-6xl font-['Cinzel_Decorative'] leading-none sm:leading-[96px] mb-2"
                             >
                                 128
                             </div>
                             <div
-                                class="text-orange-200 text-base tracking-widest"
+                                class="text-orange-200 text-sm sm:text-base tracking-widest"
                             >
                                 Verbomnes restants
                             </div>
@@ -259,7 +279,7 @@ const currentBiome =
                         <!-- Bouton membre -->
                         <a
                             href="/"
-                            class="w-full px-4 py-3 bg-yellow-700 hover:bg-yellow-600 transition-colors rounded-[10px] text-center"
+                            class="w-full px-4 py-3 bg-elyndra-3 hover:bg-yellow-600 transition-colors rounded-[10px] text-center"
                         >
                             <span class="text-white text-xs"
                                 >Découvrez nos offres pour plus de Verbomnes !</span
@@ -317,7 +337,7 @@ const currentBiome =
                     <li>
                         <a
                             href="/#"
-                            class="block px-4 py-3 text-white hover:text-Or-clair hover:bg-zinc-900 rounded transition-colors"
+                            class="block px-4 py-3 text-white hover:text-Or-clair hover:bg-[#292929FF]/50 rounded transition-colors"
                         >
                             Accueil
                         </a>
@@ -325,17 +345,25 @@ const currentBiome =
                     <li>
                         <button
                             id="save-btn"
-                            class="w-full text-left px-4 py-3 text-white hover:text-Or-clair hover:bg-zinc-900 rounded transition-colors"
+                            class="w-full text-left px-4 py-3 hover:text-Or-clair hover:bg-[#292929FF]/50 rounded transition-colors"
                         >
                             Sauvegarder
                         </button>
                     </li>
                     <li>
                         <button
-                            class="w-full text-left px-4 py-3 text-white hover:text-Or-clair hover:bg-zinc-900 rounded transition-colors"
+                            class="w-full text-left px-4 py-3 text-white hover:text-Or-clair hover:bg-[#292929FF]/50 rounded transition-colors"
                         >
                             Paramètres
                         </button>
+                    </li>
+                    <li>
+                        <a
+                            href="/contact"
+                            class="block px-4 py-3 text-white hover:text-Or-clair hover:bg-[#292929FF]/50 rounded transition-colors"
+                        >
+                            Aide
+                        </a>
                     </li>
                 </ul>
 
@@ -361,121 +389,182 @@ const currentBiome =
         <!-- Interface principale -->
         <main class="px-2.5 pb-4">
             <div
+                id="main-container"
                 class={`max-w-[1400px] mx-auto ${currentBiome.colors.bgGradient} rounded-md border border-Or-clair p-2.5`}
             >
-                <div class="flex flex-col lg:flex-row gap-2.5 min-h-[705px]">
+                <div class="flex flex-col lg:flex-row gap-4 lg:gap-2.5 min-h-[calc(100vh-150px)] lg:min-h-[705px]">
                     <!-- Panneau gauche - Lieu et Quêtes -->
-                    <aside class="w-full lg:w-64 flex flex-col gap-2.5">
+                    <aside class="w-full lg:w-64 grid grid-cols-2 lg:flex lg:flex-col gap-2 lg:gap-2.5 shrink-0">
                         <!-- Lieu actuel -->
                         <div
-                            class="bg-neutral-950 border border-Or-clair rounded p-4"
+                            class="bg-neutral-950 border border-Or-clair rounded p-2 sm:p-4 h-full lg:h-auto lg:flex-none flex flex-col"
                         >
-                            <h3 class="text-Or-clair text-base mb-2">
+                            <h3
+                                id="aside-biome-name"
+                                class="text-Or-clair text-base mb-2 shrink-0"
+                            >
                                 Lieu - {currentBiome.name}
                             </h3>
                             <h5
                                 id="current-location"
-                                class={`${currentBiome.colors.locationText} text-base font-['Almendra'] mb-2`}
+                                class={`${currentBiome.colors.locationText} text-base font-['Almendra'] mb-2 shrink-0`}
                             >
                                 Début de l'aventure
                             </h5>
                             <p
                                 id="location-description"
-                                class="text-white/60 text-xs"
+                                class="text-white/60 text-xs overflow-y-auto"
                             >
                                 {currentBiome.description}
                             </p>
                         </div>
 
-                        <div class="h-2.5 bg-neutral-950"></div>
+                        <div class="hidden lg:block h-2.5 bg-neutral-950 shrink-0"></div>
 
                         <!-- Quêtes -->
                         <div
-                            class="bg-neutral-950 border border-Or-clair rounded p-4 flex-1"
+                            class="bg-neutral-950 border border-Or-clair rounded p-2 sm:p-4 h-full lg:h-auto lg:flex-1 lg:min-h-[200px] flex flex-col"
                         >
-                            <h3 class="text-Or-clair text-base mb-2">Quêtes</h3>
-                            <div id="quests-list" class="space-y-2">
+                            <h3 class="text-Or-clair text-base mb-2 shrink-0">Quêtes</h3>
+                            <div id="quests-list" class="space-y-2 overflow-y-auto">
                                 <p class="text-white/60 text-xs">
                                     En attente de quêtes...
                                 </p>
                             </div>
                         </div>
+
+                        <div class="hidden lg:block h-2.5 bg-neutral-950 shrink-0"></div>
+
+                        <!-- Lancer de Dé -->
+                        <div
+                            class="bg-neutral-950 border border-Or-clair rounded p-2 sm:p-4 col-span-2 lg:col-span-1 shrink-0 flex flex-col items-center justify-center gap-2 relative overflow-hidden group cursor-pointer hover:border-orange-300 transition-colors"
+                            id="dice-container"
+                        >
+                            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-Or-clair/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                            <h3 class="text-Or-clair text-xs font-['Cinzel_Decorative'] tracking-wider uppercase z-10 transition-colors group-hover:text-orange-200">Jet de Dé</h3>
+                            <div id="dice-button" class="relative z-10 w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_0_8px_rgba(255,233,181,0.2)] group-hover:drop-shadow-[0_0_12px_rgba(255,233,181,0.6)]">
+                                <!-- Icône D20 personnalisée -->
+                                <svg id="Calque_2" data-name="Calque 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 513.88 606.83" class="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-md">
+                                    <polygon points="2.75 153.91 83.94 405.91 1.47 452.89 2.75 153.91" style="fill: #b7aa4e; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
+                                    <polygon points="256.47 101.99 83.94 405.91 2.75 153.91 256.47 101.99" style="fill: #b5a950; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
+                                    <polygon points="256.47 .89 256.47 101.99 2.75 153.91 256.47 .89" style="fill: #c6ba52; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
+                                    <polygon points="511.13 153.91 256.47 101.99 256.47 .89 511.13 153.91" style="fill: #c4b957; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
+                                    <polygon points="511.13 452.89 429.09 405.91 511.13 153.91 511.13 452.89" style="fill: #a09547; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
+                                    <polygon points="83.94 405.91 429.09 405.91 256.47 101.99 83.94 405.91" style="fill: #a59747; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
+                                    <polygon points="256.47 604.8 511.13 452.89 429.09 405.91 256.47 604.8" style="fill: #918436; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
+                                    <polygon points="1.47 452.89 256.47 604.8 83.94 405.91 1.47 452.89" style="fill: #918436; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
+                                    <polygon points="256.47 604.8 83.94 405.91 429.09 405.91 256.47 604.8" style="fill: #9e8e3e; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
+                                    <polygon points="511.13 153.91 256.47 101.99 429.09 405.91 511.13 153.91" style="fill: #b5a950; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
+                                </svg>
+                                <span id="dice-result" class="absolute text-white font-['Almendra'] text-lg sm:text-xl font-bold mb-2 sm:mb-3 transition-opacity duration-300">20</span>
+                            </div>
+                        </div>
                     </aside>
 
-                    <!-- Zone centrale - Chat IA -->
-                    <div
-                        class={`flex-1 ${currentBiome.colors.chatBg} rounded-[5px] border border-Or-clair shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] flex flex-col relative`}
-                    >
-                        <!-- Zone de messages (scrollable) -->
+                    <!-- Zone centrale - Chat IA et Santé -->
+                    <div class="flex-1 flex flex-col gap-4 lg:gap-2.5">
+                        <!-- Santé (Déplacé au-dessus du chat) -->
                         <div
-                            id="chat-messages"
-                            class="flex-1 overflow-y-auto p-4 space-y-4 pb-20 border-Or-clair rounded-tl-[5px] rounded-tr-[5px]"
+                            class="bg-black/40 border border-Or-clair rounded p-3 sm:p-4 relative overflow-hidden"
                         >
-                            <!-- Les messages seront ajoutés ici dynamiquement -->
+                            <!-- Lueur rouge en fond -->
+                            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-red-900/20 to-transparent opacity-50 pointer-events-none"></div>
+
+                            <div class="flex items-center justify-between mb-2 sm:mb-3 relative z-10">
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-Or-clair text-xs sm:text-sm font-['Cinzel_Decorative'] tracking-wider uppercase">Points de vie</h3>
+                                </div>
+                                <p
+                                    id="health-text"
+                                    class="text-red-400 text-base sm:text-lg font-['Almendra'] font-bold drop-shadow-[0_2px_4px_rgba(220,38,38,0.4)]"
+                                >
+                                    100 / 100
+                                </p>
+                            </div>
+
+                            <!-- Barre de vie RPG stylisée -->
+                            <div class="relative w-full h-3 sm:h-4 mt-1">
+                                <!-- Cadre externe (bordure métallique) -->
+                                <div class="absolute inset-0 rounded-[3px] border border-Or-clair/40 bg-[#0a0000] shadow-[inset_0_0_5px_rgba(0,0,0,1)] z-10 overflow-hidden">
+                                    <!-- Texture de fond jauge vide -->
+                                    <div class="w-full h-full opacity-10" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 2px, #FFE9B5 2px, #FFE9B5 4px);"></div>
+                                </div>
+                                
+                                <!-- Remplissage actif (le niveau de santé) -->
+                                <div class="absolute inset-[1px] rounded-[2px] overflow-hidden z-20">
+                                    <div
+                                        id="health-bar"
+                                        class="h-full bg-gradient-to-b from-red-400 via-red-600 to-red-900 transition-all duration-300 relative shadow-[0_0_10px_rgba(220,38,38,0.5)]"
+                                        style="width: 100%"
+                                    >
+                                        <!-- Effet de reflet (verre/fiole) -->
+                                        <div class="absolute top-0 inset-x-0 h-1/2 bg-gradient-to-b from-white/40 to-transparent"></div>
+                                        <div class="absolute top-0 bottom-0 right-0 w-1 bg-white/50 blur-[1px]"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Ornements superposés (embouts et graduations) -->
+                                <div class="absolute inset-0 z-30 pointer-events-none flex justify-between items-center rounded-[3px] border border-black/50">
+                                    <!-- Embout Gauche Doré -->
+                                    <div class="w-[3px] h-full bg-gradient-to-b from-Or-clair via-[#bd943b] to-[#4a3a11]"></div>
+                                    
+                                    <!-- Graduations internes -->
+                                    <div class="absolute inset-y-0 left-1/4 w-[1px] bg-black/60 shadow-[1px_0_0_rgba(255,233,181,0.2)]"></div>
+                                    <div class="absolute inset-y-0 left-2/4 w-[1px] bg-black/60 shadow-[1px_0_0_rgba(255,233,181,0.2)]"></div>
+                                    <div class="absolute inset-y-0 left-3/4 w-[1px] bg-black/60 shadow-[1px_0_0_rgba(255,233,181,0.2)]"></div>
+                                    
+                                    <!-- Embout Droit Doré -->
+                                    <div class="w-[3px] h-full bg-gradient-to-b from-Or-clair via-[#bd943b] to-[#4a3a11]"></div>
+                                </div>
+                                
+                                <!-- Cadre extérieur ultra-fin pour la finition -->
+                                <div class="absolute -inset-[1px] rounded-[4px] border border-Or-clair/20 pointer-events-none z-40"></div>
+                            </div>
                         </div>
 
-                        <!-- Barre de saisie (fixée en bas) -->
+                        <!-- Chat IA -->
                         <div
-                            class="absolute bottom-0 left-0 right-0 p-4 bg-transparent"
+                            id="chat-container"
+                            class={`h-[60vh] min-h-[400px] lg:h-[600px] lg:min-h-0 w-full ${currentBiome.colors.chatBg} rounded-[5px] border border-Or-clair shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] flex flex-col relative`}
                         >
-                            <div class="flex items-center gap-2">
-                                <input
-                                    type="text"
-                                    id="user-input"
-                                    placeholder="Que faites-vous ?"
-                                    class="flex-1 px-4 py-3 bg-[radial-gradient(ellipse_50.00%_50.00%_at_50.00%_50.00%,_#D1BF94_0%,_#A39571_100%)] border border-amber-900/50 rounded-l-[10px] text-black text-base font-['Almendra'] placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-Or-clair"
-                                />
-                                <button
-                                    id="send-button"
-                                    class="px-6 py-3 bg-[radial-gradient(ellipse_50.00%_50.00%_at_50.00%_50.00%,_#BC7D46_0%,_#B3743C_100%)] hover:bg-[radial-gradient(ellipse_50.00%_50.00%_at_50.00%_50.00%,_#CC8D56_0%,_#C3844C_100%)] transition-colors border border-stone-950/50 rounded-r-[10px] text-white"
-                                >
-                                    Envoyer
-                                </button>
+                            <!-- Zone de messages (scrollable) -->
+                            <div
+                                id="chat-messages"
+                                class="flex-1 overflow-y-auto p-4 space-y-4 pb-20 border-Or-clair rounded-tl-[5px] rounded-tr-[5px]"
+                            >
+                                <!-- Les messages seront ajoutés ici dynamiquement -->
+                            </div>
+
+                            <!-- Barre de saisie (fixée en bas) -->
+                            <div
+                                class="absolute bottom-0 left-0 right-0 p-2 sm:p-4 bg-transparent"
+                            >
+                                <div class="flex items-center gap-1 sm:gap-2">
+                                    <input
+                                        type="text"
+                                        id="user-input"
+                                        placeholder="Que faites-vous ?"
+                                        class="flex-1 px-3 sm:px-4 py-2 sm:py-3 bg-[radial-gradient(ellipse_50.00%_50.00%_at_50.00%_50.00%,_#D1BF94_0%,_#A39571_100%)] border border-amber-900/50 rounded-l-[10px] text-black text-sm sm:text-base font-['Almendra'] placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-Or-clair"
+                                    />
+                                    <button
+                                        id="send-button"
+                                        class="px-4 sm:px-6 py-2 sm:py-3 bg-[radial-gradient(ellipse_50.00%_50.00%_at_50.00%_50.00%,_#BC7D46_0%,_#B3743C_100%)] hover:bg-[radial-gradient(ellipse_50.00%_50.00%_at_50.00%_50.00%,_#CC8D56_0%,_#C3844C_100%)] transition-colors border border-stone-950/50 rounded-r-[10px] text-white text-sm sm:text-base"
+                                    >
+                                        Envoyer
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Panneau droit - Stats et Inventaire -->
                     <aside
-                        class="w-full lg:w-64 border border-Or-clair rounded flex flex-col gap-2.5 p-2"
+                        class="w-full lg:w-64 border border-Or-clair rounded flex flex-col gap-2 lg:gap-2.5 p-1 sm:p-2 shrink-0"
                     >
-                        <!-- Santé -->
-                        <div
-                            class="bg-gray-950 border border-Or-clair rounded p-3"
-                        >
-                            <div class="flex items-center gap-2 mb-2">
-                                <div
-                                    class="w-5 h-5 flex items-center justify-center"
-                                >
-                                    <img
-                                        src={coeurIcon.src}
-                                        alt="Santé"
-                                        class="w-4 h-4"
-                                    />
-                                </div>
-                                <h3 class="text-white/90 text-base">Santé</h3>
-                            </div>
-                            <div
-                                class="bg-black/40 rounded-full border border-red-900/50 p-0.5 mb-2"
-                            >
-                                <div
-                                    id="health-bar"
-                                    class="h-2.5 bg-gradient-to-r from-red-950 to-red-800 rounded-full"
-                                    style="width: 85%"
-                                >
-                                </div>
-                            </div>
-                            <p
-                                id="health-text"
-                                class="text-white/80 text-base font-['Almendra'] text-right"
-                            >
-                                85 / 100
-                            </p>
-                        </div>
-
+                        <div class="flex-1 grid grid-cols-2 lg:grid-cols-1 gap-2 lg:gap-2.5">
                         <!-- Statistiques -->
-                        <div class="text-center relative">
-                            <h3 class="text-white text-xs mb-2">
+                        <div class="text-center relative max-w-[280px] mx-auto lg:max-w-none w-full flex flex-col justify-center h-full">
+                            <h3 class="text-Or-clair text-ms mb-2">
                                 Statistiques
                             </h3>
 
@@ -703,7 +792,7 @@ const currentBiome =
                                 </g>
 
                                 <!-- Force (haut gauche) avec icône épée -->
-                                <g transform="translate(35, 80)">
+                                <g transform="translate(35, 62)">
                                     <svg
                                         width="30"
                                         height="30"
@@ -725,16 +814,17 @@ const currentBiome =
                                     </svg>
                                 </g>
                                 <text
-                                    x="40"
-                                    y="130"
+                                    x="50"
+                                    y="104"
                                     fill="white"
                                     font-size="9"
-                                    font-family="Almendra">Force</text
+                                    font-family="Almendra"
+                                    text-anchor="middle">Force</text
                                 >
                                 <text
                                     id="stat-force-svg"
                                     x="185"
-                                    y="95"
+                                    y="92"
                                     fill="white"
                                     font-size="32"
                                     text-anchor="end"
@@ -743,7 +833,7 @@ const currentBiome =
                                 >
 
                                 <!-- Défense (deuxième section) avec icône bouclier -->
-                                <g transform="translate(35, 152)">
+                                <g transform="translate(35, 134)">
                                     <svg
                                         width="28"
                                         height="32"
@@ -768,16 +858,17 @@ const currentBiome =
                                     </svg>
                                 </g>
                                 <text
-                                    x="40"
-                                    y="202"
+                                    x="50"
+                                    y="176"
                                     fill="white"
                                     font-size="9"
-                                    font-family="Almendra">Défense</text
+                                    font-family="Almendra"
+                                    text-anchor="middle">Défense</text
                                 >
                                 <text
                                     id="stat-defense-svg"
                                     x="185"
-                                    y="167"
+                                    y="164"
                                     fill="white"
                                     font-size="32"
                                     text-anchor="end"
@@ -786,7 +877,7 @@ const currentBiome =
                                 >
 
                                 <!-- Magie (troisième section) avec icône bâton -->
-                                <g transform="translate(35, 225)">
+                                <g transform="translate(35, 206)">
                                     <svg
                                         width="28"
                                         height="30"
@@ -800,16 +891,17 @@ const currentBiome =
                                     </svg>
                                 </g>
                                 <text
-                                    x="40"
-                                    y="274"
+                                    x="50"
+                                    y="248"
                                     fill="white"
                                     font-size="9"
-                                    font-family="Almendra">Magie</text
+                                    font-family="Almendra"
+                                    text-anchor="middle">Magie</text
                                 >
                                 <text
                                     id="stat-magie-svg"
                                     x="185"
-                                    y="239"
+                                    y="236"
                                     fill="white"
                                     font-size="32"
                                     text-anchor="end"
@@ -818,7 +910,7 @@ const currentBiome =
                                 >
 
                                 <!-- Agilité (quatrième section en bas) avec icône -->
-                                <g transform="translate(35, 297)">
+                                <g transform="translate(35, 278)">
                                     <svg
                                         width="28"
                                         height="30"
@@ -835,16 +927,17 @@ const currentBiome =
                                     </svg>
                                 </g>
                                 <text
-                                    x="40"
+                                    x="50"
                                     y="320"
                                     fill="white"
                                     font-size="9"
-                                    font-family="Almendra">Agilité</text
+                                    font-family="Almendra"
+                                    text-anchor="middle">Agilité</text
                                 >
                                 <text
                                     id="stat-agilite-svg"
                                     x="185"
-                                    y="311"
+                                    y="308"
                                     fill="white"
                                     font-size="32"
                                     text-anchor="end"
@@ -855,30 +948,48 @@ const currentBiome =
                         </div>
 
                         <!-- Inventaire -->
-                        <div class="border border-Or-clair rounded p-3 flex-1">
+                        <div
+                            class="border border-Or-clair rounded p-3 h-full flex flex-col min-h-[150px] lg:min-h-0"
+                        >
                             <h3
-                                class="text-center text-xs font-['Almendra'] mb-2"
+                                class="text-Or-clair text-ms mb-2 shrink-0 text-center"
                             >
                                 Inventaire
                             </h3>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div
-                                    class="aspect-square border-2 border-lime-950 rounded-[10px] bg-black/20"
-                                >
-                                </div>
-                                <div
-                                    class="aspect-square border-2 border-lime-950 rounded-[10px] bg-black/20"
-                                >
-                                </div>
-                                <div
-                                    class="aspect-square border-2 border-lime-950 rounded-[10px] bg-black/20"
-                                >
-                                </div>
-                                <div
-                                    class="aspect-square border-2 border-lime-950 rounded-[10px] bg-black/20"
-                                >
-                                </div>
+                            <div
+                                id="inventory-list"
+                                class="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar"
+                            >
+                                {inventoryRecords.length > 0 ? (
+                                    <div class="grid grid-cols-2 gap-2">
+                                        {inventoryRecords.map((item) => (
+                                            <div
+                                                class={`ai-inventory-border aspect-square border-2 ${currentBiome.colors.inventoryBorder || 'border-Or-clair'} rounded-[10px] bg-black/20 flex flex-col items-center justify-center p-1 text-center relative group`}
+                                            >
+                                                {/* On peut imaginer une image ici, pour l'instant le texte */}
+                                                <span class="text-Or-clair text-[10px] font-['Almendra'] truncate w-full px-1">{item.name}</span>
+                                                {item.amount > 1 && (
+                                                    <span class="absolute bottom-1 right-1 text-white text-[9px] bg-black/50 px-1 rounded">x{item.amount}</span>
+                                                )}
+                                                
+                                                {/* Tooltip au hover pour la description */}
+                                                {item.desc && (
+                                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[150px] bg-black border border-Or-clair p-1 rounded text-white text-[9px] opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
+                                                        {item.desc}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p
+                                        class="text-white/50 text-xs text-center italic mt-4"
+                                    >
+                                        Inventaire vide...
+                                    </p>
+                                )}
                             </div>
+                        </div>
                         </div>
                     </aside>
                 </div>
@@ -886,321 +997,109 @@ const currentBiome =
         </main>
     </div>
 
-    <!-- Toast sauvegarde -->
+    <!-- Sauvegarde -->
     <div
         id="save-toast"
-        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-neutral-900 border border-[#FFE9B5]/50 rounded-[10px] text-[#FFE9B5] text-sm font-body tracking-wide shadow-lg opacity-0 pointer-events-none transition-opacity duration-300"
-    ></div>
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-neutral-900 border border-Or-clair/50 rounded-[10px] text-Or-clair text-sm font-body tracking-wide shadow-lg opacity-0 pointer-events-none transition-opacity duration-300"
+    >
+    </div>
 
     <!-- Modal reprendre la partie -->
     <div
         id="resume-modal"
         class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity duration-300"
     >
-        <div class="bg-neutral-950 border border-[#FFE9B5]/50 rounded-[10px] p-8 max-w-md w-full mx-4 text-center space-y-6">
-            <h3 class="text-[#FFE9B5] text-xl font-heading2 tracking-widest uppercase">Partie sauvegardée</h3>
+        <div
+            class="bg-neutral-950 border border-Or-clair/50 rounded-[10px] p-8 max-w-md w-full mx-4 text-center space-y-6"
+        >
+            <h3
+                class="text-Or-clair text-xl font-heading2 tracking-widest uppercase"
+            >
+                Partie sauvegardée
+            </h3>
             <p class="text-white/70 text-sm font-body leading-relaxed">
-                Une aventure précédente a été trouvée dans ce biome.<br/>Souhaitez-vous la reprendre ?
+                Une aventure précédente a été trouvée dans ce biome.<br
+                />Souhaitez-vous la reprendre ?
             </p>
             <div class="flex gap-4 justify-center">
                 <button
                     id="resume-yes"
                     class="px-6 py-3 bg-elyndra-3 rounded-[10px] text-sm font-semibold hover:opacity-90 transition-opacity"
-                >Reprendre</button>
+                    >Reprendre</button
+                >
                 <button
                     id="resume-no"
                     class="px-6 py-3 bg-zinc-800 border border-white/20 rounded-[10px] text-sm font-semibold hover:bg-zinc-700 transition-colors"
-                >Nouvelle partie</button>
+                    >Nouvelle partie</button
+                >
             </div>
         </div>
     </div>
 
-    <!-- Script pour l'interface IA -->
-    <script define:vars={{ biomeData: currentBiome, biomeName: biome }}>
-        // ============ GESTION DU MENU HAMBURGER ============
-        const menuToggle = document.getElementById("menu-toggle");
-        const sideMenu = document.getElementById("side-menu");
-        const menuOverlay = document.getElementById("menu-overlay");
-        const closeMenuBtn = document.getElementById("close-menu");
-
-        let menuOpen = false;
-
-        function toggleMenu() {
-            menuOpen = !menuOpen;
-
-            if (menuOpen) {
-                // Ouvrir le menu
-                sideMenu.classList.remove("translate-x-full");
-                menuOverlay.classList.remove(
-                    "opacity-0",
-                    "pointer-events-none",
-                );
-
-                // Cacher le bouton hamburger
-                menuToggle.style.opacity = "0";
-                menuToggle.style.pointerEvents = "none";
-            } else {
-                // Fermer le menu
-                sideMenu.classList.add("translate-x-full");
-                menuOverlay.classList.add("opacity-0", "pointer-events-none");
-
-                // Réafficher le bouton hamburger
-                menuToggle.style.opacity = "1";
-                menuToggle.style.pointerEvents = "auto";
-            }
-        }
-
-        menuToggle.addEventListener("click", toggleMenu);
-        closeMenuBtn.addEventListener("click", toggleMenu);
-        menuOverlay.addEventListener("click", toggleMenu);
-
-        // ============ GESTION DE LA MODAL VERBOMNES ============
-        const verbomnesButton = document.getElementById("verbomnes-button");
-        const verbomnesModal = document.getElementById("verbomnes-modal");
-        const closeVerbomnes = document.getElementById("close-verbomnes");
-
-        function openVerbomnesModal() {
-            verbomnesModal.classList.remove("opacity-0", "pointer-events-none");
-            verbomnesModal.querySelector("div").classList.remove("scale-95");
-            verbomnesModal.querySelector("div").classList.add("scale-100");
-        }
-
-        function closeVerbomnesModal() {
-            verbomnesModal.classList.add("opacity-0", "pointer-events-none");
-            verbomnesModal.querySelector("div").classList.remove("scale-100");
-            verbomnesModal.querySelector("div").classList.add("scale-95");
-        }
-
-        verbomnesButton.addEventListener("click", openVerbomnesModal);
-        closeVerbomnes.addEventListener("click", closeVerbomnesModal);
-
-        // Fermer en cliquant sur l'overlay
-        verbomnesModal.addEventListener("click", (e) => {
-            if (e.target === verbomnesModal) {
-                closeVerbomnesModal();
-            }
-        });
-
-        // Fermer avec la touche Escape
-        document.addEventListener("keydown", (e) => {
-            if (
-                e.key === "Escape" &&
-                !verbomnesModal.classList.contains("pointer-events-none")
-            ) {
-                closeVerbomnesModal();
-            }
-        });
-
-        // ============ GESTION DE L'IA ============
-        // Configuration pour l'IA
-        const messages = [
-            {
-                role: "system",
-                content:
-                    "Tu es un Maître du Jeu d'un jeu de rôle narratif immersif." +
-                    "Ta mission : décrire l'univers, narrer les événements, incarner les personnages non-joueurs et faire évoluer l'histoire selon les actions du joueur." +
-                    "Règles :" +
-                    "- Ne sors jamais de ton rôle de maître du jeu" +
-                    "- Tes réponses sont très concises et centrées sur la narration immersive." +
-                    "- Évite les métaphores à rallonge et formulations pompeuses." +
-                    "- Décris les environnements, actions et conséquences de façon sensorielle et cinématique." +
-                    "- Ne donne pas au joueur des informations qu'il ne peut pas savoir." +
-                    "- Tu contrôles les PNJ et le monde, pas le personnage joueur ; laisse toujours au joueur le choix d'agir." +
-                    "- Tes réponses se terminent par une ouverture ou une question incitant le joueur à décider de sa prochaine action." +
-                    "- Tu donnes subtilement des quêtes et des objectifs à suivre pour le joueur." +
-                    "- Reste strictement cohérent avec l'historique de la conversation et les données RAG fournies. Ne crée ni éléments contradictoires ni incohérences." +
-                    "- Si tu manques d'information, improvise en te basant sur la logique et l'imagination en faisant attention à la cohérence." +
-                    "- Les actions du joueur doivent rester plausibles dans les limites de l'univers. Corrige doucement toute tentative impossible ou méta." +
-                    "- Chaque action entraîne une conséquence logique (réussite, échec, compromis)." +
-                    "- Récompense les actions créatives et solutions ingénieuses du joueur." +
-                    "- Le ton doit être immersif, fluide et agréable. Tu équilibres description et rythme sans faire de textes trop longs ni trop laconiques." +
-                    "- Tu n'es pas un adversaire du joueur, mais un narrateur impartial favorisant l'immersion et le plaisir du jeu." +
-                    `- L'aventure se déroule dans le biome de ${biomeData.fullName}.`,
-            },
-        ];
-
-        const chatMessages = document.getElementById("chat-messages");
-        const userInput = document.getElementById("user-input");
-        const sendButton = document.getElementById("send-button");
-
-        // Fonction pour ajouter un message au chat
-        function addMessage(role, content) {
-            const messageDiv = document.createElement("div");
-
-            if (role === "assistant") {
-                messageDiv.className = `${biomeData.colors.messageBg} rounded-[10px] border border-lime-900/30 p-3`;
-                messageDiv.innerHTML = `
-                <div class="text-yellow-500 text-base  mb-1">Narrateur</div>
-                <div class="${biomeData.colors.messageText} text-sm ">${content}</div>
-            `;
-            } else {
-                messageDiv.className = `${biomeData.colors.messageBg} rounded-[10px] border border-lime-900/50 p-3 ml-auto max-w-md`;
-                messageDiv.innerHTML = `
-                <div class="text-white/90 text-sm  text-right">${content}</div>
-            `;
-            }
-
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Fonction pour envoyer un message à l'IA
-        async function sendMessage(userMessage) {
-            if (!userMessage.trim()) return;
-
-            // Afficher le message de l'utilisateur
-            addMessage("user", userMessage);
-            userInput.value = "";
-
-            // Ajouter le message à l'historique
-            messages.push({
-                role: "user",
-                content: userMessage,
-            });
-
-            try {
-                // Appel à l'API
-                const response = await fetch("/api/ChatCompletion.json", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ messages }),
-                });
-
-                const data = await response.json();
-                const aiResponse = data.choices[0].message.content;
-
-                // Ajouter la réponse à l'historique
-                messages.push({
-                    role: "assistant",
-                    content: aiResponse,
-                });
-
-                // Afficher la réponse
-                addMessage("assistant", aiResponse);
-            } catch (error) {
-                console.error("Erreur lors de l'appel à l'IA:", error);
-                addMessage(
-                    "assistant",
-                    "Une erreur s'est produite. Veuillez réessayer.",
-                );
-            }
-        }
-
-        // Initialisation du jeu
-        async function startGame() {
-            messages.push({
-                role: "user",
-                content: biomeData.startPrompt,
-            });
-
-            try {
-                const response = await fetch("/api/ChatCompletion.json", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ messages }),
-                });
-
-                const data = await response.json();
-                const aiResponse = data.choices[0].message.content;
-
-                messages.push({
-                    role: "assistant",
-                    content: aiResponse,
-                });
-
-                addMessage("assistant", aiResponse);
-            } catch (error) {
-                console.error("Erreur lors du démarrage:", error);
-                addMessage(
-                    "assistant",
-                    `Bienvenue dans ${biomeData.fullName}. Votre aventure commence...`,
-                );
-            }
-        }
-
-        // Event listeners
-        sendButton.addEventListener("click", () => {
-            sendMessage(userInput.value);
-        });
-
-        userInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") {
-                sendMessage(userInput.value);
-            }
-        });
-
-        // ============ SAUVEGARDE / CHARGEMENT ============
-        const saveBtn     = document.getElementById("save-btn");
-        const saveToast   = document.getElementById("save-toast");
-        const resumeModal = document.getElementById("resume-modal");
-        const resumeYes   = document.getElementById("resume-yes");
-        const resumeNo    = document.getElementById("resume-no");
-
-        const role = new URLSearchParams(window.location.search).get("role") ?? "";
-
-        let savedMessages = null;
-
-        function showToast(text) {
-            saveToast.textContent = text;
-            saveToast.classList.remove("opacity-0");
-            setTimeout(() => saveToast.classList.add("opacity-0"), 2500);
-        }
-
-        // Bouton Sauvegarder
-        saveBtn?.addEventListener("click", async () => {
-            try {
-                const res = await fetch("/api/game/save", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ biome: biomeName, role, messages }),
-                });
-                showToast(res.ok ? "✓ Partie sauvegardée" : "✗ Erreur lors de la sauvegarde");
-                if (res.ok) toggleMenu();
-            } catch {
-                showToast("✗ Erreur lors de la sauvegarde");
-            }
-        });
-
-        // Vérifier si une sauvegarde existe au chargement
-        async function checkSave() {
-            try {
-                const res  = await fetch(`/api/game/load?biome=${biomeName}`);
-                const data = await res.json();
-
-                if (data.save?.messages?.length > 1) {
-                    savedMessages = data.save.messages;
-                    resumeModal.classList.remove("opacity-0", "pointer-events-none");
-                } else {
-                    startGame();
-                }
-            } catch {
-                startGame();
-            }
-        }
-
-        // Reprendre la partie sauvegardée
-        resumeYes?.addEventListener("click", () => {
-            resumeModal.classList.add("opacity-0", "pointer-events-none");
-            messages.length = 0;
-            savedMessages.forEach((m) => messages.push(m));
-            messages
-                .filter((m) => m.role !== "system")
-                .forEach((m) => addMessage(m.role, m.content));
-        });
-
-        // Nouvelle partie
-        resumeNo?.addEventListener("click", () => {
-            resumeModal.classList.add("opacity-0", "pointer-events-none");
-            startGame();
-        });
-
-        // Démarrer le jeu au chargement
-        checkSave();
+    <!-- Script pour l'interface de l'IA -->
+    <script
+        define:vars={{
+            biomeData: currentBiome,
+            biomeName: biome,
+            allBiomes: biomesDataForClient,
+        }}
+    >
+        // On rend les données accessibles globalement pour notre script externe
+        window.biomeData = biomeData;
+        window.biomeName = biomeName;
+        window.allBiomes = allBiomes;
     </script>
+    <script>
+        // Logique du lancer de dé
+        document.addEventListener('DOMContentLoaded', () => {
+            const diceContainer = document.getElementById('dice-container');
+            const diceSvg = document.getElementById('Calque_2');
+            const diceResult = document.getElementById('dice-result');
+            let isRolling = false;
 
+            if (diceContainer && diceSvg && diceResult) {
+                diceContainer.addEventListener('click', () => {
+                    if (isRolling) return;
+                    isRolling = true;
+                    
+                    // Cacher le chiffre actuel
+                    diceResult.style.opacity = '0';
+                    
+                    // Animation de rotation
+                    const anim = diceSvg.animate([
+                        { transform: 'rotate(0deg)' },
+                        { transform: 'rotate(720deg)' }
+                    ], {
+                        duration: 800,
+                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' // easeOutQuad
+                    });
 
-</html>
+                    anim.onfinish = () => {
+                        // Générer un nouveau chiffre entre 1 et 20
+                        const roll = Math.floor(Math.random() * 20) + 1;
+                        diceResult.textContent = roll;
+                        
+                        // Réafficher le chiffre
+                        diceResult.style.opacity = '1';
+                        isRolling = false;
+                    };
+                });
+            }
+
+            // Écouteur pour le bouton de test DEV (utilise window.changeBiome de game.js)
+            const devBtn = document.getElementById('dev-biome-btn');
+            const devSelect = document.getElementById('dev-biome-select');
+            
+            if (devBtn && devSelect) {
+                devBtn.addEventListener('click', () => {
+                    if(typeof window.changeBiome === 'function') {
+                        window.changeBiome(devSelect.value);
+                    } else {
+                        console.error('La fonction changeBiome est introuvable.');
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="../../../src/scripts/game.js"></script>
+</Layout>
