@@ -10,7 +10,7 @@ interface Tool {
   description: string;
   parameters: any;
   execute: (args: any, id: string) => Promise<any>;
-}
+};
 
 //get API key and URL
 const API_KEY = import.meta.env.LABAI_API_KEY;
@@ -386,7 +386,7 @@ function parseToolCalls(content: string): Array<{ function: { name: string; argu
         }
     }
     return results.length > 0 ? results : null;
-}
+};
 
 export const POST: APIRoute = async ({locals, request}) => {
     try {
