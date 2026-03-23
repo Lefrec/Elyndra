@@ -1,0 +1,160 @@
+---
+import Layout from "../layout/Layout.astro";
+
+
+if (Astro.request.method === "POST") {
+  const data = await Astro.request.formData();
+  if (data.has("deconnexion")) {
+    Astro.locals.pb.authStore.clear();
+    Astro.response.headers.append(
+      "set-cookie",
+      Astro.locals.pb.authStore.exportToCookie()
+    );
+  }
+  try {
+    const name = data.get("name") as string;
+    const email = data.get("email") as string;
+    const password = data.get("password") as string;
+    const passwordConfirm = data.get("passwordConfirm") as string;
+    const avatar = data.get("avatar") as File;
+    await Astro.locals.pb.collection("users").create({name, email, password, passwordConfirm, avatar})
+    await Astro.locals.pb.collection("users").authWithPassword(email, password);
+    Astro.response.headers.append(
+      "set-cookie",
+      Astro.locals.pb.authStore.exportToCookie()
+    );
+    return Astro.redirect("/profile");
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}
+---
+
+<Layout title="Connexion">
+    <div class="min-h-screen flex flex-col items-center justify-center py-16">
+        <!-- Titre -->
+        <h1
+            class="text-3xl md:text-4xl font-heading font-bold text-[#FFE9B5] tracking-[5px] mb-16"
+        >
+            CRÉER UN COMPTE
+        </h1>
+
+        <!-- Container du formulaire -->
+        <div class="w-[536px] h-[528px] relative">
+            <!-- Bordure externe -->
+            <div
+                class="w-[536px] h-[536px] left-0 top-[-8px] absolute bg-[#353120]"
+            >
+            </div>
+            <!-- Fond du formulaire -->
+            <div
+                class="w-[501px] h-[504px] left-[18px] top-[8px] absolute bg-[#0f0f0f]"
+            >
+            </div>
+            <!-- Contenu du formulaire -->
+            <form
+                class="w-[501px] h-[504px] left-[18px] top-[8px] absolute inline-flex flex-col justify-center items-center gap-12"
+                method="post"
+            >
+                <div class="h-64 flex flex-col justify-start items-start gap-7">
+                    <!-- Votre pseudo -->
+                    <div class="w-72 h-28 relative">
+                        <label
+                            class="left-[0.50px] top-[0.25px] absolute text-white text-sm font-body leading-5"
+                            >Pseudonyme</label
+                        >
+                        <input
+                            id="login-email"
+                            type="text"
+                            placeholder="Votre pseudonyme"
+                            name="name"
+                            class="w-72 h-11 left-[0.50px] top-[33.25px] absolute bg-zinc-900 border border-[#FFE9B5]/30 px-4 text-white placeholder:text-gray-500 placeholder:text-xs focus:border-[#FFE9B5] focus:outline-none"
+                        />
+                    </div>
+                    <!-- Votre email -->
+                    <div class="w-72 h-28 relative">
+                        <label
+                            class="left-[0.50px] top-[0.25px] absolute text-white text-sm font-body leading-5"
+                            >Votre adresse-email</label
+                        >
+                        <input
+                            id="login-email"
+                            type="email"
+                            placeholder="Votre adresse-email"
+                            name="email"
+                            class="w-72 h-11 left-[0.50px] top-[33.25px] absolute bg-zinc-900 border border-[#FFE9B5]/30 px-4 text-white placeholder:text-gray-500 placeholder:text-xs focus:border-[#FFE9B5] focus:outline-none"
+                        />
+                    </div>
+                    <!-- Mot de passe -->
+                    <div class="w-72 h-28 relative">
+                        <label
+                            class="left-[0.50px] top-[0.25px] absolute text-white text-sm font-body leading-5"
+                            >Mot de passe</label
+                        >
+                        <input
+                            id="login-password"
+                            type="password"
+                            name="password"
+                            placeholder="Votre mot de passe"
+                            class="w-72 h-11 left-[0.50px] top-[33.25px] absolute bg-zinc-900 border border-[#FFE9B5]/30 px-4 text-white placeholder:text-gray-500 placeholder:text-xs focus:border-[#FFE9B5] focus:outline-none"
+                        />
+                    </div>
+                    <!-- Mot de passe confirmé -->
+                    <div class="w-72 h-28 relative">
+                        <label
+                            class="left-[0.50px] top-[0.25px] absolute text-white text-sm font-body leading-5"
+                            >Confirmer le mot de passe</label
+                        >
+                        <input
+                            id="login-password"
+                            type="password"
+                            name="passwordConfirm"
+                            placeholder="Confirmez votre mot de passe"
+                            class="w-72 h-11 left-[0.50px] top-[33.25px] absolute bg-zinc-900 border border-[#FFE9B5]/30 px-4 text-white placeholder:text-gray-500 placeholder:text-xs focus:border-[#FFE9B5] focus:outline-none"
+                        />
+                    </div>
+                </div>
+                <!-- Bouton Envoyer -->
+                <button
+                    id="login-btn"
+                    class="w-72 px-20 py-3 bg-[#FFE9B5] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] inline-flex justify-center items-center gap-2.5 hover:bg-[#D9C69A] transition-colors disabled:opacity-50"
+                >
+                    <span class="text-gray-900 text-xl font-body font-semibold"
+                        >Se connecter</span
+                    >
+                </button>
+                <p id="login-error" class="text-red-400 text-xs text-center hidden"></p>
+                <!-- Lien inscription -->
+                <div
+                    class="text-center text-gray-400 text-xs font-body leading-5"
+                >
+                    Pas encore de compte ? <br />
+                    <a
+                        href="/register"
+                        class="text-white hover:text-[#FFE9B5] transition-colors"
+                        >Rejoignez l'aventure en cliquant ici</a
+                    >
+                </div>
+            </form>
+            <!-- Coins décoratifs -->
+            <div
+                class="w-7 h-8 left-[16.01px] top-0 absolute bg-[#353120] rounded-full"
+            >
+            </div>
+            <div
+                class="w-7 h-8 left-[10px] top-[486.92px] absolute bg-[#353120] rounded-full"
+            >
+            </div>
+            <div
+                class="w-7 h-8 left-[496.63px] top-0 absolute bg-[#353120] rounded-full"
+            >
+            </div>
+            <div
+                class="w-7 h-8 left-[496.63px] top-[488.37px] absolute bg-[#353120] rounded-full"
+            >
+            </div>
+        </div>
+    </div>
+</Layout>

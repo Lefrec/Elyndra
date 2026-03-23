@@ -1,6 +1,6 @@
 import Pocketbase from "pocketbase";
 import { deleteGamestateCol, setupGamestate } from "./weaviate";
-const pb = new Pocketbase("http://127.0.0.1:8090/");
+const pb = new Pocketbase("http://elyndra.paolo-vincent.fr/");
 
 const PB_ADMIN_EMAIL = import.meta.env.PB_ADMIN_EMAIL!;
 const PB_ADMIN_PASSWORD = import.meta.env.PB_ADMIN_PASSWORD!;

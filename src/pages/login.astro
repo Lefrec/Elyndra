@@ -1,5 +1,23 @@
 ---
 import Layout from "../layout/Layout.astro";
+
+
+if (Astro.request.method === "POST") {
+  const data = await Astro.request.formData();
+  try {
+    const email = data.get("email") as string;
+    const password = data.get("password") as string;
+    const connect = await Astro.locals.pb.collection("users").authWithPassword(email, password);
+    console.log(connect);
+    Astro.response.headers.append(
+      "set-cookie",
+      Astro.locals.pb.authStore.exportToCookie()
+    )
+    return Astro.redirect("/profile");
+  } catch (e) {
+    console.log("Login failed",e);
+  }
+}
 ---
 
 <Layout title="Connexion">
@@ -24,8 +42,9 @@ import Layout from "../layout/Layout.astro";
             >
             </div>
             <!-- Contenu du formulaire -->
-            <div
+            <form
                 class="w-[501px] h-[504px] left-[18px] top-[8px] absolute inline-flex flex-col justify-center items-center gap-12"
+                method="post"
             >
                 <div class="h-64 flex flex-col justify-start items-start gap-7">
                     <!-- Votre email -->
@@ -38,6 +57,7 @@ import Layout from "../layout/Layout.astro";
                             id="login-email"
                             type="email"
                             placeholder="Votre adresse-email"
+                            name="email"
                             class="w-72 h-11 left-[0.50px] top-[33.25px] absolute bg-zinc-900 border border-[#FFE9B5]/30 px-4 text-white placeholder:text-gray-500 placeholder:text-xs focus:border-[#FFE9B5] focus:outline-none"
                         />
                     </div>
@@ -50,20 +70,15 @@ import Layout from "../layout/Layout.astro";
                         <input
                             id="login-password"
                             type="password"
+                            name="password"
                             placeholder="Votre mot de passe"
                             class="w-72 h-11 left-[0.50px] top-[33.25px] absolute bg-zinc-900 border border-[#FFE9B5]/30 px-4 text-white placeholder:text-gray-500 placeholder:text-xs focus:border-[#FFE9B5] focus:outline-none"
                         />
                     </div>
-                    <a
-                        href="/forgot_password"
-                        class="text-gray-400 text-xs font-body leading-5 hover:text-white transition-colors"
-                        >Mot de passe oublié ?</a
-                    >
                 </div>
                 <!-- Bouton Envoyer -->
                 <button
                     id="login-btn"
-                    type="button"
                     class="w-72 px-20 py-3 bg-[#FFE9B5] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] inline-flex justify-center items-center gap-2.5 hover:bg-[#D9C69A] transition-colors disabled:opacity-50"
                 >
                     <span class="text-gray-900 text-xl font-body font-semibold"
@@ -82,7 +97,7 @@ import Layout from "../layout/Layout.astro";
                         >Rejoignez l'aventure en cliquant ici</a
                     >
                 </div>
-            </div>
+            </form>
             <!-- Coins décoratifs -->
             <div
                 class="w-7 h-8 left-[16.01px] top-0 absolute bg-[#353120] rounded-full"
@@ -103,37 +118,3 @@ import Layout from "../layout/Layout.astro";
         </div>
     </div>
 </Layout>
-
-<script>
-    const btn      = document.getElementById('login-btn') as HTMLButtonElement;
-    const emailEl  = document.getElementById('login-email') as HTMLInputElement;
-    const pwdEl    = document.getElementById('login-password') as HTMLInputElement;
-    const errorEl  = document.getElementById('login-error') as HTMLParagraphElement;
-
-    btn.addEventListener('click', async () => {
-        errorEl.classList.add('hidden');
-        btn.disabled = true;
-
-        const res = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: emailEl.value, password: pwdEl.value }),
-        });
-
-        if (res.ok) {
-            // Redirige vers la page demandée ou vers le choix de biome
-            const params = new URLSearchParams(window.location.search);
-            window.location.href = params.get('redirect') || '/choixbiome';
-        } else {
-            const data = await res.json();
-            errorEl.textContent = data.error ?? 'Une erreur est survenue.';
-            errorEl.classList.remove('hidden');
-            btn.disabled = false;
-        }
-    });
-
-    // Soumettre avec Entrée
-    [emailEl, pwdEl].forEach(el =>
-        el.addEventListener('keydown', e => { if (e.key === 'Enter') btn.click(); })
-    );
-</script>

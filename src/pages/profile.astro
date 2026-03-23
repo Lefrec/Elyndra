@@ -1,23 +1,42 @@
 ---
+import { parse } from "astro:schema";
 import Layout from "../layout/Layout.astro";
-import PocketBase from "pocketbase";
 
-// Le middleware protège la route et nous fournit Astro.locals.user
-const user = Astro.locals.user || {};
+let user;
 
-let historiquesCommandes = [];
-try {
-    const POCKETBASE_URL = import.meta.env.POCKETBASE_URL ?? "http://127.0.0.1:8090";
-    const pb = new PocketBase(POCKETBASE_URL);
-    
-    // Si la collection "achats" ou "commandes" est créée un jour, la logique est prête :
-    if (user?.id) {
-        // const token = Astro.cookies.get("elyndra_session")?.value;
-        // if (token) pb.authStore.save(token, null);
-        // historiquesCommandes = await pb.collection("commandes").getFullList({ filter: `user = "${user.id}"`, sort: "-created" });
+if (Astro.locals.pb.authStore.record) {
+  user = Astro.locals.pb.authStore.record;
+}
+
+if (Astro.request.method === "POST") {
+  const data = await Astro.request.formData();
+  if (data.has("deconnexion")) {
+    Astro.locals.pb.authStore.clear();
+    Astro.response.headers.append(
+      "set-cookie",
+      Astro.locals.pb.authStore.exportToCookie()
+    );
+    return Astro.redirect("/login");
+  };
+  try {
+    if (data.has("name")) {
+        const name = data.get("name") as string;
+        const email = data.get("email") as string;
+        await Astro.locals.pb.collection("users").update(user.id, {email, name});
     }
-} catch (err) {
-    console.error("Erreur lors de la récupération des commandes :", err);
+    if (data.has("password")) {
+        const oldPassword = data.get("oldPassword") as string;
+        const password = data.get("password") as string;
+        const passwordConfirm = data.get("passwordConfirm") as string;
+        if (password == passwordConfirm) {
+            await Astro.locals.pb.collection("users").update(user.id, {oldPassword, password, passwordConfirm});
+        }
+        await Astro.locals.pb.collection("users").authWithPassword(user.email, password);
+    }
+    return Astro.redirect("/profile");
+  } catch (e) {
+    console.log("Login failed",e);
+  }
 }
 ---
 
@@ -47,7 +66,8 @@ try {
                     
                     <div class="pt-6 border-t border-neutral-800 mt-4">
                         <!-- Remplacez le header de l'action vers votre véritable point de terminaison de déconnexion -->
-                        <form action="/api/auth/logout" method="POST">
+                        <form method="post">
+                            <input type="hidden" value="1" name="deconnexion" />
                             <button type="submit" class="w-full text-left px-4 py-3 rounded-lg hover:bg-red-950/50 text-white hover:text-red-400 transition-colors flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -68,22 +88,22 @@ try {
                         <div class="relative bg-slate-950/80 p-6 md:p-8 rounded-2xl border border-amber-100/20 shadow-xl">
                             <h2 class="text-xl font-heading text-Or-clair mb-6">Informations Générales</h2>
                             
-                            <form class="space-y-5 font-body">
+                            <form class="space-y-5 font-body" method="post">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
-                                    <label for="username" class="block text-sm font-medium text-gray-300 mb-1.5">Pseudonyme</label>
-                                    <input type="text" id="username" name="username" value={user.username || ''} 
+                                    <label class="block text-sm font-medium text-gray-300 mb-1.5">Pseudonyme</label>
+                                    <input type="text" name="name" value={user.name || ''} 
                                         class="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-white outline-none transition-shadow" placeholder="Votre pseudo" />
                                 </div>
                                 <div>
-                                    <label for="email" class="block text-sm font-medium text-gray-300 mb-1.5">Adresse Email</label>
-                                    <input type="email" id="email" name="email" value={user.email || ''} 
+                                    <label class="block text-sm font-medium text-gray-300 mb-1.5">Adresse Email</label>
+                                    <input type="email" name="email" value={user.email || ''} 
                                         class="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-elyndra-3 focus:border-elyndra-3 text-white outline-none transition-shadow" placeholder="exemple@email.com" />
                                 </div>
                             </div>
                             
                             <div class="pt-4 flex justify-start">
-                                <button type="button" class="px-6 py-2.5 bg-elyndra-3 hover:opacity-90 text-white rounded-[10px] transition-opacity font-semibold text-sm">
+                                <button type="submit" class="px-6 py-2.5 bg-elyndra-3 hover:opacity-90 text-white rounded-[10px] transition-opacity font-semibold text-sm">
                                     Sauvegarder les modifications
                                 </button>
                             </div>
@@ -98,25 +118,25 @@ try {
                         <div class="relative bg-slate-950/80 p-6 md:p-8 rounded-2xl border border-amber-100/20 shadow-xl">
                             <h2 class="text-xl font-heading text-Or-clair mb-6">Sécurité</h2>
                             
-                            <form class="space-y-5 font-body max-w-md">
+                            <form class="space-y-5 font-body max-w-md" method="post">
                             <div>
-                                <label for="current_password" class="block text-sm font-medium text-gray-300 mb-1.5">Mot de passe actuel</label>
-                                <input type="password" id="current_password" name="current_password" 
+                                <label class="block text-sm font-medium text-gray-300 mb-1.5">Ancien mot de passe</label>
+                                <input type="password" name="oldPassword" 
                                     class="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-white outline-none transition-shadow" placeholder="••••••••" />
                             </div>
                             <div>
-                                <label for="new_password" class="block text-sm font-medium text-gray-300 mb-1.5">Nouveau mot de passe</label>
-                                <input type="password" id="new_password" name="new_password" 
+                                <label class="block text-sm font-medium text-gray-300 mb-1.5">Nouveau mot de passe</label>
+                                <input type="password" name="password" 
                                     class="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-white outline-none transition-shadow" placeholder="••••••••" />
                             </div>
                             <div>
-                                <label for="confirm_password" class="block text-sm font-medium text-gray-300 mb-1.5">Confirmer le nouveau mot de passe</label>
-                                <input type="password" id="confirm_password" name="confirm_password" 
+                                <label class="block text-sm font-medium text-gray-300 mb-1.5">Confirmer le nouveau mot de passe</label>
+                                <input type="password" name="passwordConfirm" 
                                     class="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-white outline-none transition-shadow" placeholder="••••••••" />
                             </div>
                             
                             <div class="pt-4">
-                                <button type="button" class="px-6 py-2.5 bg-elyndra-3 hover:opacity-90 text-white rounded-[10px] transition-opacity font-semibold text-sm shadow-[0_0_15px_rgba(217,119,66,0.3)]">
+                                <button type="submit" class="px-6 py-2.5 bg-elyndra-3 hover:opacity-90 text-white rounded-[10px] transition-opacity font-semibold text-sm shadow-[0_0_15px_rgba(217,119,66,0.3)]">
                                     Mettre à jour le mot de passe
                                 </button>
                             </div>
@@ -147,33 +167,6 @@ try {
                                         <th class="px-5 py-4 font-medium text-center">Statut</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-neutral-800 bg-neutral-900/30">
-                                    {historiquesCommandes.length > 0 ? (
-                                        historiquesCommandes.map((commande) => (
-                                            <tr class="hover:bg-neutral-800/50 transition-colors">
-                                                <td class="px-5 py-4 text-gray-300">
-                                                    {new Date(commande.created).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
-                                                </td>
-                                                <td class="px-5 py-4 text-gray-200">{commande.description}</td>
-                                                <td class="px-5 py-4 text-white font-medium">{commande.montant} €</td>
-                                                <td class="px-5 py-4 text-center">
-                                                    <span class="inline-block bg-green-950/50 text-green-400 text-xs px-2.5 py-1 rounded-full border border-green-900/50">
-                                                        {commande.statut}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colspan="4" class="px-5 py-10 text-center">
-                                                <div class="flex flex-col items-center justify-center gap-2">
-                                                    <span class="text-base font-medium text-gray-300">Aucun achat</span>
-                                                    <span class="text-sm text-gray-500 font-body">Vous n'avez pas encore effectué de commande pour votre aventure.</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
                             </table>
                         </div>
                         </div>

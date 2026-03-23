@@ -6,7 +6,7 @@ export const onRequest = defineMiddleware(async ({locals, request, isPrerendered
 
     console.log("[middleware]");
 
-    locals.pb = new pb("http://127.0.0.1:8090");
+    locals.pb = new pb("http://elyndra.paolo-vincent.fr/");
 
     if (!isPrerendered) {
         locals.pb.authStore.loadFromCookie(request.headers.get('cookie')||'');
