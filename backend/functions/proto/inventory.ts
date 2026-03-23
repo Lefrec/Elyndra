@@ -16,7 +16,11 @@ export async function listInventory(id: string) {
         const items = await pb.collection(collectionName).getFullList();
         console.log("[listInventory] Listed inventory");
         pb.authStore.clear();
-        return items;
+        if (items.length == 0) {
+            return "Inventory is empty";
+        } else {
+            return items;
+        };
     } catch (e) {
         console.log("[listInventory] Failed");
         return e;
@@ -27,10 +31,10 @@ export async function createItem(id: string, data: Item) {
     try {
         await authAdmin();
         const collectionName = "Inventory_"+id;
-        await pb.collection(collectionName).create(data);
+        const item = await pb.collection(collectionName).create(data);
         console.log("[createItem] Added item "+data.name);
         pb.authStore.clear();
-        return;
+        return item;
     } catch (e) {
         console.log("[createItem] Failed");
         return e;
@@ -41,10 +45,10 @@ export async function updateItem(id: string, itemId: string, data: Item) {
     try {
         await authAdmin();
         const collectionName = "Inventory_"+id;
-        await pb.collection(collectionName).update(itemId, data);
+        const item = await pb.collection(collectionName).update(itemId, data);
         console.log("[updateItem] Updated item");
         pb.authStore.clear();
-        return;
+        return item;
     } catch (e) {
         console.log("[updateItem] Failed");
         return e;
@@ -55,10 +59,10 @@ export async function deleteItem(id: string, itemId: string) {
     try {
         await authAdmin();
         const collectionName = "Inventory_"+id;
-        await pb.collection(collectionName).delete(itemId);
+        const item = await pb.collection(collectionName).delete(itemId);
         console.log("[deleteItem] Deleted item");
         pb.authStore.clear();
-        return;
+        return `Item was deleted successfuly : ${item}`;
     } catch (e) {
         console.log("[deleteItem] Failed");
         return e;

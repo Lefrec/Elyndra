@@ -1,7 +1,16 @@
 import { type APIRoute } from "astro";
-import { listInventory, createItem, updateItem, deleteItem } from "../../../../backend/functions/proto/inventory"; 
-import { listCollections, addGamestate } from "../../../../backend/functions/proto/weaviate";
-import { object } from "astro:schema";
+import { listInventory, createItem, updateItem, deleteItem } from "../../../../backend/functions/proto/inventory";
+import { listPlayer, getPlayer, createPlayer, updatePlayer, deletePlayer } from "../../../../backend/functions/proto/player";
+import { listCollections, setupGamestate, addGamestate, listGamestate, deleteGamestate, getLoreRAG, getGamestateRAG } from "../../../../backend/functions/proto/weaviate";
+import { listEntity, createEntity, updateEntity, deleteEntity } from "../../../../backend/functions/proto/entity"; 
+
+//Define what a tool is
+interface Tool {
+  name: string;
+  description: string;
+  parameters: any;
+  execute: (args: any, id: string) => Promise<any>;
+};
 
 //get API key and URL
 const API_KEY = import.meta.env.LABAI_API_KEY;
@@ -9,152 +18,375 @@ const API_URL = "https://lab-ia.umlp.fr/api/chat/completions";
 
 //we keep the system prompt out of the POST for readability
 const systemPrompt: string = "Tu es un assistant IA, répond aux requêtes de l'utilisateur de la manière la plus simple et directe possible."+
-"Tu peux utiliser des tool call pour aider l'utilisateur à gérer ses collections inventory, entity, player et gamestate dans une base de données.";
+"Tu peux utiliser des tool call pour aider l'utilisateur à gérer ses collections inventory, entity, player et gamestate dans une base de données."+
+"Tu ne connais pas les id, utilise les fonctions de liste pour les trouver avant d'agir.";
 
-//array of tools the LLM as access to
-const toolsArray = [
-    {
-        type: "function",
-        function: {
-            name: "listInventory",
-            description: "Liste tous les objets présent dans l'inventaire de l'utilisateur",
-            parameters: {
-                type: "object",
-                properties: {},
-                required: [],
-            },
-        },
+//array defining our tools
+const tools: Tool[] = [
+  //Inventory
+  {
+    name: "listInventory",
+    description: "Liste tous les objets présent dans l'inventaire de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {},
+      required: [],
     },
-    {
-        type: "function",
-        function: {
-            name: "createItem",
-            description: "Ajoute un objet à l'inventaire de l'utilisateur",
-            parameters: {
-                type: "object",
-                properties: {
-                    data: {
-                        type: "object",
-                        description: "Propriétés de l'objet",
-                        properties: {
-                            name: {
-                                type: "string",
-                                description: "Nom de l'objet"
-                            },
-                            desc: {
-                                type: "string",
-                                description: "Description de l'objet"
-                            },
-                            amount: {
-                                type: "integer",
-                                description: "Quantité d'objets à ajouter à l'inventaire",
-                                minimum: 1,
-                            },
-                        }
-                    }
-                },
-                required: ["data"],
-            },
+    execute: async (args, id) => listInventory(id),
+  },
+  {
+    name: "createItem",
+    description: "Ajoute un objet à l'inventaire de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        data: {
+          type: "object",
+          description: "Propriétés de l'objet",
+          properties: {
+            name: { type: "string", description: "Nom de l'objet" },
+            desc: { type: "string", description: "Description de l'objet" },
+            amount: { type: "integer", description: "Quantité d'objets à ajouter à l'inventaire", minimum: 1 },
+          },
         },
+      },
+      required: ["data"],
     },
-    {
-        type: "function",
-        function: {
-            name: "updateItem",
-            description: "Modifie un objet déjà présent dans l'inventaire de l'utilisateur",
-            parameters: {
-                type: "object",
-                properties: {
-                    itemId: {
-                        type: "string",
-                        description: "ID de l'objet à modifier dans la base de donnée"
-                    },
-                    data: {
-                        type: "object",
-                        description: "Propriétés de l'objet",
-                        properties: {
-                            name: {
-                                type: "string",
-                                description: "Nom de l'objet"
-                            },
-                            desc: {
-                                type: "string",
-                                description: "Description de l'objet"
-                            },
-                            amount: {
-                                type: "integer",
-                                description: "Quantité d'objets à ajouter à l'inventaire",
-                                minimum: 1,
-                            },
-                        }
-                    }
-                },
-                required: ["itemId", "data"],
-            },
+    execute: async (args, id) => createItem(id, args.data),
+  },
+  {
+    name: "updateItem",
+    description: "Modifie un objet déjà présent dans l'inventaire de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        itemId: { type: "string", description: "ID de l'objet à modifier dans la base de donnée" },
+        data: {
+          type: "object",
+          description: "Propriétés de l'objet",
+          properties: {
+            name: { type: "string", description: "Nom de l'objet" },
+            desc: { type: "string", description: "Description de l'objet" },
+            amount: { type: "integer", description: "Quantité d'objets à ajouter à l'inventaire", minimum: 1 },
+          },
         },
+      },
+      required: ["itemId", "data"],
     },
-    {
-        type: "function",
-        function: {
-            name: "deleteItem",
-            description: "Supprime un objet présent dans l'inventaire de l'utilisateur",
-            parameters: {
-                type: "object",
-                properties: {
-                    itemId: {
-                        type: "string",
-                        description: "ID de l'objet à modifier dans la base de donnée"
-                    },
-                },
-                required: ["itemId"],
-            },
+    execute: async (args, id) => updateItem(id, args.itemId, args.data),
+  },
+  {
+    name: "deleteItem",
+    description: "Supprime un objet présent dans l'inventaire de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        itemId: { type: "string", description: "ID de l'objet à modifier dans la base de donnée" },
+      },
+      required: ["itemId"],
+    },
+    execute: async (args, id) => deleteItem(id, args.itemId),
+  },
+  //Player
+  {
+    name: "listPlayer",
+    description: "Liste tous les personnages de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+    execute: async (args, id) => listPlayer(id),
+  },
+  {
+    name: "getPlayer",
+    description: "Récupère uniquement le personnage actuel de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+    execute: async (args, id) => getPlayer(id),
+  },
+  {
+    name: "createPlayer",
+    description: "Crée un nouveau personnage pour l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        data: {
+          type: "object",
+          description: "Propriétés du personnage",
+          properties: {
+            name: { type: "string", description: "Nom du personnage" },
+            class: { type: "string", enum: ["chevalier","mage","alchimiste","ombre"], description: "Classe du personnage" },
+            maxHP: { type: "integer", description: "Points de vie maximum" },
+            currentHP: { type: "integer", description: "Points de vie actuels" },
+            for: { type: "integer", description: "Force" },
+            def: { type: "integer", description: "Défense" },
+            mag: { type: "integer", description: "Magie" },
+            agi: { type: "integer", description: "Agilité" },
+            isCurrent: { type: "boolean", description: "Si c'est le personnage actuel" },
+          },
         },
+      },
+      required: ["data"],
     },
-]
+    execute: async (args, id) => createPlayer(id, args.data),
+  },
+  {
+    name: "updatePlayer",
+    description: "Modifie un personnage existant de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        playerId: { type: "string", description: "ID du personnage à modifier" },
+        data: {
+          type: "object",
+          description: "Propriétés du personnage",
+          properties: {
+            name: { type: "string", description: "Nom du personnage" },
+            class: { type: "string", enum: ["chevalier","mage","alchimiste","ombre"], description: "Classe du personnage" },
+            maxHP: { type: "integer", description: "Points de vie maximum" },
+            currentHP: { type: "integer", description: "Points de vie actuels" },
+            for: { type: "integer", description: "Force" },
+            def: { type: "integer", description: "Défense" },
+            mag: { type: "integer", description: "Magie" },
+            agi: { type: "integer", description: "Agilité" },
+            isCurrent: { type: "boolean", description: "Si c'est le personnage actuel" },
+          },
+        },
+      },
+      required: ["playerId", "data"],
+    },
+    execute: async (args, id) => updatePlayer(id, args.playerId, args.data),
+  },
+  {
+    name: "deletePlayer",
+    description: "Supprime un personnage de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        playerId: { type: "string", description: "ID du personnage à supprimer" },
+      },
+      required: ["playerId"],
+    },
+    execute: async (args, id) => deletePlayer(id, args.playerId),
+  },
+  //Gamestate and Lore
+  {
+    name: "addGamestate",
+    description: "Ajoute un élément au gamestate de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        data: {
+          type: "object",
+          description: "Propriétés de l'élément gamestate",
+          properties: {
+            type: { type: "string", description: "Type de l'élément" },
+            name: { type: "string", description: "Nom de l'élément" },
+            desc: { type: "string", description: "Description de l'élément" },
+          },
+        },
+      },
+      required: ["data"],
+    },
+    execute: async (args, id) => addGamestate(id, args.data),
+  },
+  {
+    name: "deleteGamestate",
+    description: "Supprime un élément au gamestate de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        gamestateId: {
+          type: "string",
+          description: "identifiant unique (uuid) de l'élément à supprimer",
+        },
+      },
+      required: ["gamestateId"],
+    },
+    execute: async (args, id) => deleteGamestate(id, args.gamestateId),
+  },
+  {
+    name: "listGamestate",
+    description: "Liste tous les éléments du gamestate de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+    execute: async (args, id) => listGamestate(id),
+  },
+  {
+    name: "getLoreRAG",
+    description: "Recherche dans la base de connaissances lore en utilisant la similarité vectorielle",
+    parameters: {
+      type: "object",
+      properties: {
+        query: { type: "string", description: "La requête de recherche" },
+        size: { type: "integer", description: "Nombre de résultats à retourner", default: 5 },
+      },
+      required: ["query"],
+    },
+    execute: async (args, id) => getLoreRAG(args.query, args.size || 5),
+  },
+  {
+    name: "getGamestateRAG",
+    description: "Recherche dans le gamestate de l'utilisateur en utilisant la similarité vectorielle",
+    parameters: {
+      type: "object",
+      properties: {
+        query: { type: "string", description: "La requête de recherche" },
+        size: { type: "integer", description: "Nombre de résultats à retourner", default: 5 },
+      },
+      required: ["query"],
+    },
+    execute: async (args, id) => getGamestateRAG(id, args.query, args.size || 5),
+  },
+  //Entity
+  {
+    name: "listEntity",
+    description: "Liste toutes les entités de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+    execute: async (args, id) => listEntity(id),
+  },
+  {
+    name: "createEntity",
+    description: "Crée une nouvelle entité pour l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        data: {
+          type: "object",
+          description: "Propriétés de l'entité",
+          properties: {
+            name: { type: "string", description: "Nom de l'entité" },
+            desc: { type: "string", description: "Description de l'entité" },
+            maxHP: { type: "integer", description: "Points de vie maximum" },
+            currentHP: { type: "integer", description: "Points de vie actuels" },
+          },
+        },
+      },
+      required: ["data"],
+    },
+    execute: async (args, id) => createEntity(id, args.data),
+  },
+  {
+    name: "updateEntity",
+    description: "Modifie une entité existante de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        entityId: { type: "string", description: "ID de l'entité à modifier" },
+        data: {
+          type: "object",
+          description: "Propriétés de l'entité",
+          properties: {
+            name: { type: "string", description: "Nom de l'entité" },
+            desc: { type: "string", description: "Description de l'entité" },
+            maxHP: { type: "integer", description: "Points de vie maximum" },
+            currentHP: { type: "integer", description: "Points de vie actuels" },
+          },
+        },
+      },
+      required: ["entityId", "data"],
+    },
+    execute: async (args, id) => updateEntity(id, args.entityId, args.data),
+  },
+  {
+    name: "deleteEntity",
+    description: "Supprime une entité de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        entityId: { type: "string", description: "ID de l'entité à supprimer" },
+      },
+      required: ["entityId"],
+    },
+    execute: async (args, id) => deleteEntity(id, args.entityId),
+  },
+];
+
+const toolMap = new Map(tools.map((tool) => [tool.name, tool]));
+
+//array generated for the LLM stating the tool it has access to
+const toolsArray = tools.map((tool) => ({
+  type: "function",
+  function: {
+    name: tool.name,
+    description: tool.description,
+    parameters: tool.parameters,
+  },
+}));
 
 //we can define the max amount of call the LLM can make before we force it to stop calling tools
-const maxToolCallAmount : number = 5;
+const maxToolCallAmount : number = 10;
 
-//parse the [TOOL_CALLS] request, should be able to handle multiple call in a single request
-function parseToolCalls(request : string): Array<{ name: string; args: any }> | null {
-    console.log("[parseToolCalls] Parsing request looking for tool call")
-    const TAG : string = "[TOOL_CALLS]";
-    const toolCalls : Array<{ name: string; args: any }> = [];
-    
-    if (!request.includes(TAG)) {
-        console.log("[parseToolCalls] No tool call found in request")
-        return null;
+//new parser used to parse content when the LLM is too dumb to use its integrated tool_call response
+function parseToolCalls(content: string): Array<{ function: { name: string; arguments: string } }> | null {
+    const toolNames = toolsArray.map(t => t.function.name);
+    const results: Array<{ function: { name: string; arguments: string } }> = [];
+    let i = 0;
+    while (i < content.length) {
+        let found = false;
+        for (const name of toolNames) {
+            if (content.startsWith(name, i)) {
+                i += name.length;
+                // now parse JSON from i
+                let braceCount = 0;
+                let start = i;
+                let inString = false;
+                let escaped = false;
+                while (i < content.length) {
+                    const char = content[i];
+                    if (inString) {
+                        if (escaped) {
+                            escaped = false;
+                        } else if (char === '\\') {
+                            escaped = true;
+                        } else if (char === '"') {
+                            inString = false;
+                        }
+                    } else {
+                        if (char === '"') {
+                            inString = true;
+                        } else if (char === '{') {
+                            braceCount++;
+                        } else if (char === '}') {
+                            braceCount--;
+                            if (braceCount === 0) {
+                                i++;
+                                break;
+                            }
+                        }
+                    }
+                    i++;
+                }
+                if (braceCount === 0) {
+                    const jsonStr = content.substring(start, i);
+                    try {
+                        JSON.parse(jsonStr); // validate
+                        results.push({ function: { name, arguments: jsonStr } });
+                        found = true;
+                    } catch (e) {
+                        // invalid JSON, skip
+                    }
+                }
+                break;
+            }
+        }
+        if (!found) {
+            i++; // move to next char if no tool found
+        }
     }
-
-    //split the request into different sections delimited by the TAG, filter removes empty values
-    const splittedRequests : Array<string> = request.split(TAG).filter(d => d);
-    console.log("[parseToolCalls] Found",splittedRequests.length,"tool call in request")
-
-    //for each call, get the name of the function called and the arguments
-    splittedRequests.forEach(call => {
-        const nameMatch = call.match(/^([a-zA-Z0-9_]+)/);
-        if (!nameMatch) return null;
-        const name = nameMatch[1];
-
-        const argsJSON = call.slice(name.length);
-        const args = checkValidJSON(argsJSON) ? JSON.parse(argsJSON) : {};
-
-        toolCalls.push({ name, args });
-        console.log("[parseToolCalls] Added a call for",name,"to the list of toolCalls")
-    });
-
-    return toolCalls;
-}
-
-//simple helper function that check if a string is valid JSON format
-function checkValidJSON(string : string) {
-    try {
-        JSON.parse(string);
-    } catch (e) {
-        return false;
-    }
-    return true;
-}
+    return results.length > 0 ? results : null;
+};
 
 export const POST: APIRoute = async ({locals, request}) => {
     try {
@@ -207,7 +439,12 @@ export const POST: APIRoute = async ({locals, request}) => {
 
                 //checking for tool call
                 console.log("[chat] Checking for tool call in response",i);
-                const toolCalls = choice.message.tool_calls;
+                let toolCalls;
+                if (choice.message.tool_calls) {
+                    toolCalls = choice.message.tool_calls;
+                } else {
+                    toolCalls = parseToolCalls(choice.message.content);
+                }
                 console.log("[chat] Tool call of response",i,":",toolCalls);
 
                 if (!toolCalls || toolCalls.length === 0 ) {
@@ -222,24 +459,21 @@ export const POST: APIRoute = async ({locals, request}) => {
                 // Execute all tools in this response
                 for (const toolCall of toolCalls) {
                     let toolResult: any = null;
-                    console.log("[chat] toolCall : ",toolCall);
                     try {
                         const name = toolCall.function.name;
-                        const args = toolCall.function.arguments;
-                        if (name === "listInventory") {
-                            toolResult = await listInventory(id);
-                        } else if (name === "createItem") {
-                            toolResult = await createItem(id, args.data);
-                        } else if (name === "updateItem") {
-                            toolResult = await updateItem(id, args.itemId, args.data);
-                        } else if (name === "deleteItem") {
-                            toolResult = await deleteItem(id, args.itemId);
+                        const args = JSON.parse(toolCall.function.arguments);
+                        
+                        const tool = toolMap.get(name);
+                        if (tool) {
+                            toolResult = await tool.execute(args, id);
+                        } else {
+                            toolResult = { error: `Unknown tool: ${name}`}
                         }
                     } catch (e) {
                         toolResult = { error: String(e) };
                     };
         
-                    // Add tool result to messages and continue loopù
+                    // Add tool result to messages and continue loop
                     console.log("[chat] Tool result :",toolResult)
                     chatMessages.push({ role: "user", content: `Tool result: ${JSON.stringify(toolResult)}` });
                 };

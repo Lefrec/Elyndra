@@ -1,0 +1,146 @@
+---
+import DLCCard from "./DLCCard.astro";
+
+const dlcData = [
+    {
+        id: 1,
+        title: "Les Cimes Éthérées",
+        description:
+            "Découvrez les plus hauts sommets d'Elyndra à travers des quêtes vertigineuses. Affrontez les tempêtes magiques éternelles et maîtrisez les vents primordiaux qui sculptent les pics flottants.",
+        price: 16.99,
+        credits: 900,
+        image: "https://copilot.microsoft.com/th/id/BCO.34aef96e-a5a3-4d87-ae12-0675e99b965e.png",
+        isNew: true,
+        featured: true,
+    },
+    {
+        id: 2,
+        title: "Les Profondeurs d'Azurea",
+        description:
+            "Plongez dans les océans mystérieux d'Elyndra et explorez le royaume sous-marin d'Azurea. Découvrez des créatures aquatiques légendaires et maîtrisez les pouvoirs de l'eau.",
+        price: 16.99,
+        credits: 900,
+        image: "https://copilot.microsoft.com/th/id/BCO.ef2b7785-2c52-46a1-ad4d-87a27ce06df1.png",
+        isNew: true,
+        featured: true,
+    },
+    {
+        id: 3,
+        title: "Les Monts Volcaniques",
+        description:
+            "Affrontez les dangers des volcans d'Elyndra où règne la chaleur infernale. Domptez le feu primordial et découvrez les forges ancestrales des titans.",
+        price: 13.99,
+        credits: 750,
+        image: "https://copilot.microsoft.com/th/id/BCO.108541c6-f7ef-4c79-98df-8ffd123c0e3b.png",
+        isNew: true,
+        featured: false,
+    },
+    {
+        id: 4,
+        title: "Neon Dreams",
+        description:
+            "Explorez les cités futuristes d'Elyndra dans cette extension cyberpunk. Nouvelles factions, personnages et choix narratifs qui changeront l'avenir du royaume.",
+        price: 12.99,
+        credits: 650,
+        image: "https://copilot.microsoft.com/th/id/BCO.a18bca69-a59a-4fbb-b036-9343127d9895.png",
+        isNew: false,
+        featured: false,
+    },
+    {
+        id: 5,
+        title: "La Forêt Éternelle",
+        description:
+            "Aventurez-vous dans les terres sauvages d'Elyndra où la magie primordiale règne. Rencontrez les gardiens ancestraux et domptez les forces de la nature.",
+        price: 9.99,
+        credits: 500,
+        image: "https://copilot.microsoft.com/th/id/BCO.397c46e1-1780-4c28-8c5a-d8374a8dd054.png",
+        isNew: false,
+        featured: false,
+    },
+];
+---
+
+<section class="py-16 px-6 md:px-12 lg:px-16 max-w-7xl mx-auto">
+    <!-- Titre (même style que tes autres sections) -->
+    <div class="text-left mb-16">
+        <h2
+            class="text-2xl sm:text-3xl md:text-4xl font-black text-[#FFE9B5] mb-4 sm:mb-6 leading-tight"
+        >
+            Contenus Téléchargeables
+        </h2>
+        <p
+            class="text-[#9C9C9C] text-base sm:text-lg md:text-xl max-w-lg leading-relaxed"
+        >
+            Étendez votre expérience avec du contenu narratif exclusif
+        </p>
+    </div>
+
+    <!-- Carrousel DLC (cartes PLUS LARGES) -->
+    <div class="relative">
+        <div class="flex items-center gap-4">
+            <button
+                id="dlcPrev"
+                class="hidden md:flex bg-[#FFE9B5]/80 hover:bg-[#FFE9B5] text-[#090D13] text-4xl font-bold rounded-full w-16 h-16 items-center justify-center shadow-lg transition-all"
+                aria-label="Précédent"
+            >
+                ‹
+            </button>
+
+            <div
+                id="dlcCarousel"
+                class="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth md:overflow-hidden justify-start px-6 md:px-16 flex-1 pb-3"
+            >
+                {
+                    dlcData.map((dlc) => (
+                        <div class="snap-center flex-shrink-0 w-[90vw] sm:w-[75vw] md:w-[calc(50%-1.5rem)] lg:w-[calc(45%-1.5rem)] transition-none px-3">
+                            <DLCCard dlc={dlc} />
+                        </div>
+                    ))
+                }
+            </div>
+
+            <button
+                id="dlcNext"
+                class="hidden md:flex bg-[#FFE9B5]/80 hover:bg-[#FFE9B5] text-[#090D13] text-4xl font-bold rounded-full w-16 h-16 items-center justify-center shadow-lg transition-all"
+                aria-label="Suivant"
+            >
+                ›
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const dlcCarousel = document.getElementById("dlcCarousel");
+        const dlcPrev = document.getElementById("dlcPrev");
+        const dlcNext = document.getElementById("dlcNext");
+
+        function scrollDLC(direction) {
+            const card = dlcCarousel.querySelector("div");
+            if (!card) return;
+            const cardWidth = card.offsetWidth + 24; // largeur d'une carte + écart (gap-6 = 24px)
+            dlcCarousel.scrollBy({
+                left: direction * cardWidth,
+                behavior: "smooth",
+            }); // défilement 1 carte à la fois
+        }
+
+        dlcPrev?.addEventListener("click", () => scrollDLC(-1));
+        dlcNext?.addEventListener("click", () => scrollDLC(1));
+    </script>
+
+    <style>
+        #dlcCarousel::-webkit-scrollbar {
+            height: 6px;
+        }
+        #dlcCarousel::-webkit-scrollbar-track {
+            background: #090D13;
+        }
+        #dlcCarousel::-webkit-scrollbar-thumb {
+            background: #FFE9B5;
+            border-radius: 3px;
+        }
+        #dlcCarousel::-webkit-scrollbar-thumb:hover {
+            background: #E8E5D8;
+        }
+    </style>
+</section>

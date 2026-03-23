@@ -1,5 +1,5 @@
 import Pocketbase from "pocketbase";
-import { deleteGamestate, setupGamestate } from "./weaviate";
+import { deleteGamestateCol, setupGamestate } from "./weaviate";
 const pb = new Pocketbase("http://127.0.0.1:8090/");
 
 const PB_ADMIN_EMAIL = import.meta.env.PB_ADMIN_EMAIL!;
@@ -30,7 +30,7 @@ export async function deleteCollections(id: string) {
         await deletePlayer(id);
         await deleteInventory(id);
         await deleteEntity(id);
-        await deleteGamestate(id);
+        await deleteGamestateCol(id);
         pb.authStore.clear();
         return;
     } catch (e) {
@@ -91,10 +91,12 @@ async function setupPlayer(id: string) {
                 ]
             })
         } else {
-            console.log("[setupPlayer] Truncate collection");
-            await pb.collections.truncate(collectionName)
+            console.log("[setupPlayer] Retiring old characters");
+            const currentPlayers = await pb.collection(collectionName).getFullList();
+            currentPlayers.forEach( async (player) => {
+                await pb.collection(collectionName).update(player.id, {isCurrent: false});
+            });
         }
-
         return;
     } catch (e) {
         console.log("[setupPlayer] Failed")
@@ -197,6 +199,10 @@ async function setupEntity(id: string) {
                     {
                         name: "desc",
                         type: "text",
+                    },
+                    {
+                        name: "maxHP",
+                        type: "number",
                     },
                     {
                         name: "currentHP",

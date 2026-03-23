@@ -1,0 +1,201 @@
+---
+import Layout from '../layout/Layout.astro';
+
+const title = "Panier - Elyndra";
+const description = "Votre panier d'achats pour Elyndra";
+---
+
+<Layout title={title} description={description}>
+  <section class="py-16 px-6 md:px-12 lg:px-16 max-w-7xl mx-auto">
+    <div class="text-left mb-16">
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#FFE9B5] mb-4 sm:mb-6 leading-tight">
+        Votre Panier
+      </h1>
+      <p class="text-[#9C9C9C] text-base sm:text-lg md:text-xl max-w-lg leading-relaxed">
+        Vérifiez vos achats avant de procéder au paiement
+      </p>
+    </div>
+
+    <div id="cart-container" class="space-y-6">
+      <!-- Les items du panier seront insérés ici par JavaScript -->
+    </div>
+
+    <div id="cart-total" class="mt-12 p-6 bg-[#0E0E0E] border border-[#353120] rounded-2xl">
+      <!-- Total sera affiché ici -->
+    </div>
+
+    <div class="mt-8 flex gap-4 justify-center">
+      <button id="clear-cart-btn" class="bg-red-600 text-white font-bold py-3 px-8 rounded-lg uppercase text-lg hover:bg-red-700 transition-colors">
+        Vider le panier
+      </button>
+      <button id="checkout-btn" class="bg-[#FFE9B5] text-[#090D13] font-bold py-3 px-8 rounded-lg uppercase text-lg hover:bg-yellow-400 transition-colors">
+        Procéder au Paiement
+      </button>
+    </div>
+  </section>
+
+  <!-- Notification -->
+  <div id="notification" class="fixed top-4 right-4 bg-[#090D13] text-[#FFE9B5] p-4 rounded-lg shadow-lg hidden z-50 max-w-sm border border-[#353120]">
+    <p id="notification-text" class="font-bold"></p>
+  </div>
+
+  <script>
+    // Fonction pour afficher les notifications
+    function showNotification(message) {
+      document.getElementById('notification-text').textContent = message;
+      const notif = document.getElementById('notification');
+      notif.classList.remove('hidden');
+      setTimeout(() => notif.classList.add('hidden'), 3000);
+    }
+
+    // Fonction pour charger et afficher le panier
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem('elyndra_cart') || '[]');
+      const container = document.getElementById('cart-container');
+      const totalDiv = document.getElementById('cart-total');
+
+      if (cart.length === 0) {
+        container.innerHTML = '<p class="text-[#9C9C9C] text-center py-12">Votre panier est vide</p>';
+        totalDiv.innerHTML = '';
+        return;
+      }
+
+      let total = 0;
+      container.innerHTML = cart.map(item => {
+        const priceNum = typeof item.price === 'string' ? parseFloat(item.price.replace(',', '.').replace('€', '')) : item.price;
+        const itemTotal = priceNum * item.quantity;
+        total += itemTotal;
+
+        let itemContent = '';
+        if (item.type === 'credit') {
+          itemContent = `
+            <div class="bg-[#0E0E0E] border border-[#353120] rounded-2xl p-6 flex items-center gap-6">
+              <div class="w-20 h-20 bg-[#FFE9B5] rounded-lg flex items-center justify-center">
+                <img src="${item.image}" alt="${item.name}" class="w-12 h-12 object-contain">
+              </div>
+              <div class="flex-1">
+                <h3 class="text-xl font-bold text-[#E8E5D8]">${item.name}</h3>
+                <p class="text-[#9C9C9C]">${item.credits} crédits</p>
+                <div class="flex items-center gap-4 mt-2">
+                  <span class="text-[#FFE9B5] font-bold">${item.price.toFixed(2)}€</span>
+                  <div class="flex items-center gap-2">
+                    <button class="quantity-btn bg-[#353120] text-[#E8E5D8] px-2 py-1 rounded" data-action="decrease" data-id="${item.name}" data-type="${item.type}">-</button>
+                    <span class="text-[#E8E5D8]">${item.quantity}</span>
+                    <button class="quantity-btn bg-[#353120] text-[#E8E5D8] px-2 py-1 rounded" data-action="increase" data-id="${item.name}" data-type="${item.type}">+</button>
+                  </div>
+                  <span class="text-[#9C9C9C]">Sous-total: ${itemTotal.toFixed(2)}€</span>
+                </div>
+              </div>
+              <button class="remove-btn bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700" data-id="${item.name}" data-type="${item.type}">Supprimer</button>
+            </div>
+          `;
+        } else {
+          itemContent = `
+            <div class="bg-[#0E0E0E] border border-[#353120] rounded-2xl p-6 flex items-center gap-6">
+              <img src="${item.image}" alt="${item.name || item.title}" class="w-20 h-20 object-cover rounded-lg">
+              <div class="flex-1">
+                <h3 class="text-xl font-bold text-[#E8E5D8]">${item.name || item.title}</h3>
+                <p class="text-[#9C9C9C]">${item.description?.substring(0, 100)}...</p>
+                <div class="flex items-center gap-4 mt-2">
+                  <span class="text-[#FFE9B5] font-bold">${priceNum.toFixed(2)}€</span>
+                  <div class="flex items-center gap-2">
+                    <button class="quantity-btn bg-[#353120] text-[#E8E5D8] px-2 py-1 rounded" data-action="decrease" data-id="${item.id}" data-type="${item.type}">-</button>
+                    <span class="text-[#E8E5D8]">${item.quantity}</span>
+                    <button class="quantity-btn bg-[#353120] text-[#E8E5D8] px-2 py-1 rounded" data-action="increase" data-id="${item.id}" data-type="${item.type}">+</button>
+                  </div>
+                  <span class="text-[#9C9C9C]">Sous-total: ${itemTotal.toFixed(2)}€</span>
+                </div>
+              </div>
+              <button class="remove-btn bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700" data-id="${item.id}" data-type="${item.type}">Supprimer</button>
+            </div>
+          `;
+        }
+
+        return itemContent;
+      }).join('');
+
+      totalDiv.innerHTML = `
+        <div class="flex justify-between items-center">
+          <span class="text-xl font-bold text-[#E8E5D8]">Total:</span>
+          <span class="text-2xl font-black text-[#FFE9B5]">${total.toFixed(2)}€</span>
+        </div>
+      `;
+
+      // Ajouter les event listeners
+      addCartEventListeners();
+    }
+
+    function addCartEventListeners() {
+      // Boutons quantité
+      document.querySelectorAll('.quantity-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = parseInt(e.target.dataset.id);
+          const type = e.target.dataset.type;
+          const action = e.target.dataset.action;
+          updateQuantity(id, type, action);
+        });
+      });
+
+      // Boutons supprimer
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          if (confirm('Voulez-vous vraiment supprimer cet article du panier ?')) {
+            const id = e.target.dataset.id;
+            const type = e.target.dataset.type;
+            removeFromCart(id, type);
+            showNotification('Article supprimé du panier');
+          }
+        });
+      });
+    }
+
+    function updateQuantity(id, type, action) {
+      const cart = JSON.parse(localStorage.getItem('elyndra_cart') || '[]');
+      const itemIndex = cart.findIndex(item => item.type === type && (item.id == id || item.name === id));
+      if (itemIndex > -1) {
+        if (action === 'increase') {
+          cart[itemIndex].quantity += 1;
+        } else if (action === 'decrease' && cart[itemIndex].quantity > 1) {
+          cart[itemIndex].quantity -= 1;
+        }
+        localStorage.setItem('elyndra_cart', JSON.stringify(cart));
+        loadCart();
+        window.dispatchEvent(new Event('cartUpdated'));
+      }
+    }
+
+    function removeFromCart(id, type) {
+      const cart = JSON.parse(localStorage.getItem('elyndra_cart') || '[]');
+      const newCart = cart.filter(item => !(item.type === type && (item.id == id || item.name === id)));
+      localStorage.setItem('elyndra_cart', JSON.stringify(newCart));
+      loadCart();
+      window.dispatchEvent(new Event('cartUpdated'));
+    }
+
+    // Bouton vider le panier
+    document.getElementById('clear-cart-btn').addEventListener('click', () => {
+      if (confirm('Voulez-vous vraiment vider le panier ?')) {
+        localStorage.removeItem('elyndra_cart');
+        loadCart();
+        window.dispatchEvent(new Event('cartUpdated'));
+        showNotification('Panier vidé');
+      }
+    });
+
+    // Bouton checkout
+    document.getElementById('checkout-btn').addEventListener('click', () => {
+      const cart = JSON.parse(localStorage.getItem('elyndra_cart') || '[]');
+      if (cart.length === 0) {
+        showNotification('Votre panier est vide');
+        return;
+      }
+      showNotification('Paiement simulé réussi - Merci pour votre achat !');
+      localStorage.removeItem('elyndra_cart');
+      loadCart();
+      window.dispatchEvent(new Event('cartUpdated'));
+    });
+
+    // Charger le panier au chargement de la page
+    loadCart();
+  </script>
+</Layout>

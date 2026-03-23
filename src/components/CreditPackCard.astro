@@ -3,24 +3,36 @@ const {
   name, 
   credits, 
   price, 
-  image, 
-  isPopular = false 
+  image 
 } = Astro.props;
 ---
 
-<div class={`credit-card bg-[#0E0E0E] border-2 border-[#353120] rounded-xl p-6 text-center relative shadow-lg flex flex-col h-full ${isPopular ? 'ring-2 ring-[#FFE9B5]/30 -mt-2 z-10' : ''}`}>
+<div class="credit-card bg-[#0E0E0E] border-2 border-[#353120] rounded-xl p-3 sm:p-4 md:p-6 text-center relative shadow-lg flex flex-col h-full">
   
-  <!-- SVG 30x30px - MÊME LOGIQUE POUR TOUS -->
-  <div class="w-[38px] h-[38px] mx-auto mb-3 bg-[#FFE9B5] rounded-lg flex items-center justify-center p-2 shadow-md">
-    <!-- SVG avec <img> (fonctionne parfaitement) -->
-    <img src={image} alt={`${name}`} class="w-[30px] h-[30px] object-contain" loading="lazy" />
+  <!-- Icône responsive -->
+  <div class="w-10 h-10 sm:w-[38px] sm:h-[38px] md:w-[42px] md:h-[42px] mx-auto mb-2 sm:mb-3 bg-[#FFE9B5] rounded-lg flex items-center justify-center p-1.5 sm:p-2 shadow-md">
+    <img 
+      src={image} 
+      alt={`${name}`} 
+      class="w-7 h-7 sm:w-[30px] sm:h-[30px] md:w-[32px] md:h-[32px] object-contain" 
+      loading="lazy" 
+    />
   </div>
   
-  <h3 class="text-xl font-bold text-[#FFE9B5] mb-3 flex-grow">{name}</h3>
-  <div class="text-4xl font-black text-[#E8E5D8] mb-1">{credits}</div>
-  <div class="text-xs text-[#9C9C9C] uppercase tracking-wider mb-4">crédits</div>
-  <div class="text-2xl font-bold text-[#FFE9B5] mb-6">{price}</div>
-  <button class="w-full bg-[#FFE9B5] text-[#090D13] font-bold py-3 px-4 rounded-lg uppercase text-sm hover:bg-yellow-400 transition-colors mt-auto">
+  <!-- Titre responsive -->
+  <h3 class="text-lg sm:text-xl md:text-xl font-bold text-[#FFE9B5] mb-2 sm:mb-3 flex-grow leading-tight">{name}</h3>
+  
+  <!-- Crédits responsive -->
+  <div class="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-black text-[#E8E5D8] mb-1 leading-none">{credits}</div>
+  
+  <!-- Label crédits -->
+  <div class="text-xs sm:text-xs md:text-sm text-[#9C9C9C] uppercase tracking-wider mb-3 sm:mb-4">crédits</div>
+  
+  <!-- Prix responsive -->
+  <div class="text-xl sm:text-2xl md:text-2xl font-bold text-[#FFE9B5] mb-4 sm:mb-6 leading-tight">{price}</div>
+  
+  <!-- Bouton responsive -->
+  <button data-credit-name={name} class="add-to-cart-btn w-full bg-[#FFE9B5] text-[#090D13] font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-lg uppercase text-xs sm:text-sm hover:bg-yellow-400 transition-colors mt-auto">
     Ajouter au panier
   </button>
 </div>
