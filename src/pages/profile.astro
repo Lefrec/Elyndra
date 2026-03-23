@@ -1,5 +1,4 @@
 ---
-import { parse } from "astro:schema";
 import Layout from "../layout/Layout.astro";
 
 let user;
@@ -43,6 +42,7 @@ if (Astro.request.method === "POST") {
 <Layout title="Mon Profil - Elyndra">
     <div class="min-h-screen bg-Background-dark-blue text-white py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-5xl mx-auto space-y-8">
+            { user ? (
             
             <!-- En-tête -->
             <div>
@@ -174,6 +174,28 @@ if (Astro.request.method === "POST") {
 
                 </div>
             </div>
+            ) : (
+                <div
+                    class="text-center text-gray-400 text-xs font-body leading-5"
+                >
+                    Pas encore de compte ? <br />
+                    <a
+                        href="/register"
+                        class="text-white hover:text-[#FFE9B5] transition-colors"
+                        >Rejoignez l'aventure en cliquant ici</a
+                    >
+                </div>
+                <div
+                    class="text-center text-gray-400 text-xs font-body leading-5"
+                >
+                    Déjà un compte ? <br />
+                    <a
+                        href="/login"
+                        class="text-white hover:text-[#FFE9B5] transition-colors"
+                        >Cliquez ici pour vous connecter</a
+                    >
+                </div>
+            )}
         </div>
     </div>
 </Layout>

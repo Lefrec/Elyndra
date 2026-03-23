@@ -8,7 +8,7 @@ interface Props {
     title?: string;
     hideHeaderFooter?: boolean;
 }
-const { showBanner = false, hideHeaderFooter = false } = Astro.props;
+const { showBanner = false, hideHeaderFooter = false, title } = Astro.props;
 ---
 
 <!doctype html>
@@ -16,7 +16,7 @@ const { showBanner = false, hideHeaderFooter = false } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Elyndra</title>
+    <title>{title}</title>
   </head>
   <body>
     {!hideHeaderFooter && <Header bannerOffset={showBanner} />}
