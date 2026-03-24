@@ -27,7 +27,7 @@ import Layout from "../../layout/Layout.astro";
   <!-- chat script -->
   <script>
     const button = document.getElementById(
-      "button"
+      "button",
     ) as HTMLButtonElement | null;
     const input = document.getElementById("input") as HTMLInputElement | null;
     const answer = document.getElementById("answer") as HTMLDivElement | null;
@@ -62,10 +62,10 @@ import Layout from "../../layout/Layout.astro";
     const lunel = document.getElementById("lunel") as HTMLButtonElement | null;
     const kalem = document.getElementById("kalem") as HTMLButtonElement | null;
     const ruines = document.getElementById(
-      "ruines"
+      "ruines",
     ) as HTMLButtonElement | null;
     const auralis = document.getElementById(
-      "auralis"
+      "auralis",
     ) as HTMLButtonElement | null;
 
     lunel?.addEventListener("click", (e) => {
@@ -103,7 +103,7 @@ import Layout from "../../layout/Layout.astro";
     });
 
     async function start() {
-      const res = await fetch("/api/ChatCompletion.json", {
+      const res = await fetch("/apiEndpoint/ChatCompletion.json", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages }),
@@ -148,7 +148,7 @@ import Layout from "../../layout/Layout.astro";
           //add the user input to messages
           messages.push({ role: "user", content: input.value });
 
-          //call the api endpoint to get chat completion
+          //call the apiEndpoint endpoint to get chat completion
           const res = await fetch("/api/ChatCompletion.json", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

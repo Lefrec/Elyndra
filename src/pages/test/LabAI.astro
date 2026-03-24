@@ -21,7 +21,7 @@ import Layout from "../../layout/Layout.astro";
   <!-- chat script -->
   <script>
     const button = document.getElementById(
-      "button"
+      "button",
     ) as HTMLButtonElement | null;
     const input = document.getElementById("input") as HTMLInputElement | null;
     const answer = document.getElementById("answer") as HTMLDivElement | null;
@@ -63,7 +63,7 @@ import Layout from "../../layout/Layout.astro";
           messages.push({ role: "user", content: input.value });
 
           //call the api endpoint to get chat completion
-          const res = await fetch("/api/testLabAI.json", {
+          const res = await fetch("/apiEndpoint/testLabAI.json", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ messages }),

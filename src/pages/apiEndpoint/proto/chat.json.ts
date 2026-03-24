@@ -14,7 +14,7 @@ interface Tool {
 
 //get API key and URL
 const API_KEY = import.meta.env.LABAI_API_KEY;
-const API_URL = "https://lab-ia.umlp.fr/api/chat/completions";
+const API_URL = "https://lab-ia.umlp.fr/apiEndpoint/chat/completions";
 
 //we keep the system prompt out of the POST for readability
 const systemPrompt: string = "Tu es un assistant IA, répond aux requêtes de l'utilisateur de la manière la plus simple et directe possible."+

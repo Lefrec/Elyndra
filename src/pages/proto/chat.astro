@@ -14,55 +14,55 @@ export const prerender = false;
     }
   </p>
   <div class="w-[500px] border" id="answer"></div>
-  <input class="w-[500px] border" type="text" name="input" id="input">
+  <input class="w-[500px] border" type="text" name="input" id="input" />
   <button class="border" id="button">Submit</button>
 </ProtoLayout>
 
 <script>
-    const button = document.getElementById("button") as HTMLButtonElement | null;
-    const input = document.getElementById("input") as HTMLInputElement | null;
-    const answer = document.getElementById("answer") as HTMLDivElement | null;
+  const button = document.getElementById("button") as HTMLButtonElement | null;
+  const input = document.getElementById("input") as HTMLInputElement | null;
+  const answer = document.getElementById("answer") as HTMLDivElement | null;
 
-    let messages: Array<{ role: string; content: string }> = [];
+  let messages: Array<{ role: string; content: string }> = [];
 
-    if (button && input && answer) {
-        button.addEventListener("click", async () => {
-            const userMessage = input.value.trim();
-            if (!userMessage) return;
+  if (button && input && answer) {
+    button.addEventListener("click", async () => {
+      const userMessage = input.value.trim();
+      if (!userMessage) return;
 
-            messages.push({ role: "user", content: userMessage });
+      messages.push({ role: "user", content: userMessage });
 
-            input.value = "";
+      input.value = "";
 
-            console.log(messages);
+      console.log(messages);
 
-            const res = await fetch("/api/proto/chat.json", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                   messages: messages,
-                }),
-            });
+      const res = await fetch("/apiEndpoint/proto/chat.json", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: messages,
+        }),
+      });
 
-            if (!res.ok) {
-                const text = await res.text();
-                answer.textContent = `Error ${res.status}: ${text}`;
-                return;
-            }
+      if (!res.ok) {
+        const text = await res.text();
+        answer.textContent = `Error ${res.status}: ${text}`;
+        return;
+      }
 
-            const data = await res.json();
+      const data = await res.json();
 
-            messages.push({ role: "assistant", content: data.reply });
+      messages.push({ role: "assistant", content: data.reply });
 
-            answer.textContent = data.reply;
-        });
+      answer.textContent = data.reply;
+    });
 
-        input.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") {
-                button.click();
-            }
-        });
-    }
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        button.click();
+      }
+    });
+  }
 </script>

@@ -32,8 +32,8 @@ import Layout from "../../layout/Layout.astro";
         messages.push({ role: "user", content: input.value });
         console.log(messages);
 
-        //call api endpoint
-        const res = await fetch("/api/RAGtest.json", {
+        //call apiEndpoint endpoint
+        const res = await fetch("/apiEndpoint/RAGtest.json", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ messages }),

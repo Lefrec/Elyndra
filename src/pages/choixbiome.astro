@@ -85,7 +85,7 @@ const roles = [
 ];
 
 if (!Astro.locals.pb.authStore.record) {
-    return Astro.redirect("/login");
+  return Astro.redirect("/login");
 }
 ---
 
@@ -132,7 +132,11 @@ if (!Astro.locals.pb.authStore.record) {
       >
         {
           biomes.map((biome) => (
-            <div class="biome cursor-pointer" data-biome-title={biome.title} data-biome-id={biome.id}>
+            <div
+              class="biome cursor-pointer"
+              data-biome-title={biome.title}
+              data-biome-id={biome.id}
+            >
               <CardsBiomes
                 image={biome.image.src}
                 title={biome.title}
@@ -150,7 +154,11 @@ if (!Astro.locals.pb.authStore.record) {
       >
         {
           roles.map((role) => (
-            <div class="role cursor-pointer" data-role-title={role.title} data-role-id={role.id}>
+            <div
+              class="role cursor-pointer"
+              data-role-title={role.title}
+              data-role-id={role.id}
+            >
               <CardsRole
                 image={role.image.src}
                 title={role.title}
@@ -245,7 +253,8 @@ if (!Astro.locals.pb.authStore.record) {
     if (biomes) {
       biomes.forEach((biome) => {
         biome.addEventListener("click", (e) => {
-          selectedBiomeTitle = e.currentTarget?.getAttribute("data-biome-title");
+          selectedBiomeTitle =
+            e.currentTarget?.getAttribute("data-biome-title");
           selectedBiomeId = e.currentTarget?.getAttribute("data-biome-id");
           if (biomeRecap) {
             biomeRecap.textContent = selectedBiomeTitle;
@@ -318,17 +327,17 @@ if (!Astro.locals.pb.authStore.record) {
     checkPlayable();
 
     if (playBtn) {
-        playBtn.addEventListener("click", async (e) => {
-            const res = await fetch("/api/start.json", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    biome : selectedBiomeId,
-                    role : selectedRoleId,
-                    nom : nom,
-                })
-            });
-        })
+      playBtn.addEventListener("click", async (e) => {
+        const res = await fetch("/apiEndpoint/start.json", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            biome: selectedBiomeId,
+            role: selectedRoleId,
+            nom: nom,
+          }),
+        });
+      });
     }
   </script>
 </Layout>

@@ -146,7 +146,7 @@ async function sendMessage(userMessage) {
 
     try {
         // Appel à l'API
-        const response = await fetch("/api/ChatCompletion.json", {
+        const response = await fetch("/apiEndpoint/ChatCompletion.json", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -195,7 +195,7 @@ async function startGame() {
     });
 
     try {
-        const response = await fetch("/api/ChatCompletion.json", {
+        const response = await fetch("/apiEndpoint/ChatCompletion.json", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -350,7 +350,7 @@ function showToast(text) {
 // Bouton Sauvegarder
 saveBtn?.addEventListener("click", async () => {
     try {
-        const res = await fetch("/api/game/save", {
+        const res = await fetch("/apiEndpoint/game/save", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ biome: biomeName, role, messages }),
@@ -365,7 +365,7 @@ saveBtn?.addEventListener("click", async () => {
 // Vérifier si une sauvegarde existe au chargement
 async function checkSave() {
     try {
-        const res  = await fetch(`/api/game/load?biome=${biomeName}`);
+        const res  = await fetch(`/apiEndpoint/game/load?biome=${biomeName}`);
         const data = await res.json();
 
         if (data.save?.messages?.length > 1) {

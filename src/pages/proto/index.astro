@@ -25,10 +25,13 @@ export const prerender = false;
 
   if (setupBtn) {
     setupBtn.addEventListener("click", async (e) => {
-      const res = await fetch("/api/proto/setupCollections.json", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
+      const res = await fetch(
+        "/apiEndpointEndpointEndpoint/proto/setupCollections.json",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        },
+      );
     });
   }
 

@@ -54,7 +54,7 @@ import Layout from "../../layout/Layout.astro";
 
         input.value = "";
 
-        const res = await fetch("/api/PBTools.json", {
+        const res = await fetch("/apiEndpoint/PBTools.json", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

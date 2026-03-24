@@ -21,7 +21,7 @@ import Layout from "../../layout/Layout.astro";
   <!-- chat script -->
   <script>
     const button = document.getElementById(
-      "button"
+      "button",
     ) as HTMLButtonElement | null;
     const input = document.getElementById("input") as HTMLInputElement | null;
     const answer = document.getElementById("answer") as HTMLDivElement | null;
@@ -31,7 +31,7 @@ import Layout from "../../layout/Layout.astro";
         const userMessage = input.value.trim();
         if (!userMessage) return;
 
-        const res = await fetch("/api/testingTools.json", {
+        const res = await fetch("/apiEndpoint/testingTools.json", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
