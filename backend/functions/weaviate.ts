@@ -19,8 +19,15 @@ export async function listCollections() {
 export async function setupGamestate(id: string) {
     try {
         const client: WeaviateClient = await weaviate.connectToLocal();
+        const collectionName = 'Gamestate_'+id;
+        const doesExist = await client.collections.exists(collectionName)
+        if (doesExist) {
+            console.log("[setupGamestate] Deleting existing collection");
+            await client.collections.delete(collectionName);
+        }
+        console.log("[setupGamestate] Create collection");
         const gamestate = await client.collections.create({
-            name: 'Gamestate_'+id,
+            name: collectionName,
             vectorizers: vectors.text2VecOllama({
                 apiEndpoint: 'http://ollama:11434',
                 model: 'nomic-embed-text',
