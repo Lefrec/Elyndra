@@ -1,56 +1,495 @@
 ---
 import Layout from "../layout/Layout.astro";
+import SmallSeparateur from "../components/SmallSeparateur.astro";
 import Dice from "../assets/interface_ia/dice.svg";
+import Burger from "../assets/interface_ia/menu-hamburger.svg";
+import Epee from "../assets/interface_ia/stats/epee.svg";
+import Bouclier from "../assets/interface_ia/stats/bouclier.svg";
+import Magie from "../assets/interface_ia/stats/magie.svg";
+import Pied from "../assets/interface_ia/stats/pied.svg";
 import { biomeState } from "../stores/biome.js";
+import { getPlayer } from "../../backend/functions/player";
+import { listInventory } from "../../backend/functions/inventory";
+import { listQuest } from "../../backend/functions/quest";
 
 if (!Astro.locals.pb.authStore.record) {
-    return Astro.redirect("/login");
+  return Astro.redirect("/login");
 }
+
+const id = Astro.locals.pb.authStore.record.id;
+
+let player;
+
+player = await getPlayer(id);
+
+let inventory;
+
+inventory = await listInventory(id);
+
+let quests;
+
+quests = await listQuest(id);
+
+console.log(quests);
 ---
 
-<Layout title="Interface de jeu">
-    <div class="w-full relative h-full">
-        <img id="bgImage" class="absolute w-full h-full -z-1 object-cover" src={biomeState.get().image} alt="">
-        <h1 id="title">{biomeState.get().title}</h1>
-        <button id="update">Update</button>
+<Layout title="Interface de jeu" hideHeaderFooter={true}>
+  <!-- background -->
+  <img
+    id="bgImage"
+    class="absolute w-full lg:h-screen -z-1 object-cover"
+    src={biomeState.get().image}
+    alt=""
+  />
+  <div class="flex flex-col p-4 gap-4 lg:h-screen">
+    <!-- header -->
+    <header class="flex w-full justify-between">
+      <button id="verbomnes-button" class="basicBtn">Vos Verbomnes</button>
+      <button id="menu-toggle">
+        <Burger />
+      </button>
+      <!-- Menu latéral -->
+      <nav
+        id="side-menu"
+        class="fixed top-0 right-0 h-full w-80 bg-neutral-950 border-l border-Or-clair shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-40 overflow-y-auto"
+      >
+        <div class="p-6">
+          <!-- Bouton fermer en haut à droite -->
+          <button
+            id="close-menu"
+            class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 rounded transition-colors group"
+          >
+            <span
+              class="text-Or-clair text-3xl leading-none group-hover:scale-110 transition-transform"
+              >×</span
+            >
+          </button>
+
+          <!-- En-tête du menu -->
+          <div class="mb-8 pb-4 border-b border-Or-clair/30">
+            <h2 class="text-Or-clair text-2xl">Menu</h2>
+          </div>
+
+          <!-- Navigation -->
+          <ul class="space-y-4">
+            <li>
+              <a
+                href="/"
+                class="block px-4 py-3 text-white hover:text-Or-clair hover:bg-[#292929FF]/50 rounded transition-colors"
+              >
+                Accueil
+              </a>
+            </li>
+            <li>
+              <button
+                id="save-btn"
+                class="w-full text-left px-4 py-3 hover:text-Or-clair hover:bg-[#292929FF]/50 rounded transition-colors"
+              >
+                Sauvegarder
+              </button>
+            </li>
+            <li>
+              <button
+                class="w-full text-left px-4 py-3 text-white hover:text-Or-clair hover:bg-[#292929FF]/50 rounded transition-colors"
+              >
+                Paramètres
+              </button>
+            </li>
+            <li>
+              <a
+                href="/contact"
+                class="block px-4 py-3 text-white hover:text-Or-clair hover:bg-[#292929FF]/50 rounded transition-colors"
+              >
+                Aide
+              </a>
+            </li>
+          </ul>
+
+          <!-- Retour -->
+          <div class="mt-8 pt-6 border-t border-Or-clair/30">
+            <a
+              href="/"
+              class="block w-full text-center px-4 py-3 bg-red-900 hover:bg-red-800 text-white rounded transition-colors"
+            >
+              ← Quitter l'aventure
+            </a>
+          </div>
+        </div>
+      </nav>
+      <!-- Overlay pour fermer le menu -->
+      <div
+        id="menu-overlay"
+        class="fixed inset-0 bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300 z-30"
+      >
+      </div>
+    </header>
+    <!-- modal verbomnes -->
+    <div
+      id="verbomnes-modal"
+      class="fixed inset-0 bg-black/70 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 z-50"
+    >
+      <div
+        class="relative bg-black border-2 border-Or-clair rounded-lg shadow-2xl max-w-4xl w-full mx-4 p-10 transform scale-95 transition-transform duration-300"
+      >
+        <!-- Bouton fermer -->
+        <button
+          id="close-verbomnes"
+          class="absolute top-6 right-6 w-8 h-8 border-2 border-Or-clair hover:bg-Or-clair/20 transition-colors flex items-center justify-center"
+        >
+          <span class="text-Or-clair text-xl">×</span>
+        </button>
+
+        <!-- Titre -->
+        <div class="mb-6">
+          <h2
+            class="text-Or-clair text-4xl font-['Cinzel_Decorative'] uppercase text-center tracking-[3px] mb-4"
+          >
+            L'Oracle des Verbomnes
+          </h2>
+          <SmallSeparateur />
+        </div>
+
+        <!-- Description -->
+        <p
+          class="text-center text-white text-base font-['Almendra'] tracking-wide mb-8"
+        >
+          Chaque parole façonne le destin. Mais même les dieux ont leurs
+          limites.
+        </p>
+
+        <!-- Contenu principal -->
+        <div
+          class="flex flex-col md:flex-row gap-12 items-center justify-center mb-8"
+        >
+          <!-- Compteur de Verbomnes -->
+          <div class="relative flex items-center justify-center py-8 md:py-0">
+            <!-- Cercle décoratif -->
+            <div
+              class="absolute w-56 h-56 sm:w-72 sm:h-72 border border-Or-clair opacity-30 rounded-full shadow-[0px_4px_15px_0px_rgba(255,233,181,0.5)]"
+            >
+            </div>
+            <div
+              class="absolute w-44 h-44 sm:w-60 sm:h-56 border border-Or-clair opacity-20"
+            >
+            </div>
+
+            <!-- Nombre et texte -->
+            <div class="relative text-center z-10">
+              <div
+                class="text-Or-clair text-5xl sm:text-6xl font-['Cinzel_Decorative'] leading-none sm:leading-[96px] mb-2"
+              >
+                128
+              </div>
+              <div class="text-orange-200 text-sm sm:text-base tracking-widest">
+                Verbomnes restants
+              </div>
+            </div>
+          </div>
+
+          <!-- Explications -->
+          <div class="max-w-md space-y-6">
+            <div>
+              <h3 class="text-Or-clair text-lg tracking-wide mb-3">
+                L'Oracle murmure encore
+              </h3>
+              <p class="text-white text-sm leading-5">
+                Chaque action formulée par le joueur invoque l'Oracle. Lorsque
+                toutes les Verbomnes ont été consommées, le récit ne peut plus
+                se poursuivre.
+              </p>
+            </div>
+            <div>
+              <p class="text-white text-sm leading-5">
+                L'Oracle d'Elyndra est animé par une intelligence artificielle
+                de génération de langage, agissant comme narrateur dynamique
+                dans un univers et des règles définis par les créateurs.
+              </p>
+            </div>
+
+            <!-- Bouton membre -->
+            <a
+              href="/boutique"
+              class="w-full px-4 py-3 bg-elyndra-3 hover:bg-yellow-600 transition-colors rounded-[10px] text-center"
+            >
+              <span class="text-white text-xs"
+                >Découvrez nos offres pour plus de Verbomnes !</span
+              >
+            </a>
+          </div>
+        </div>
+        <SmallSeparateur />
+      </div>
     </div>
-
-    <script>
-        import { biomeState } from "../stores/biome.js";
-
-        const biomes = {
-            elyndra: {
-                title:  "Ruines d'Élyndra",
-                image: "/biomes/elyndra.webp",
-            },
-            lunel: {
-                title: "Forêt de Lunel",
-                image: "/biomes/lunel.webp"
-            },
-            solarys: {
-                title: "Dunes de Solarys",
-                image: "/biomes/solarys.webp",
-            },
-            auralis: {
-                title: "Vallée gelée d'Auralis",
-                image: "/biomes/auralis.webp",
+    <!-- title -->
+    <div class="flex justify-center">
+      <h1
+        id="title"
+        class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-heading"
+      >
+        {biomeState.get().title}
+      </h1>
+    </div>
+    <!-- main panel -->
+    <div
+      class="flex flex-col lg:flex-row h-full border border-Or-clair bg-black/50 rounded-2xl p-4 gap-2 *:flex *:flex-col *:gap-2"
+    >
+      <!-- left col -->
+      <div class="h-full lg:w-1/5">
+        <!-- lieu -->
+        <div class="goldCard">
+          <h3 id="lieuTitle" class="goldTitle">
+            Lieu - {biomeState.get().title}
+          </h3>
+          <p id="lieuDesc" class="text-white text-xs">
+            {biomeState.get().desc}
+          </p>
+        </div>
+        <!-- quête -->
+        <div class="goldCard h-full">
+          <h3 class="goldTitle">Quêtes</h3>
+          <div class="h-full overflow-y-scroll hide-scrollbar">
+            {
+              Array.isArray(quests)
+                ? quests.map((quest) => <p>{quest.name}</p>)
+                : "Vous n'avez pas de quêtes"
             }
-        }
+          </div>
+        </div>
+        <!-- dice -->
+        <div class="goldCard">
+          <h3 class="goldTitle">Jet de dé</h3>
+          <div class="flex w-full justify-center">
+            <Dice id="dice" />
+          </div>
+        </div>
+      </div>
+      <!-- main col -->
+      <div class="h-full lg:w-3/5 flex flex-col min-h-0">
+        <!-- hp -->
+        <div class="goldCard">
+          <div class="flex w-full justify-between">
+            <h3 class="goldTitle">Points de vie</h3>
+            <p class="text-base sm:text-lg font-heading-3 font-bold">
+              <span id="currentHP">{player.currentHP}</span> / <span id="maxHP"
+                >{player.maxHP}</span
+              >
+            </p>
+          </div>
+        </div>
+        <!-- chat -->
+        <div class="goldCard flex flex-col h-full">
+          <div
+            class="overflow-y-auto h-full flex flex-col gap-4 hide-scrollbar"
+          >
+          <div class="flex flex-col gap-4 p-2 max-h-100 overflow-visible">
+            <!-- messages -->
+            <div class="assistantMessage">
+              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque
+              faucibus ex sapien vitae pellentesque sem placerat. In id cursus
+              mi pretium tellus duis convallis. Tempus leo eu aenean sed diam
+              urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum
+              egestas. Iaculis massa nisl malesuada lacinia integer nunc
+              posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad
+              litora torquent per conubia nostra inceptos himenaeos. Lorem ipsum
+              dolor sit amet consectetur adipiscing elit. Quisque faucibus ex
+              sapien vitae pellentesque sem placerat. In id cursus mi pretium
+              tellus duis convallis. Tempus leo eu aenean sed diam urna tempor.
+              Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
+              Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut
+              hendrerit semper vel class aptent taciti sociosqu. Ad litora
+              torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor
+              sit amet consectetur adipiscing elit. Quisque faucibus ex sapien
+              vitae pellentesque sem placerat. In id cursus mi pretium tellus
+              duis convallis. Tempus leo eu aenean sed diam urna tempor.
+              Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
+              Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut
+              hendrerit semper vel class aptent taciti sociosqu. Ad litora
+              torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor
+              sit amet consectetur adipiscing elit. Quisque faucibus ex sapien
+              vitae pellentesque sem placerat. In id cursus mi pretium tellus
+              duis convallis. Tempus leo eu aenean sed diam urna tempor.
+              Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
+              Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut
+              hendrerit semper vel class aptent taciti sociosqu. Ad litora
+              torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor
+              sit amet consectetur adipiscing elit. Quisque faucibus ex sapien
+              vitae pellentesque sem placerat. In id cursus mi pretium tellus
+              duis convallis. Tempus leo eu aenean sed diam urna tempor.
+              Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
+              Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut
+              hendrerit semper vel class aptent taciti sociosqu. Ad litora
+              torquent per conubia nostra inceptos himenaeos.
+            </div>
+            <div class="userMessage">Message de l'utilisateur</div>
+          </div>
+          </div>
+          <!-- input -->
+          <div class="w-full p-2">
+            <input
+              id="input"
+              class="w-full p-2 border border-Or-clair rounded-xl"
+              type="text"
+            />
+          </div>
+        </div>
+      </div>
+      <!-- right col -->
+      <div class="h-full lg:w-1/5">
+        <div class="goldCard">
+          <h3 class="goldTitle">Statistiques</h3>
+          <!-- tableau des stats -->
+          <div
+            class="grid grid-cols-4 self-center lg:grid-cols-2 lg:max-w-40 gap-2 p-4"
+          >
+            <div class="goldCell">
+              <Epee />
+            </div>
+            <div class="goldCell">
+              <p id="for">{player.for}</p>
+            </div>
+            <div class="goldCell">
+              <Bouclier />
+            </div>
+            <div class="goldCell">
+              <p id="def">{player.def}</p>
+            </div>
+            <div class="goldCell">
+              <Magie />
+            </div>
+            <div class="goldCell">
+              <p id="mag">{player.mag}</p>
+            </div>
+            <div class="goldCell">
+              <Pied />
+            </div>
+            <div class="goldCell">
+              <p id="agi">{player.agi}</p>
+            </div>
+          </div>
+        </div>
+        <!-- inventaire -->
+        <div class="goldCard h-full">
+          <h3 class="goldTitle">Inventaire</h3>
+          <div class="h-full overflow-y-scroll hide-scrollbar">
+            {
+              Array.isArray(inventory)
+                ? inventory.map((item) => <p>{item.name}</p>)
+                : "Votre inventaire est vide"
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        biomeState.subscribe(() => {
-            const state = biomeState.get();
-            document.getElementById("bgImage").src = state.image;
-            document.getElementById("title").textContent = state.title;
-        })
+  <!-- biomeState management -->
+  <script>
+    import { biomeState } from "../stores/biome.js";
 
-        document.getElementById('update').addEventListener('click', () => {
-            console.log("changing state");
-            randomizeBiome();
-        });
+    const biomes = {
+      elyndra: {
+        title: "Ruines d'Élyndra",
+        image: "/biomes/elyndra.webp",
+        desc: "Une cité perdue avec des pierres runiques",
+      },
+      lunel: {
+        title: "Forêt de Lunel",
+        image: "/biomes/lunel.webp",
+        desc: "Une jungle oppressante avec des cités perchées",
+      },
+      solarys: {
+        title: "Dunes de Solarys",
+        image: "/biomes/solarys.webp",
+        desc: "Une immensité aride avec un oasis solitaire",
+      },
+      auralis: {
+        title: "Vallée gelée d'Auralis",
+        image: "/biomes/auralis.webp",
+        desc: "Un refuge givré avec des vents mordants",
+      },
+    };
 
-        function randomizeBiome() {
-            const index = Object.keys(biomes)[(Math.random() * Object.keys(biomes).length) | 0]
-            biomeState.set(biomes[index]);
-        }
-    </script>
+    biomeState.subscribe(() => {
+      const state = biomeState.get();
+      document.getElementById("bgImage").src = state.image;
+      document.getElementById("title").textContent = state.title;
+      document.getElementById("lieuTitle").textContent =
+        "Lieu - " + state.title;
+      document.getElementById("lieuDesc").textContent = state.desc;
+    });
+
+    function randomizeBiome() {
+      const index =
+        Object.keys(biomes)[(Math.random() * Object.keys(biomes).length) | 0];
+      biomeState.set(biomes[index]);
+    }
+
+    console.log("randomize");
+    randomizeBiome();
+  </script>
+
+  <!-- side menu toggle -->
+  <script>
+    const menuToggle = document.getElementById("menu-toggle");
+    const sideMenu = document.getElementById("side-menu");
+    const menuOverlay = document.getElementById("menu-overlay");
+    const closeMenuBtn = document.getElementById("close-menu");
+
+    let menuOpen = false;
+
+    function toggleMenu() {
+      menuOpen = !menuOpen;
+
+      if (menuOpen) {
+        // Ouvrir le menu
+        sideMenu.classList.remove("translate-x-full");
+        menuOverlay.classList.remove("opacity-0", "pointer-events-none");
+
+        // Cacher le bouton hamburger
+        menuToggle.style.opacity = "0";
+        menuToggle.style.pointerEvents = "none";
+      } else {
+        // Fermer le menu
+        sideMenu.classList.add("translate-x-full");
+        menuOverlay.classList.add("opacity-0", "pointer-events-none");
+
+        // Réafficher le bouton hamburger
+        menuToggle.style.opacity = "1";
+        menuToggle.style.pointerEvents = "auto";
+      }
+    }
+
+    menuToggle.addEventListener("click", toggleMenu);
+    closeMenuBtn.addEventListener("click", toggleMenu);
+    menuOverlay.addEventListener("click", toggleMenu);
+  </script>
+
+  <!-- verbomnes -->
+  <script>
+    const verbomnesButton = document.getElementById("verbomnes-button");
+    const verbomnesModal = document.getElementById("verbomnes-modal");
+    const closeVerbomnes = document.getElementById("close-verbomnes");
+
+    function openVerbomnesModal() {
+      verbomnesModal.classList.remove("opacity-0", "pointer-events-none");
+      verbomnesModal.querySelector("div").classList.remove("scale-95");
+      verbomnesModal.querySelector("div").classList.add("scale-100");
+    }
+
+    function closeVerbomnesModal() {
+      verbomnesModal.classList.add("opacity-0", "pointer-events-none");
+      verbomnesModal.querySelector("div").classList.remove("scale-100");
+      verbomnesModal.querySelector("div").classList.add("scale-95");
+    }
+
+    verbomnesButton.addEventListener("click", openVerbomnesModal);
+    closeVerbomnes.addEventListener("click", closeVerbomnesModal);
+
+    // Fermer en cliquant sur l'overlay
+    verbomnesModal.addEventListener("click", (e) => {
+      if (e.target === verbomnesModal) {
+        closeVerbomnesModal();
+      }
+    });
+  </script>
 </Layout>

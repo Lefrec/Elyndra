@@ -16,6 +16,7 @@ export async function setupCollections(id: string) {
         await setupPlayer(id);
         await setupInventory(id);
         await setupEntity(id);
+        await setupQuest(id);
         await setupGamestate(id);
         pb.authStore.clear();
         return;
@@ -31,6 +32,7 @@ export async function deleteCollections(id: string) {
         await deletePlayer(id);
         await deleteInventory(id);
         await deleteEntity(id);
+        await deleteQuest(id);
         await deleteGamestateCol(id);
         pb.authStore.clear();
         return;
@@ -238,6 +240,63 @@ async function deleteEntity(id: string) {
         return;
     } catch (e) {
         console.log("[deleteEntity] Failed")
+        return e;
+    }
+}
+
+async function setupQuest(id: string) {
+    try {
+        const collectionName : string = "Quest_"+id;
+        const doesExist : boolean = await checkCollection(collectionName);
+
+        //logic executed if the collection doesn't exist
+        if (!doesExist) {
+            console.log("[setupQuest] Create collection");
+            await pb.collections.create({
+                type: "base",
+                name: collectionName,
+                fields: [
+                    {
+                        name: "name",
+                        type: "text",
+                    },
+                    {
+                        name: "desc",
+                        type: "text",
+                    },
+                    {
+                        name: "completed",
+                        type: "bool",
+                    },
+                ]
+            })
+        } else {
+            console.log("[setupQuest] Truncate collection");
+            await pb.collections.truncate(collectionName)
+        }
+
+        return;
+    } catch (e) {
+        console.log("[setupQuest] Failed")
+        return e;
+    } 
+}
+
+async function deleteQuest(id: string) {
+    try {
+        const collectionName : string = "Quest_"+id;
+        const doesExist : boolean = await checkCollection(collectionName);
+
+        if (!doesExist) {
+            console.log("[deleteQuest] Collection doesn't exist");
+        } else {
+            await pb.collections.delete(collectionName);
+            console.log("[deleteQuest] Deleted collection");
+        }
+
+        return;
+    } catch (e) {
+        console.log("[deleteQuest] Failed")
         return e;
     }
 }

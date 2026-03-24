@@ -23,6 +23,12 @@ export type Player = {
     isCurrent?: boolean;
 }
 
+export type Quest = {
+    name?: string;
+    desc?: string;
+    completed?: boolean;
+}
+
 export type Gamestate = {
     type: string;
     name: string;

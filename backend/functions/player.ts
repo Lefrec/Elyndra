@@ -32,7 +32,7 @@ export async function getPlayer(id: string) {
         if (player.length > 1) {
             console.log("[getPlayer] More than 1 current player");
             pb.authStore.clear();
-            return;
+            return "Error : More than 1 current player";
         } else {
             console.log(player[0]);
             pb.authStore.clear();
