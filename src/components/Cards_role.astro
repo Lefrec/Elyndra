@@ -1,0 +1,32 @@
+---
+const { image, title, description } = Astro.props;
+---
+
+<button
+  class="group relative w-full h-56 sm:h-64 md:h-72 rounded-xl md:rounded-2xl overflow-hidden cursor-pointer bg-transparent border-none transition-all duration-300 hover:outline hover:outline-Or-clair/60 hover:shadow-[0_0_20px_rgba(251,191,36,0.25)]"
+>
+  <div
+    class="absolute inset-x-4 md:inset-x-6 inset-y-3 md:inset-y-4 bg-zinc-700 rounded-[10px]"
+  >
+  </div>
+  <img
+    src={image}
+    alt={title}
+    class="role-img absolute left-1/2 -translate-x-1/2 top-3 md:top-4 h-[calc(100%-0.75rem)] md:h-[calc(100%-1rem)] w-auto object-contain z-10 transition-transform duration-500 group-hover:scale-105"
+  />
+  <div
+    class="absolute inset-x-4 md:inset-x-6 bottom-3 md:bottom-4 h-16 md:h-20 bg-black rounded-[10px] z-20 flex flex-col items-center justify-center gap-1"
+  >
+    <div class="absolute top-0 inset-x-0 h-0.5 bg-Or-clair/80"></div>
+    <span
+      class="text-white text-sm md:text-base font-heading2 tracking-wide text-center"
+    >
+      {title}
+    </span>
+    <p
+      class="text-white/60 text-[0.65rem] md:text-xs font-body leading-tight text-center px-2 hidden sm:block"
+    >
+      {description}
+    </p>
+  </div>
+</button>

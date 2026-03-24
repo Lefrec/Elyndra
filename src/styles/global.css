@@ -88,6 +88,18 @@ html {
   .border-Or-clair {
     @apply text-[#FFE9B5] border-[#FFE9B5];
   }
+
+  .panelTitle {
+    @apply text-transparent bg-clip-text bg-gradient-to-b from-[#FFE9B5] via-[#CBBA90] to-[#656246] font-heading2 text-2xl sm:text-3xl md:text-5xl uppercase tracking-[0.08em] md:tracking-[0.12em] mb-3 md:mb-4;
+  }
+
+  .panelSubtitle {
+    @apply text-xs md:text-sm uppercase tracking-[0.12em] md:tracking-[0.18em] text-white/80;
+  }
+
+  .playBtn {
+    @apply inline-flex items-center justify-center gap-3 px-6 md:px-10 py-4 md:py-5 bg-gradient-to-t from-stone-800 to-yellow-100 rounded-[10px] no-underline transition-all duration-300 shadow-[0_0_20px_rgba(251,191,36,0.2)] hover:shadow-[0_0_35px_rgba(251,191,36,0.45)] text-Blanc text-base md:text-xl font-body font-semibold;
+  }
 }
 
 @layer utilities {

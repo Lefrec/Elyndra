@@ -1,0 +1,19 @@
+---
+const { title, subtitle } = Astro.props;
+---
+
+<div class="py-8 px-4">
+  <div class="max-w-7xl mx-auto border border-Or-clair/30 rounded-2xl p-4">
+    <div class="text-center mb-6 md:mb-12">
+      <h2 class="panelTitle">{title}</h2>
+      <p class="panelSubtitle">
+        {subtitle}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        <slot>
+        </slot>
+    </div>
+  </div>
+</div>
