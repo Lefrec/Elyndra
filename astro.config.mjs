@@ -10,6 +10,10 @@ import react from "@astrojs/react";
 export default defineConfig({
   output: "server",
 
+  security: {
+    checkOrigin: false
+  },
+
   vite: {
     plugins: [tailwindcss()],
     server: {
