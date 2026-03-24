@@ -1,33 +1,30 @@
 import { type APIRoute } from "astro";
 import { setupCollections } from "../../../backend/functions/user";
 import { createPlayer } from "../../../backend/functions/player";
+import { biomeState } from "../../stores/biome.js";
 
-const biomes = [
-  {
-    id: 1,
-    title: "Le Cœur Sylvestre de Lunel",
-    description:
-      "Une jungle oppressante avec des cités perchées et des dangers au sol",
+const biomes = {
+  1: {
+    title: "Forêt de Lunel",
+    image: "/biomes/lunel.webp",
+    desc: "Une jungle oppressante avec des cités perchées",
   },
-  {
-    id: 2,
-    title: "Les Dunes ardentes de Solarys",
-    description:
-      "Une immensité aride avec un oasis solitaire et un monde souterrain",
+  2: {
+    title: "Dunes de Solarys",
+    image: "/biomes/solarys.webp",
+    desc: "Une immensité aride avec un oasis solitaire",
   },
-  {
-    id: 3,
-    title: "Le Village Gelé d'Auralis",
-    description:
-      "Un refuge givré avec des vents mordants et des spectres de glace",
+  3: {
+    title: "Vallée gelée d'Auralis",
+    image: "/biomes/auralis.webp",
+    desc: "Un refuge givré avec des vents mordants",
   },
-  {
-    id: 4,
-    title: "Les Ruines Oubliées d'Élyndra",
-    description:
-      "Une cité perdue avec des pierres runiques et des légendes oubliées",
+  4: {
+    title: "Ruines d'Élyndra",
+    image: "/biomes/elyndra.webp",
+    desc: "Une cité perdue avec des pierres runiques",
   },
-];
+};
 
 const roles = [
   {
@@ -74,7 +71,7 @@ const roles = [
   },
 ];
 
-export const POST: APIRoute = async ({locals, request}) => {
+export const POST: APIRoute = async ({ locals, request, redirect }) => {
     try {
         const params = await request.json();
         console.log("[start] Params :",params);
@@ -83,10 +80,13 @@ export const POST: APIRoute = async ({locals, request}) => {
         if (id) {
             await setupCollections(id);
             await createPlayer(id, {name: params.nom, class: role?.slug, isCurrent: true, currentHP: 100, maxHP: 100, for: role?.for, def: role?.def, mag : role?.mag, agi: role?.agi});
-            return new Response(
-                JSON.stringify({ reply: "Collections set up correctly" }),
-                { status: 200, headers: { "Content-Type": "application/json" } },
-            );
+            biomeState.set(biomes[params.biome]);
+
+            return redirect("/interface_jeu", 302);
+            // return new Response(
+            //     JSON.stringify({ reply: "Collections set up correctly" }),
+            //     { status: 200, headers: { "Content-Type": "application/json" } },
+            // );
         } else {
             return new Response(
                 JSON.stringify({ reply: "You must be connected to set up collections" }),

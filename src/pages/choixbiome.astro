@@ -337,6 +337,13 @@ if (!Astro.locals.pb.authStore.record) {
             nom: nom,
           }),
         });
+
+        if (res.ok || res.redirected) {
+          window.location.href = "/interface_jeu";
+        } else {
+          const data = await res.json();
+          console.log("Failed",data);
+        }
       });
     }
   </script>
