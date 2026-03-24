@@ -8,6 +8,7 @@ import Bouclier from "../assets/interface_ia/stats/bouclier.svg";
 import Magie from "../assets/interface_ia/stats/magie.svg";
 import Pied from "../assets/interface_ia/stats/pied.svg";
 import { biomeState } from "../stores/biome.js";
+import { diceState } from "../stores/dice.js";
 import { getPlayer } from "../../backend/functions/player";
 import { listInventory } from "../../backend/functions/inventory";
 import { listQuest } from "../../backend/functions/quest";
@@ -37,7 +38,7 @@ console.log(quests);
   <!-- background -->
   <img
     id="bgImage"
-    class="absolute w-full lg:h-screen -z-1 object-cover"
+    class="fixed w-full h-full lg:h-screen -z-1 object-cover"
     src={biomeState.get().image}
     alt=""
   />
@@ -231,7 +232,7 @@ console.log(quests);
     </div>
     <!-- main panel -->
     <div
-      class="flex flex-col lg:flex-row h-full border border-Or-clair bg-black/50 rounded-2xl p-4 gap-2 *:flex *:flex-col *:gap-2"
+      class="flex flex-col lg:flex-row border border-Or-clair bg-black/50 rounded-2xl p-4 gap-2 *:flex *:flex-col *:gap-2"
     >
       <!-- left col -->
       <div class="h-full lg:w-1/5">
@@ -245,12 +246,25 @@ console.log(quests);
           </p>
         </div>
         <!-- quête -->
-        <div class="goldCard h-full">
+        <div class="goldCard h-full max-h-50 lg:max-h-100">
           <h3 class="goldTitle">Quêtes</h3>
-          <div class="h-full overflow-y-scroll hide-scrollbar">
+          <div
+            class="h-full flex flex-col max-h-50 lg:max-h-100 gap-4 overflow-y-scroll hide-scrollbar"
+          >
             {
               Array.isArray(quests)
-                ? quests.map((quest) => <p>{quest.name}</p>)
+                ? quests.map((quest) => (
+                    <div class="flex w-full items-center">
+                      <div class="flex flex-col w-full gap-1">
+                        <p>{quest.name}</p>
+                        <p class="text-xs text-white/75">{quest.desc}</p>
+                      </div>
+                      <div
+                        class="size-4 rounded-md border border-Or-clair"
+                        class:list={[quest.completed ? "bg-Or-clair" : ""]}
+                      />
+                    </div>
+                  ))
                 : "Vous n'avez pas de quêtes"
             }
           </div>
@@ -258,8 +272,9 @@ console.log(quests);
         <!-- dice -->
         <div class="goldCard">
           <h3 class="goldTitle">Jet de dé</h3>
-          <div class="flex w-full justify-center">
+          <div class="relative flex w-full justify-center items-center">
             <Dice id="dice" />
+            <p id="dice-result" class="absolute">{diceState.get().result}</p>
           </div>
         </div>
       </div>
@@ -279,49 +294,52 @@ console.log(quests);
         <!-- chat -->
         <div class="goldCard flex flex-col h-full">
           <div
+            id="messages-container"
             class="overflow-y-auto h-full flex flex-col gap-4 hide-scrollbar"
           >
-          <div class="flex flex-col gap-4 p-2 max-h-100 overflow-visible">
-            <!-- messages -->
-            <div class="assistantMessage">
-              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque
-              faucibus ex sapien vitae pellentesque sem placerat. In id cursus
-              mi pretium tellus duis convallis. Tempus leo eu aenean sed diam
-              urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum
-              egestas. Iaculis massa nisl malesuada lacinia integer nunc
-              posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad
-              litora torquent per conubia nostra inceptos himenaeos. Lorem ipsum
-              dolor sit amet consectetur adipiscing elit. Quisque faucibus ex
-              sapien vitae pellentesque sem placerat. In id cursus mi pretium
-              tellus duis convallis. Tempus leo eu aenean sed diam urna tempor.
-              Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
-              Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut
-              hendrerit semper vel class aptent taciti sociosqu. Ad litora
-              torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor
-              sit amet consectetur adipiscing elit. Quisque faucibus ex sapien
-              vitae pellentesque sem placerat. In id cursus mi pretium tellus
-              duis convallis. Tempus leo eu aenean sed diam urna tempor.
-              Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
-              Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut
-              hendrerit semper vel class aptent taciti sociosqu. Ad litora
-              torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor
-              sit amet consectetur adipiscing elit. Quisque faucibus ex sapien
-              vitae pellentesque sem placerat. In id cursus mi pretium tellus
-              duis convallis. Tempus leo eu aenean sed diam urna tempor.
-              Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
-              Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut
-              hendrerit semper vel class aptent taciti sociosqu. Ad litora
-              torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor
-              sit amet consectetur adipiscing elit. Quisque faucibus ex sapien
-              vitae pellentesque sem placerat. In id cursus mi pretium tellus
-              duis convallis. Tempus leo eu aenean sed diam urna tempor.
-              Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
-              Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut
-              hendrerit semper vel class aptent taciti sociosqu. Ad litora
-              torquent per conubia nostra inceptos himenaeos.
+            <div
+              class="flex flex-col gap-4 p-2 max-h-100 overflow-visible"
+            >
+              <!-- messages -->
+              <div class="assistantMessage">
+                Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque
+                faucibus ex sapien vitae pellentesque sem placerat. In id cursus
+                mi pretium tellus duis convallis. Tempus leo eu aenean sed diam
+                urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum
+                egestas. Iaculis massa nisl malesuada lacinia integer nunc
+                posuere. Ut hendrerit semper vel class aptent taciti sociosqu.
+                Ad litora torquent per conubia nostra inceptos himenaeos. Lorem
+                ipsum dolor sit amet consectetur adipiscing elit. Quisque
+                faucibus ex sapien vitae pellentesque sem placerat. In id cursus
+                mi pretium tellus duis convallis. Tempus leo eu aenean sed diam
+                urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum
+                egestas. Iaculis massa nisl malesuada lacinia integer nunc
+                posuere. Ut hendrerit semper vel class aptent taciti sociosqu.
+                Ad litora torquent per conubia nostra inceptos himenaeos. Lorem
+                ipsum dolor sit amet consectetur adipiscing elit. Quisque
+                faucibus ex sapien vitae pellentesque sem placerat. In id cursus
+                mi pretium tellus duis convallis. Tempus leo eu aenean sed diam
+                urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum
+                egestas. Iaculis massa nisl malesuada lacinia integer nunc
+                posuere. Ut hendrerit semper vel class aptent taciti sociosqu.
+                Ad litora torquent per conubia nostra inceptos himenaeos. Lorem
+                ipsum dolor sit amet consectetur adipiscing elit. Quisque
+                faucibus ex sapien vitae pellentesque sem placerat. In id cursus
+                mi pretium tellus duis convallis. Tempus leo eu aenean sed diam
+                urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum
+                egestas. Iaculis massa nisl malesuada lacinia integer nunc
+                posuere. Ut hendrerit semper vel class aptent taciti sociosqu.
+                Ad litora torquent per conubia nostra inceptos himenaeos. Lorem
+                ipsum dolor sit amet consectetur adipiscing elit. Quisque
+                faucibus ex sapien vitae pellentesque sem placerat. In id cursus
+                mi pretium tellus duis convallis. Tempus leo eu aenean sed diam
+                urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum
+                egestas. Iaculis massa nisl malesuada lacinia integer nunc
+                posuere. Ut hendrerit semper vel class aptent taciti sociosqu.
+                Ad litora torquent per conubia nostra inceptos himenaeos.
+              </div>
+              <div class="userMessage">Message de l'utilisateur</div>
             </div>
-            <div class="userMessage">Message de l'utilisateur</div>
-          </div>
           </div>
           <!-- input -->
           <div class="w-full p-2">
@@ -368,12 +386,22 @@ console.log(quests);
           </div>
         </div>
         <!-- inventaire -->
-        <div class="goldCard h-full">
+        <div class="goldCard h-full max-h-50 lg:max-h-100">
           <h3 class="goldTitle">Inventaire</h3>
-          <div class="h-full overflow-y-scroll hide-scrollbar">
+          <div
+            class="h-full flex flex-col max-h-50 lg:max-h-100 gap-4 overflow-y-scroll hide-scrollbar"
+          >
             {
               Array.isArray(inventory)
-                ? inventory.map((item) => <p>{item.name}</p>)
+                ? inventory.map((item) => (
+                    <div class="flex w-full items-center">
+                      <div class="flex flex-col w-full gap-1">
+                        <p>{item.name}</p>
+                        <p class="text-xs text-white/75">{item.desc}</p>
+                      </div>
+                      <p class="text-xs text-white/75">x{item.amount}</p>
+                    </div>
+                  ))
                 : "Votre inventaire est vide"
             }
           </div>
@@ -428,6 +456,34 @@ console.log(quests);
     randomizeBiome();
   </script>
 
+  <!-- diceState management -->
+  <script>
+    import { diceState } from "../stores/dice";
+
+    diceState.subscribe(() => {
+      const state = diceState.get();
+      const anim = document
+        .getElementById("dice")
+        .animate(
+          [{ transform: "rotate(0deg)" }, { transform: "rotate(720deg)" }],
+          {
+            duration: 800,
+            easing: "cubic-bezier(0.25, 0.46, 0.45, 0.94)", // easeOutQuad
+          },
+        );
+
+      anim.onfinish = () => {
+        document.getElementById("dice-result").textContent = state.result;
+      };
+    });
+
+    function randomizeResult() {
+      diceState.set({ result: Math.ceil(Math.random() * 20) });
+    }
+
+    randomizeResult();
+  </script>
+
   <!-- side menu toggle -->
   <script>
     const menuToggle = document.getElementById("menu-toggle");
@@ -462,6 +518,16 @@ console.log(quests);
     menuToggle.addEventListener("click", toggleMenu);
     closeMenuBtn.addEventListener("click", toggleMenu);
     menuOverlay.addEventListener("click", toggleMenu);
+  </script>
+
+  <!-- scrolling to bottom of chat -->
+  <script>
+    function scrollToBottom() {
+      const container = document.getElementById("messages-container");
+      container.scrollTop = container.scrollHeight;
+    }
+
+    scrollToBottom()
   </script>
 
   <!-- verbomnes -->
