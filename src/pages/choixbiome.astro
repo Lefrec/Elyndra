@@ -83,6 +83,10 @@ const roles = [
     image: ombre,
   },
 ];
+
+if (!Astro.locals.pb.authStore.record) {
+    return Astro.redirect("/login");
+}
 ---
 
 <Layout>
@@ -146,7 +150,7 @@ const roles = [
       >
         {
           roles.map((role) => (
-            <div  class="role cursor-pointer" data-role={role.title}>
+            <div class="role cursor-pointer" data-role={role.title}>
               <CardsRole
                 image={role.image.src}
                 title={role.title}
@@ -197,7 +201,6 @@ const roles = [
                 class="text-sm md:text-base text-Or-clair font-heading2 tracking-wide text-center leading-snug"
               ></span>
             </div>
-
           </div>
 
           <!-- Nom -->
@@ -212,17 +215,12 @@ const roles = [
                 id="inputNom"
                 type="text"
                 class="text-sm w-full md:text-base text-Or-clair font-heading2 tracking-wide text-center leading-snug bg-none"
-              >
+              />
             </div>
           </div>
 
           <!-- Bouton jouer -->
-          <button
-            id="play-btn"
-            class="playBtn"
-          >
-              Commencer le jeu
-          </button>
+          <button id="play-btn" class="playBtn"> Commencer le jeu </button>
         </div>
       </div>
     </div>
@@ -230,7 +228,7 @@ const roles = [
 
   <script>
     let selectedBiome = null;
-    let selectedRole  = null;
+    let selectedRole = null;
     let nom = null;
 
     const biomes = document.querySelectorAll(".biome");
@@ -243,61 +241,89 @@ const roles = [
     const playBtn = document.getElementById("play-btn");
 
     if (biomes) {
-        biomes.forEach((biome) => {
-            biome.addEventListener("click", (e) => {
-                selectedBiome = e.currentTarget?.getAttribute("data-biome");
-                if (biomeRecap) {
-                    biomeRecap.textContent = selectedBiome;
-                }
-                biomes.forEach((x) => {
-                    x.children[0].classList.remove('border-Or-clair', 'shadow-[0_0_25px_rgba(251,191,36,0.5)]');
-                })
-                e.currentTarget?.children[0].classList.add('border-Or-clair', 'shadow-[0_0_25px_rgba(251,191,36,0.5)]');
-                checkPlayable();
-            })
-        })
+      biomes.forEach((biome) => {
+        biome.addEventListener("click", (e) => {
+          selectedBiome = e.currentTarget?.getAttribute("data-biome");
+          if (biomeRecap) {
+            biomeRecap.textContent = selectedBiome;
+          }
+          biomes.forEach((x) => {
+            x.children[0].classList.remove(
+              "border-Or-clair",
+              "shadow-[0_0_25px_rgba(251,191,36,0.5)]",
+            );
+          });
+          e.currentTarget?.children[0].classList.add(
+            "border-Or-clair",
+            "shadow-[0_0_25px_rgba(251,191,36,0.5)]",
+          );
+          checkPlayable();
+        });
+      });
     }
 
     if (roles) {
-        roles.forEach((role) => {
-            role.addEventListener("click", (e) => {
-                selectedRole = e.currentTarget?.getAttribute("data-role");
-                if (roleRecap) {
-                    roleRecap.textContent = selectedRole;
-                }
-                roles.forEach((x) => {
-                    x.children[0].classList.remove('border-Or-clair', 'shadow-[0_0_25px_rgba(251,191,36,0.5)]');
-                })
-                e.currentTarget?.children[0].classList.add('border-Or-clair', 'shadow-[0_0_25px_rgba(251,191,36,0.5)]');
-                checkPlayable();
-            })
-        })
+      roles.forEach((role) => {
+        role.addEventListener("click", (e) => {
+          selectedRole = e.currentTarget?.getAttribute("data-role");
+          if (roleRecap) {
+            roleRecap.textContent = selectedRole;
+          }
+          roles.forEach((x) => {
+            x.children[0].classList.remove(
+              "border-Or-clair",
+              "shadow-[0_0_25px_rgba(251,191,36,0.5)]",
+            );
+          });
+          e.currentTarget?.children[0].classList.add(
+            "border-Or-clair",
+            "shadow-[0_0_25px_rgba(251,191,36,0.5)]",
+          );
+          checkPlayable();
+        });
+      });
     }
 
     if (inputNom) {
-        inputNom.addEventListener("change", (e) => {
-            nom = inputNom.value;
-            checkPlayable();
-        })
+      inputNom.addEventListener("change", (e) => {
+        nom = inputNom.value;
+        checkPlayable();
+      });
     }
 
     function checkPlayable() {
-        if (playBtn) {
-            if (selectedBiome && selectedRole && nom && nom != "") {
-                playBtn.classList.remove("!shadow-none","hover:!shadow-none","opacity-50");
-                playBtn.disabled = false;
-            } else {
-                playBtn.classList.add("!shadow-none","hover:!shadow-none","opacity-50");
-                playBtn.disabled = true;
-            }
+      if (playBtn) {
+        if (selectedBiome && selectedRole && nom && nom != "") {
+          playBtn.classList.remove(
+            "!shadow-none",
+            "hover:!shadow-none",
+            "opacity-50",
+          );
+          playBtn.disabled = false;
+        } else {
+          playBtn.classList.add(
+            "!shadow-none",
+            "hover:!shadow-none",
+            "opacity-50",
+          );
+          playBtn.disabled = true;
         }
+      }
     }
 
-    checkPlayable()
+    checkPlayable();
 
     if (playBtn) {
-        playBtn.addEventListener("click", (e) => {
-            
+        playBtn.addEventListener("click", async (e) => {
+            const res = await fetch("/api/start.json", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    biome : selectedBiome,
+                    role : selectedRole,
+                    nom : nom,
+                })
+            });
         })
     }
   </script>
