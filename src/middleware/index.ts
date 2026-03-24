@@ -21,7 +21,7 @@ export const onRequest = defineMiddleware(async ({locals, request, isPrerendered
     const response = await next();
 
     if (!isPrerendered) {
-        response.headers.append('set-cookie', locals.pb.authStore.exportToCookie());
+        response.headers.append('set-cookie', locals.pb.authStore.exportToCookie({secure: false}));
     }
 
     return response;
