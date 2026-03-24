@@ -1,6 +1,9 @@
 ---
 import Layout from "../layout/Layout.astro";
 
+if (Astro.locals.pb.authStore.record) {
+    return Astro.redirect("/profile");
+}
 
 if (Astro.request.method === "POST") {
   const data = await Astro.request.formData();

@@ -1,0 +1,56 @@
+---
+import Layout from "../layout/Layout.astro";
+import Dice from "../assets/interface_ia/dice.svg";
+import { biomeState } from "../stores/biome.js";
+
+if (!Astro.locals.pb.authStore.record) {
+    return Astro.redirect("/login");
+}
+---
+
+<Layout title="Interface de jeu">
+    <div class="w-full relative h-full">
+        <img id="bgImage" class="absolute w-full h-full -z-1 object-cover" src={biomeState.get().image} alt="">
+        <h1 id="title">{biomeState.get().title}</h1>
+        <button id="update">Update</button>
+    </div>
+
+    <script>
+        import { biomeState } from "../stores/biome.js";
+
+        const biomes = {
+            elyndra: {
+                title:  "Ruines d'Élyndra",
+                image: "/biomes/elyndra.webp",
+            },
+            lunel: {
+                title: "Forêt de Lunel",
+                image: "/biomes/lunel.webp"
+            },
+            solarys: {
+                title: "Dunes de Solarys",
+                image: "/biomes/solarys.webp",
+            },
+            auralis: {
+                title: "Vallée gelée d'Auralis",
+                image: "/biomes/auralis.webp",
+            }
+        }
+
+        biomeState.subscribe(() => {
+            const state = biomeState.get();
+            document.getElementById("bgImage").src = state.image;
+            document.getElementById("title").textContent = state.title;
+        })
+
+        document.getElementById('update').addEventListener('click', () => {
+            console.log("changing state");
+            randomizeBiome();
+        });
+
+        function randomizeBiome() {
+            const index = Object.keys(biomes)[(Math.random() * Object.keys(biomes).length) | 0]
+            biomeState.set(biomes[index]);
+        }
+    </script>
+</Layout>

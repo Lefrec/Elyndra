@@ -1,140 +1,7 @@
 ---
 import Layout from "../../layout/Layout.astro";
-import "/src/styles/global.css";
-import lunel from "../../assets/biomes/lunel.webp";
-import solarys from "../../assets/biomes/solarys.webp";
-import auralis from "../../assets/biomes/auralis.webp";
-import elyndra from "../../assets/biomes/elyndra.webp";
+import Dice from "../../assets/interface_ia/dice.svg";
 
-// Récupérer le paramètre de biome depuis l'URL
-const { biome } = Astro.params;
-
-// Configuration des biomes
-const biomesConfig = {
-    lunel: {
-        name: "Lunel",
-        fullName: "Le Cœur Sylvestre de Lunel",
-        description: "Une jungle oppressante avec des cités perchées",
-        image: lunel,
-        colors: {
-            primary: "text-green-200/95",
-            bgGradient:
-                "bg-[radial-gradient(ellipse_50.00%_50.00%_at_50.00%_50.00%,_#1F3F0D_0%,_#010700_100%)]",
-            chatBg: "bg-[radial-gradient(ellipse_50.00%_50.00%_at_50.00%_50.00%,_#002307_0%,_#001D07_50%,_#001005_100%)]",
-            messageBg: "bg-green-950",
-            messageText: "text-green-300",
-            locationText: "text-green-300",
-            buttonBg: "bg-green-800",
-            buttonHover: "hover:bg-green-700",
-            svgPrimary: "#5AB061",
-            svgSecondary: "#113003",
-            svgGradientLight: "#7CF885",
-            svgGradientDark: "#509555",
-            svgStroke: "#234324",
-        },
-        startPrompt:
-            "Je commence mon aventure dans la forêt du cœur sylvestre de Lunel",
-    },
-    solarys: {
-        name: "Solarys",
-        fullName: "Les Dunes ardentes de Solarys",
-        description: "Une immensité aride avec un oasis solitaire",
-        image: solarys,
-        colors: {
-            primary: "text-orange-200/95",
-            bgGradient:
-                "bg-[radial-gradient(ellipse_50.00%_50.00%_at_50.00%_50.00%,_#3F2D0D_0%,_#0A0700_100%)]",
-            chatBg: "bg-[radial-gradient(ellipse_50.00%_50.00%_at_50.00%_50.00%,_#231007_0%,_#1D0C07_50%,_#100500_100%)]",
-            messageBg: "bg-orange-950",
-            messageText: "text-orange-300",
-            locationText: "text-orange-300",
-            buttonBg: "bg-orange-800",
-            buttonHover: "hover:bg-orange-700",
-            svgPrimary: "#FF8C42",
-            svgSecondary: "#8B4513",
-            svgGradientLight: "#FFB088",
-            svgGradientDark: "#D97742",
-            svgStroke: "#4A2511",
-        },
-        startPrompt:
-            "Je commence mon aventure dans les dunes ardentes de Solarys",
-    },
-    auralis: {
-        name: "Auralis",
-        fullName: "Le Village Gelé d'Auralis",
-        description: "Un refuge givré avec des vents mordants",
-        image: auralis,
-        colors: {
-            primary: "text-blue-200/95",
-            bgGradient:
-                "bg-[radial-gradient(ellipse_50.00%_50.00%_at_50.00%_50.00%,_#0D1F3F_0%,_#000107_100%)]",
-            chatBg: "bg-[radial-gradient(ellipse_50.00%_50.00%_at_50.00%_50.00%,_#071023_0%,_#070D1D_50%,_#050010_100%)]",
-            messageBg: "bg-blue-950",
-            messageText: "text-blue-300",
-            locationText: "text-blue-300",
-            buttonBg: "bg-blue-800",
-            buttonHover: "hover:bg-blue-700",
-            svgPrimary: "#5AB0FF",
-            svgSecondary: "#001133",
-            svgGradientLight: "#7CC8FF",
-            svgGradientDark: "#5095D9",
-            svgStroke: "#243447",
-        },
-        startPrompt: "Je commence mon aventure dans le village gelé d'Auralis",
-    },
-    elyndra: {
-        name: "Élyndra",
-        fullName: "Les Ruines Oubliées d'Élyndra",
-        description: "Une cité perdue avec des pierres runiques",
-        image: elyndra,
-        colors: {
-            primary: "text-purple-200/95",
-            bgGradient:
-                "bg-[radial-gradient(ellipse_50.00%_50.00%_at_50.00%_50.00%,_#2D0D3F_0%,_#07000A_100%)]",
-            chatBg: "bg-[radial-gradient(ellipse_50.00%_50.00%_at_50.00%_50.00%,_#100723_0%,_#0D071D_50%,_#050010_100%)]",
-            messageBg: "bg-purple-950",
-            messageText: "text-purple-300",
-            locationText: "text-purple-300",
-            buttonBg: "bg-purple-800",
-            buttonHover: "hover:bg-purple-700",
-            svgPrimary: "#9D5AFF",
-            svgSecondary: "#330044",
-            svgGradientLight: "#C88FFF",
-            svgGradientDark: "#8550D9",
-            svgStroke: "#472447",
-        },
-        startPrompt:
-            "Je commence mon aventure au milieu des Ruines oubliées d'Élyndra",
-    },
-};
-
-// Vérifie si le biome existe, sinon rediriger ou utiliser un biome par défaut
-const currentBiome =
-    biomesConfig[biome as keyof typeof biomesConfig] || biomesConfig.lunel;
-
-// Récupère l'inventaire depuis PocketBase
-let inventoryRecords = [];
-try {
-    inventoryRecords = await Astro.locals.pb.collection("Inventory").getFullList({
-        sort: '-created',
-    });
-} catch (error) {
-    console.error("Erreur lors de la récupération de l'inventaire:", error);
-}
-
-// Extraire les données pour le client (sans les imports d'images qui posent problème)
-const biomesDataForClient = Object.fromEntries(
-    Object.entries(biomesConfig).map(([key, data]) => [
-        key,
-        {
-            name: data.name,
-            fullName: data.fullName,
-            description: data.description,
-            colors: data.colors,
-            startPrompt: data.startPrompt,
-        },
-    ]),
-);
 ---
 
 <Layout hideHeaderFooter={true}>
@@ -444,18 +311,7 @@ const biomesDataForClient = Object.fromEntries(
                             <h3 class="text-Or-clair text-xs font-['Cinzel_Decorative'] tracking-wider uppercase z-10 transition-colors group-hover:text-orange-200">Jet de Dé</h3>
                             <div id="dice-button" class="relative z-10 w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_0_8px_rgba(255,233,181,0.2)] group-hover:drop-shadow-[0_0_12px_rgba(255,233,181,0.6)]">
                                 <!-- Icône D20 personnalisée -->
-                                <svg id="Calque_2" data-name="Calque 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 513.88 606.83" class="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-md">
-                                    <polygon points="2.75 153.91 83.94 405.91 1.47 452.89 2.75 153.91" style="fill: #b7aa4e; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
-                                    <polygon points="256.47 101.99 83.94 405.91 2.75 153.91 256.47 101.99" style="fill: #b5a950; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
-                                    <polygon points="256.47 .89 256.47 101.99 2.75 153.91 256.47 .89" style="fill: #c6ba52; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
-                                    <polygon points="511.13 153.91 256.47 101.99 256.47 .89 511.13 153.91" style="fill: #c4b957; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
-                                    <polygon points="511.13 452.89 429.09 405.91 511.13 153.91 511.13 452.89" style="fill: #a09547; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
-                                    <polygon points="83.94 405.91 429.09 405.91 256.47 101.99 83.94 405.91" style="fill: #a59747; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
-                                    <polygon points="256.47 604.8 511.13 452.89 429.09 405.91 256.47 604.8" style="fill: #918436; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
-                                    <polygon points="1.47 452.89 256.47 604.8 83.94 405.91 1.47 452.89" style="fill: #918436; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
-                                    <polygon points="256.47 604.8 83.94 405.91 429.09 405.91 256.47 604.8" style="fill: #9e8e3e; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
-                                    <polygon points="511.13 153.91 256.47 101.99 429.09 405.91 511.13 153.91" style="fill: #b5a950; stroke: #000; stroke-width: 10px; stroke-miterlimit: 10;"/>
-                                </svg>
+                                <Dice/>
                                 <span id="dice-result" class="absolute text-white font-['Almendra'] text-lg sm:text-xl font-bold mb-2 sm:mb-3 transition-opacity duration-300">20</span>
                             </div>
                         </div>
@@ -1037,7 +893,7 @@ const biomesDataForClient = Object.fromEntries(
     </div>
 
     <!-- Script pour l'interface de l'IA -->
-    <script
+    <!-- <script
         define:vars={{
             biomeData: currentBiome,
             biomeName: biome,
@@ -1101,5 +957,5 @@ const biomesDataForClient = Object.fromEntries(
             }
         });
     </script>
-    <script src="../../../src/scripts/game.js"></script>
+    <script src="../../../src/scripts/game.js"></script> -->
 </Layout>
