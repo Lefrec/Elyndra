@@ -287,48 +287,6 @@ const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
                 </div>
             </div>
         </div>
-
-        <h5
-            class="font-heading text-center pt-15 text-white tracking-[5px] text-xl"
-        >
-            Statistiques de base
-        </h5>
-
-        <div class="max-w-7xl mx-auto px-8 mt-10">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <CardsCharacter
-                    img={ombreImage.src}
-                    title="Ombre"
-                    lieu="Forêt des Ombres"
-                    type="Assassin"
-                    description="Un maître furtif des ténèbres, agile et mortel dans l'obscurité."
-                />
-
-                <CardsCharacter
-                    img={mageImage.src}
-                    title="Mage"
-                    lieu="Tour des Arcanes"
-                    type="Sorcier"
-                    description="Un érudit des arts mystiques, manipulant les forces magiques avec maîtrise."
-                />
-
-                <CardsCharacter
-                    img={chevalierImage.src}
-                    title="Chevalier"
-                    lieu="Château"
-                    type="Guerrier"
-                    description="Un chevalier courageux et loyal, maître de l'épée et du bouclier."
-                />
-
-                <CardsCharacter
-                    img={alchimisteImage.src}
-                    title="Alchimiste"
-                    lieu="Laboratoire"
-                    type="Scientifique"
-                    description="Un savant expert en potions et transmutations alchimiques."
-                />
-            </div>
-        </div>
     </section>
 
     <section>

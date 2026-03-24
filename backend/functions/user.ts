@@ -1,5 +1,6 @@
 import Pocketbase from 'pocketbase';
 import type { TypedPocketBase } from '../../src/utils/type.ts';
+import { deleteGamestateCol, setupGamestate } from './weaviate.ts';
 const pb = new Pocketbase("http://elyndra.paolo-vincent.fr/") as TypedPocketBase;
 
 const PB_ADMIN_EMAIL = import.meta.env.PB_ADMIN_EMAIL!;
@@ -15,7 +16,7 @@ export async function setupCollections(id: string) {
         await setupPlayer(id);
         await setupInventory(id);
         await setupEntity(id);
-        // await setupGamestate(id);
+        await setupGamestate(id);
         pb.authStore.clear();
         return;
     } catch (e) {
@@ -30,7 +31,7 @@ export async function deleteCollections(id: string) {
         await deletePlayer(id);
         await deleteInventory(id);
         await deleteEntity(id);
-        // await deleteGamestateCol(id);
+        await deleteGamestateCol(id);
         pb.authStore.clear();
         return;
     } catch (e) {
@@ -58,7 +59,7 @@ async function setupPlayer(id: string) {
                     {
                         name: "class",
                         type: "select",
-                        values: ["chevalier","mage","alchimiste","ombre"],
+                        values: ["chevalier","mage","chimiste","ombre"],
                     },
                     {
                         name: "maxHP",

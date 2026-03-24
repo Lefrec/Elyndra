@@ -54,21 +54,21 @@ const biomes = [
 const roles = [
   {
     id: 1,
-    slug: "Chevalier",
+    slug: "chevalier",
     title: "Le Chevalier",
     description: "Un guerrier en armure forgé dans l'acier et la bravoure",
     image: chevalier,
   },
   {
     id: 2,
-    slug: "Mage",
+    slug: "mage",
     title: "La Mage",
     description: "Tisseuse de sorts, elle plie les éléments à sa volonté",
     image: mage,
   },
   {
     id: 3,
-    slug: "Chimiste",
+    slug: "chimiste",
     title: "Le Chimiste",
     description:
       "Maître des potions et des runes, il transforme la nature en arme",
@@ -76,7 +76,7 @@ const roles = [
   },
   {
     id: 4,
-    slug: "Ombre",
+    slug: "ombre",
     title: "L'Ombre",
     description:
       "Assassin des ténèbres, il frappe vite et disparaît sans laisser de traces",
@@ -132,7 +132,7 @@ if (!Astro.locals.pb.authStore.record) {
       >
         {
           biomes.map((biome) => (
-            <div class="biome cursor-pointer" data-biome={biome.title}>
+            <div class="biome cursor-pointer" data-biome-title={biome.title} data-biome-id={biome.id}>
               <CardsBiomes
                 image={biome.image.src}
                 title={biome.title}
@@ -150,7 +150,7 @@ if (!Astro.locals.pb.authStore.record) {
       >
         {
           roles.map((role) => (
-            <div class="role cursor-pointer" data-role={role.title}>
+            <div class="role cursor-pointer" data-role-title={role.title} data-role-id={role.id}>
               <CardsRole
                 image={role.image.src}
                 title={role.title}
@@ -227,8 +227,10 @@ if (!Astro.locals.pb.authStore.record) {
   </div>
 
   <script>
-    let selectedBiome = null;
-    let selectedRole = null;
+    let selectedBiomeTitle = null;
+    let selectedBiomeId = null;
+    let selectedRoleTitle = null;
+    let selectedRoleId = null;
     let nom = null;
 
     const biomes = document.querySelectorAll(".biome");
@@ -243,9 +245,10 @@ if (!Astro.locals.pb.authStore.record) {
     if (biomes) {
       biomes.forEach((biome) => {
         biome.addEventListener("click", (e) => {
-          selectedBiome = e.currentTarget?.getAttribute("data-biome");
+          selectedBiomeTitle = e.currentTarget?.getAttribute("data-biome-title");
+          selectedBiomeId = e.currentTarget?.getAttribute("data-biome-id");
           if (biomeRecap) {
-            biomeRecap.textContent = selectedBiome;
+            biomeRecap.textContent = selectedBiomeTitle;
           }
           biomes.forEach((x) => {
             x.children[0].classList.remove(
@@ -265,9 +268,10 @@ if (!Astro.locals.pb.authStore.record) {
     if (roles) {
       roles.forEach((role) => {
         role.addEventListener("click", (e) => {
-          selectedRole = e.currentTarget?.getAttribute("data-role");
+          selectedRoleTitle = e.currentTarget?.getAttribute("data-role-title");
+          selectedRoleId = e.currentTarget?.getAttribute("data-role-id");
           if (roleRecap) {
-            roleRecap.textContent = selectedRole;
+            roleRecap.textContent = selectedRoleTitle;
           }
           roles.forEach((x) => {
             x.children[0].classList.remove(
@@ -293,7 +297,7 @@ if (!Astro.locals.pb.authStore.record) {
 
     function checkPlayable() {
       if (playBtn) {
-        if (selectedBiome && selectedRole && nom && nom != "") {
+        if (selectedBiomeId && selectedRoleId && nom && nom != "") {
           playBtn.classList.remove(
             "!shadow-none",
             "hover:!shadow-none",
@@ -319,8 +323,8 @@ if (!Astro.locals.pb.authStore.record) {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    biome : selectedBiome,
-                    role : selectedRole,
+                    biome : selectedBiomeId,
+                    role : selectedRoleId,
                     nom : nom,
                 })
             });

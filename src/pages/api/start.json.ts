@@ -2,14 +2,87 @@ import { type APIRoute } from "astro";
 import { setupCollections } from "../../../backend/functions/user";
 import { createPlayer } from "../../../backend/functions/player";
 
+const biomes = [
+  {
+    id: 1,
+    title: "Le Cœur Sylvestre de Lunel",
+    description:
+      "Une jungle oppressante avec des cités perchées et des dangers au sol",
+  },
+  {
+    id: 2,
+    title: "Les Dunes ardentes de Solarys",
+    description:
+      "Une immensité aride avec un oasis solitaire et un monde souterrain",
+  },
+  {
+    id: 3,
+    title: "Le Village Gelé d'Auralis",
+    description:
+      "Un refuge givré avec des vents mordants et des spectres de glace",
+  },
+  {
+    id: 4,
+    title: "Les Ruines Oubliées d'Élyndra",
+    description:
+      "Une cité perdue avec des pierres runiques et des légendes oubliées",
+  },
+];
+
+const roles = [
+  {
+    id: 1,
+    slug: "chevalier",
+    title: "Le Chevalier",
+    description: "Un guerrier en armure forgé dans l'acier et la bravoure",
+    for: +3,
+    def: +1,
+    mag: -2,
+    agi: -2,
+  },
+  {
+    id: 2,
+    slug: "mage",
+    title: "La Mage",
+    description: "Tisseuse de sorts, elle plie les éléments à sa volonté",
+    for: -1,
+    def: -2,
+    mag: +3,
+    agi: 0,
+  },
+  {
+    id: 3,
+    slug: "chimiste",
+    title: "Le Chimiste",
+    description:
+      "Maître des potions et des runes, il transforme la nature en arme",
+    for: -1,
+    def: -1,
+    mag: 0,
+    agi: +2,
+  },
+  {
+    id: 4,
+    slug: "ombre",
+    title: "L'Ombre",
+    description:
+      "Assassin des ténèbres, il frappe vite et disparaît sans laisser de traces",
+    for: -1,
+    def: -2,
+    mag: 0,
+    agi: +3,
+  },
+];
+
 export const POST: APIRoute = async ({locals, request}) => {
     try {
         const params = await request.json();
         console.log("[start] Params :",params);
+        const role = roles.find((el) => el.id == params.role);
         const id = locals.pb.authStore.record?.id;
         if (id) {
             await setupCollections(id);
-            await createPlayer(id, {name: params.nom, class: params.role});
+            await createPlayer(id, {name: params.nom, class: role?.slug, isCurrent: true, currentHP: 100, maxHP: 100, for: role?.for, def: role?.def, mag : role?.mag, agi: role?.agi});
             return new Response(
                 JSON.stringify({ reply: "Collections set up correctly" }),
                 { status: 200, headers: { "Content-Type": "application/json" } },
