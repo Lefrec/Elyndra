@@ -461,6 +461,70 @@ CONTRAINTES
 - Pas de rupture de rôle
 `
 
+//building the start prompt
+function buildStartPrompt(state: { title: string; desc: string }) {
+  return `
+Ceci est un message interne non visible par le joueur.
+
+========================
+OBJECTIF
+========================
+Tu dois initialiser l’aventure du joueur.
+
+========================
+ÉTAPES À SUIVRE
+========================
+
+1. Récupérer les informations du joueur (getPlayer)
+2. Puis récupérer les informations du lore (getLoreRAG)
+3. Analyser ces informations pour contextualiser le personnage dans le monde
+4. Générer une introduction immersive (addGamestate, createItem, createQuest)
+
+========================
+CONTENU À PRODUIRE
+========================
+- Introduire le joueur dans la région suivante :
+  ${state.title}, ${state.desc}
+
+- Décrire :
+  - l’environnement immédiat
+  - l’ambiance
+  - la situation initiale
+
+- Introduire progressivement :
+  - l’identité du joueur
+  - ses origines (déduites ou récupérées)
+  - son inventaire de départ (défini de manière diégétique)
+  - ses premières intentions implicites
+
+- Définir naturellement :
+  - des objectifs simples à court terme (type tutoriel)
+  - des points d’accroche narratifs
+
+========================
+CONTRAINTES
+========================
+- Ne pas faire de bloc explicatif visible
+- Ne pas écrire sous forme de checklist ou de liste
+- Ne pas surcharger d’informations
+- Rester immersif, fluide et narratif
+- Réponse courte (1 à 3 paragraphes)
+- Toujours terminer par une ouverture ou une question
+
+========================
+TON
+========================
+- Accrocheur
+- Immersif
+- Progressif (introduction douce à l’univers)
+- Clair sans être explicatif
+
+========================
+IMPORTANT
+========================
+Tu dois commencer directement par la narration après avoir collecté les informations nécessaires.
+`;
+}
 
 export const POST: APIRoute = async ({locals, request}) => {
     try {
@@ -468,13 +532,21 @@ export const POST: APIRoute = async ({locals, request}) => {
         const id = locals.pb.authStore.record?.id;
         //if the user is connected
         if (id) {
+            const body = await request.json();
+            console.log(body);
+
             //getting the messages
-            const {messages} = await request.json() as {
+            const {messages} = await body as {
                 messages: Array<{ role: string, content: string}>
             };
 
+            //getting state if it's there
+            const {state} = await body as {
+              state: {title: string, desc: string}
+            }
+
             //basic check
-            if (!messages || !Array.isArray(messages) || messages.length === 0) {
+            if (!messages || !Array.isArray(messages)) {
                 console.log("[chat] Messages failed basic check");
                 return new Response(
                     JSON.stringify({ error: "Body must include a non-empty 'messages' array" }),
@@ -483,10 +555,25 @@ export const POST: APIRoute = async ({locals, request}) => {
             };
             console.log("[chat] Messages passed basic check");
 
-            let chatMessages: Array<{ role: string; content: string }> = [
-                { role: "system", content: systemPrompt },
+            let chatMessages: Array<{ role: string; content: string }>;
+
+            //if messages are empty we add the system and start prompt to it 
+            if (messages.length == 0 && state) {
+              chatMessages = [
+                {
+                  role: "system",
+                  content: systemPrompt,
+                },
+                {
+                  role: "user",
+                  content: buildStartPrompt(state),
+                }
+              ]
+            } else {
+              chatMessages = [
                 ...messages,
-            ];
+              ]
+            }
 
             for (let i = 0; i < maxToolCallAmount; i++) {
                 console.log("[chat] Handling request",i);
@@ -566,10 +653,10 @@ export const POST: APIRoute = async ({locals, request}) => {
             );
         }
     } catch (error) {
-        //Response if things went wrong
-        return new Response(
-            JSON.stringify({ reply: "There was an error :", error }),
-            { status: 500, headers: { "Content-Type": "application/json" } },
-        );
+      console.error("[chat]", error);
+      return new Response(
+        JSON.stringify({ reply: "There was an error", error: error?.message ?? String(error) }),
+        { status: 500, headers: { "Content-Type": "application/json" } },
+      );
     }
 };

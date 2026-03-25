@@ -600,6 +600,19 @@ dice = await getDice(id);
 
   <!-- chat api endpoint -->
   <script>
+    import PocketBase from "pocketbase";
+
+    const pb = new PocketBase("http://elyndra.paolo-vincent.fr/");
+
+    const id = document.getElementById("hiddenId")?.textContent;
+
+    const saveBtn = document.getElementById("save-btn");
+    const button = document.getElementById("button") as HTMLButtonElement;
+    const input = document.getElementById("input") as HTMLInputElement;
+    const messagesContainer = document.getElementById(
+      "messages-container",
+    ) as HTMLDivElement;
+
     import { biomeState } from "../stores/biome.js";
 
     const biomes = {
@@ -625,13 +638,47 @@ dice = await getDice(id);
       },
     };
 
-    const button = document.getElementById("button") as HTMLButtonElement;
-    const input = document.getElementById("input") as HTMLInputElement;
-    const messagesContainer = document.getElementById(
-      "messages-container",
-    ) as HTMLDivElement;
+    const state = biomeState.get();
 
     let messages: Array<{ role: string; content: string }> = [];
+
+    //checking if there is a save or not
+    const doesExist = await pb
+      .collection("Save")
+      .getFullList({ filter: `user = '${id}'` });
+    if (doesExist.length == 0) {
+      const res = await fetch("/apiEndpoint/chat.json", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: messages,
+          state: {title: state.title, desc: state.desc},
+        }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        messagesContainer.textContent = `Error ${res.status}: ${text}`;
+      }
+
+      const data = await res.json();
+
+      messages.push({ role: "assistant", content: data.reply });
+
+      save()
+
+      const assistantMessageDiv = document.createElement("div");
+      assistantMessageDiv.classList.add("assistantMessage");
+      assistantMessageDiv.textContent = data.reply;
+      messagesContainer.appendChild(assistantMessageDiv);
+
+      scrollToBottom();
+    } else {
+        const save = await pb.collection("Save").getOne(doesExist[0].id);
+        messages = save.messages;
+    }
 
     if (button && input && messagesContainer) {
       button.addEventListener("click", async () => {
@@ -662,7 +709,6 @@ dice = await getDice(id);
         if (!res.ok) {
           const text = await res.text();
           messagesContainer.textContent = `Error ${res.status}: ${text}`;
-          return;
         }
 
         const data = await res.json();
@@ -682,129 +728,18 @@ dice = await getDice(id);
           button.click();
         }
       });
+    }
 
-      const state = biomeState.get();
-
-      messages.push({
-        role: "user",
-        content: `
-Ceci est un message interne non visible par le joueur.
-
-========================
-OBJECTIF
-========================
-Initialiser complètement l’aventure du joueur :
-- contexte narratif
-- état du personnage
-- inventaire de départ
-- premières quêtes
-- éléments persistants du gamestate
-
-Tu dois produire une introduction immersive ET initialiser l’état du jeu via les tools.
-
-========================
-PROTOCOLE OBLIGATOIRE
-========================
-
-Tu dois suivre STRICTEMENT cette séquence :
-
-1. Récupérer les informations du joueur via les tools
-2. Récupérer le lore via getLoreRAG
-3. Construire mentalement :
-   - identité du joueur
-   - situation initiale
-   - éléments de départ
-
-4. INITIALISER l’état du jeu via les tools :
-   - vérifier l'état du jeu en listant séparément inventaire et quêtes (listInventory) (listQuest)
-   - créer l’inventaire de départ (createItem)
-   - créer les premières quêtes (createQuest)
-   - enregistrer les éléments importants (addGamestate)
-   - mettre à jour le personnage si nécessaire (updatePlayer)
-
-5. Générer ensuite UNIQUEMENT la narration immersive d’introduction
-
-========================
-RÈGLES IMPORTANTES
-========================
-- Toute donnée persistante (inventaire, quête, état) DOIT être créée via tools
-- Ne jamais seulement décrire un élément sans le créer
-- Ne jamais inventer d’ID → utiliser uniquement ceux retournés par les tools
-- Ne pas attendre la fin pour gérer l’état : les tools doivent être appelés pendant la phase d’initialisation
-- Chaque élément important introduit dans la narration doit exister dans le gamestate
-
-========================
-CONTENU DE L’INTRODUCTION
-========================
-Tu dois introduire :
-
-- La région : ${state.title}, ${state.description}
-- L’environnement immédiat
-- L’ambiance
-- La situation de départ
-
-Progressivement :
-- L’identité du joueur
-- Ses origines (déduites ou issues des données)
-- Son inventaire initial (cohérent avec l’univers)
-- Ses premières motivations implicites
-
-Tu dois également :
-- Introduire au moins une ou plusieurs quêtes initiales (tutoriel ou objectif simple)
-- Donner des points d’ancrage narratifs pour guider le joueur
-
-========================
-CONTRAINTES NARRATIVES
-========================
-- Style immersif, sensoriel, fluide
-- Réponse courte (1 à 3 paragraphes)
-- Pas de listes visibles
-- Pas d’explications hors narration
-- Toujours terminer par une ouverture ou une question
-
-========================
-TON
-========================
-- Accrocheur
-- Immersif
-- Progressif
-- Clair sans être explicatif
-
-========================
-IMPORTANT
-========================
-Tu dois :
-- appeler les tools nécessaires AVANT de produire la narration
-- synchroniser l’état du jeu dès l’initialisation
-- ne commencer la narration qu’après avoir créé l’état initial complet
-`,
-      });
-
-      const res = await fetch("/apiEndpoint/chat.json", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: messages,
-        }),
-      });
-
-      if (!res.ok) {
-        const text = await res.text();
-        messagesContainer.textContent = `Error ${res.status}: ${text}`;
-      }
-
-      const data = await res.json();
-
-      messages.push({ role: "assistant", content: data.reply });
-
-      const assistantMessageDiv = document.createElement("div");
-      assistantMessageDiv.classList.add("assistantMessage");
-      assistantMessageDiv.textContent = data.reply;
-      messagesContainer.appendChild(assistantMessageDiv);
-
-      scrollToBottom();
+    async function save() {
+        const res = await fetch("/apiEndpoint/chat.json", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            messages: messages,
+          }),
+        });
     }
 
     function scrollToBottom() {

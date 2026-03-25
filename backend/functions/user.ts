@@ -329,6 +329,20 @@ export async function getUser(id: string) : Promise<Object | undefined> {
     }
 }
 
+export async function saveMessages(id: string, messages: Array<{ role: string, content: string}>) {
+    try {
+        const doesExist = await pb.collection("Save").getFullList({filter: `user = '${id}'`});
+        if (doesExist.length != 0) {
+            await pb.collection("Save").update(doesExist[0].id, {messages});
+        } else {
+            await pb.collection("Save").create({user: id, messages});
+        }
+    } catch (e) {
+        console.log("[saveMessages] Failed",e);
+        return e;
+    }
+}
+
 //helper returning a boolean value based on if a collection exist or not given its name
 async function checkCollection(collectionName : string) : Promise<boolean> {
     try {
