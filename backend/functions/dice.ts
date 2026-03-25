@@ -1,5 +1,5 @@
 import Pocketbase from "pocketbase";
-const pb = new Pocketbase("http://elyndra.paolo-vincent.fr/");
+const pb = new Pocketbase(import.meta.env.PB_URL ?? import.meta.env.PB_URL ?? "http://elyndra.paolo-vincent.fr/");
 
 export async function rollTest(id: string, difficulty: number, modifier: number = 0) {
     try {

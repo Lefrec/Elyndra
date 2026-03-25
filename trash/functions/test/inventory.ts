@@ -1,5 +1,5 @@
 import Pocketbase from "pocketbase";
-const pb = new Pocketbase("http://elyndra.paolo-vincent.fr/");
+const pb = new Pocketbase(import.meta.env.PB_URL ?? "http://elyndra.paolo-vincent.fr/");
 
 //Basic functions to test tools interacting with inventory in PocketBase
 

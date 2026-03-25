@@ -3,6 +3,9 @@ import weaviate, { type WeaviateClient, dataType, vectors } from 'weaviate-clien
 //connect to local Weaviate DB
 const client: WeaviateClient = await weaviate.connectToLocal();
 
+//killing lore
+client.collections.delete("Lore");
+
 //Creating the lore collection, should be done only 1 time
 const lore = await client.collections.create({
   name: 'Lore',

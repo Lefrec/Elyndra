@@ -1,7 +1,7 @@
 import Pocketbase from "pocketbase";
 import type { Player } from "./type.ts";
 import type { TypedPocketBase } from '../../src/utils/type.ts';
-const pb = new Pocketbase("http://elyndra.paolo-vincent.fr/") as TypedPocketBase;
+const pb = new Pocketbase(import.meta.env.PB_URL ?? "http://elyndra.paolo-vincent.fr/") as TypedPocketBase;
 
 const PB_ADMIN_EMAIL = import.meta.env.PB_ADMIN_EMAIL!;
 const PB_ADMIN_PASSWORD = import.meta.env.PB_ADMIN_PASSWORD!;
