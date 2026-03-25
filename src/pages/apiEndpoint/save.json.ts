@@ -3,6 +3,7 @@ import { saveMessages } from "../../../backend/functions/user";
 
 export const POST: APIRoute = async ({ locals, request }) => {
     try {
+        console.log("[save] Saving ...")
         const {messages} = await request.json() as {
             messages: Array<{ role: string, content: string}>
         };

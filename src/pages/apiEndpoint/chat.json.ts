@@ -571,9 +571,12 @@ export const POST: APIRoute = async ({locals, request}) => {
               ]
             } else {
               chatMessages = [
+                {role: "system", content: systemPrompt},
                 ...messages,
               ]
             }
+
+            console.log("[chat] Messages :",messages);
 
             for (let i = 0; i < maxToolCallAmount; i++) {
                 console.log("[chat] Handling request",i);

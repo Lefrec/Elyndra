@@ -615,32 +615,15 @@ dice = await getDice(id);
 
     import { biomeState } from "../stores/biome.js";
 
-    const biomes = {
-      elyndra: {
-        title: "Ruines d'Élyndra",
-        image: "/biomes/elyndra.webp",
-        desc: "Une cité perdue avec des pierres runiques",
-      },
-      lunel: {
-        title: "Forêt de Lunel",
-        image: "/biomes/lunel.webp",
-        desc: "Une jungle oppressante avec des cités perchées",
-      },
-      solarys: {
-        title: "Dunes de Solarys",
-        image: "/biomes/solarys.webp",
-        desc: "Une immensité aride avec un oasis solitaire",
-      },
-      auralis: {
-        title: "Vallée gelée d'Auralis",
-        image: "/biomes/auralis.webp",
-        desc: "Un refuge givré avec des vents mordants",
-      },
-    };
-
     const state = biomeState.get();
 
     let messages: Array<{ role: string; content: string }> = [];
+
+    if (saveBtn) {
+        saveBtn.addEventListener("click", async () => {
+            await save();
+        })
+    }
 
     //checking if there is a save or not
     const doesExist = await pb
@@ -667,7 +650,7 @@ dice = await getDice(id);
 
       messages.push({ role: "assistant", content: data.reply });
 
-      save()
+      await save();
 
       const assistantMessageDiv = document.createElement("div");
       assistantMessageDiv.classList.add("assistantMessage");
@@ -677,7 +660,10 @@ dice = await getDice(id);
       scrollToBottom();
     } else {
         const save = await pb.collection("Save").getOne(doesExist[0].id);
+        console.log(save);
         messages = save.messages;
+
+        messagesContainer.innerHTML = messages.map((message) => `<div class=${message.role == "user" ? "userMessage" : "assistantMessage"}>${message.content}</div>`).join("");
     }
 
     if (button && input && messagesContainer) {
@@ -715,6 +701,8 @@ dice = await getDice(id);
 
         messages.push({ role: "assistant", content: data.reply });
 
+        await save();
+
         const assistantMessageDiv = document.createElement("div");
         assistantMessageDiv.classList.add("assistantMessage");
         assistantMessageDiv.textContent = data.reply;
@@ -731,7 +719,7 @@ dice = await getDice(id);
     }
 
     async function save() {
-        const res = await fetch("/apiEndpoint/chat.json", {
+        await fetch("/apiEndpoint/save.json", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
