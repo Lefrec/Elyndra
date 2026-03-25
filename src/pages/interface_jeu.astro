@@ -244,11 +244,11 @@ quests = await listQuest(id);
           </p>
         </div>
         <!-- quête -->
-        <div class="goldCard h-full max-h-50 lg:max-h-100">
+        <div class="goldCard h-fit lg:max-h-100">
           <h3 class="goldTitle">Quêtes</h3>
           <div
             id="quest-list"
-            class="h-full flex flex-col max-h-50 lg:max-h-100 gap-4 overflow-y-scroll hide-scrollbar"
+            class="h-full flex flex-col min-h-50 max-h-50 lg:max-h-100 gap-4 overflow-y-scroll hide-scrollbar"
           >
             <!-- {
               Array.isArray(quests)
@@ -269,9 +269,9 @@ quests = await listQuest(id);
           </div>
         </div>
         <!-- dice -->
-        <div class="goldCard">
+        <div class="goldCard h-full">
           <h3 class="goldTitle">Jet de dé</h3>
-          <div class="relative flex w-full justify-center items-center">
+          <div class="relative flex w-full h-full justify-center items-center">
             <Dice id="dice" />
             <p id="dice-result" class="absolute">{diceState.get().result}</p>
           </div>
@@ -298,7 +298,7 @@ quests = await listQuest(id);
           >
             <div
               id="messages-container"
-              class="flex flex-col gap-4 p-2 max-h-100 overflow-visible"
+              class="flex flex-col gap-4 p-2 min-h-100 max-h-100 overflow-visible"
             >
               <!-- messages -->
             </div>
@@ -358,7 +358,7 @@ quests = await listQuest(id);
           <h3 class="goldTitle">Inventaire</h3>
           <div
             id="inventory-list"
-            class="h-full flex flex-col max-h-50 lg:max-h-100 gap-4 overflow-y-scroll hide-scrollbar"
+            class="h-full flex flex-col min-h-50 max-h-50 lg:max-h-100 gap-4 overflow-y-scroll hide-scrollbar"
           >
             <!-- {
               Array.isArray(inventory)
