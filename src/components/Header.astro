@@ -6,9 +6,14 @@ const { bannerOffset = false } = Astro.props;
 
 const isLoggedIn = Astro.locals.pb.authStore.isValid;
 let pseudo;
+let savedGame;
 if (isLoggedIn) {
   pseudo = Astro.locals.pb.authStore.record.name;
-} 
+  savedGame = await Astro.locals.pb
+    .collection("Save")
+    .getFullList({ filter: `user = '${Astro.locals.pb.authStore.record.id}'` });
+  savedGame = savedGame.length > 0;
+}
 ---
 
 <header
@@ -26,13 +31,27 @@ if (isLoggedIn) {
     <!-- Nav desktop -->
     <nav class="hidden md:flex items-center gap-10">
       <ul class="flex items-center gap-10">
-        <li>
-          <a
-            href="/choixbiome"
-            class="hover:underline font-heading text-sm tracking-widest"
-            >Le Jeu</a
-          >
-        </li>
+        {
+          savedGame ? (
+            <li>
+              <a
+                href="/interface_jeu"
+                class="hover:underline font-heading text-sm tracking-widest"
+              >
+                Reprendre
+              </a>
+            </li>
+          ) : (
+            <li>
+              <a
+                href="/choixbiome"
+                class="hover:underline font-heading text-sm tracking-widest"
+              >
+                Le Jeu
+              </a>
+            </li>
+          )
+        }
         <li>
           <a
             href="/equipe"
@@ -80,7 +99,10 @@ if (isLoggedIn) {
         {
           isLoggedIn ? (
             <div class="flex items-center gap-3">
-              <a href="/profile" class="text-[#FFE9B5] text-sm font-heading tracking-widest">
+              <a
+                href="/profile"
+                class="text-[#FFE9B5] text-sm font-heading tracking-widest"
+              >
                 {pseudo}
               </a>
             </div>
