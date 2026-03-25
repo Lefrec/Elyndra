@@ -235,6 +235,35 @@ if (!Astro.locals.pb.authStore.record) {
   </div>
 
   <script>
+    import { biomeState } from "../stores/biome.js";
+
+    const biomesInfos = [
+      {
+        id: 1,
+        title: "Forêt de Lunel",
+        image: "/biomes/lunel.webp",
+        desc: "Une jungle oppressante avec des cités perchées",
+      },
+      {
+        id: 2,
+        title: "Dunes de Solarys",
+        image: "/biomes/solarys.webp",
+        desc: "Une immensité aride avec un oasis solitaire",
+      },
+      {
+        id: 3,
+        title: "Vallée gelée d'Auralis",
+        image: "/biomes/auralis.webp",
+        desc: "Un refuge givré avec des vents mordants",
+      },
+      {
+        id: 4,
+        title: "Ruines d'Élyndra",
+        image: "/biomes/elyndra.webp",
+        desc: "Une cité perdue avec des pierres runiques",
+      },
+    ];
+
     let selectedBiomeTitle = null;
     let selectedBiomeId = null;
     let selectedRoleTitle = null;
@@ -332,17 +361,25 @@ if (!Astro.locals.pb.authStore.record) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            biome: selectedBiomeId,
             role: selectedRoleId,
             nom: nom,
           }),
         });
 
-        if (res.ok || res.redirected) {
+        const data = await res.json();
+
+        if (res.ok) {
+          const biomeInfo = biomesInfos.find(obj => obj.id == selectedBiomeId);
+          const biome = {
+            title: biomeInfo?.title,
+            image: biomeInfo?.image,
+            desc: biomeInfo?.desc,
+          }
+          console.log("biome :",biome);
+          biomeState.set(biome);
           window.location.href = "/interface_jeu";
         } else {
-          const data = await res.json();
-          console.log("Failed",data);
+          console.log("Failed", data);
         }
       });
     }

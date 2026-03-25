@@ -1,7 +1,14 @@
-import { map } from 'nanostores';
+import { persistentAtom } from "@nanostores/persistent";
 
-export const biomeState = map({
+export const biomeState = persistentAtom(
+  "biomeState",
+  {
     title: "Ruines d'Élyndra",
     image: "/biomes/elyndra.webp",
     desc: "Une cité perdue avec des pierres runiques",
-})
+  },
+  {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+  }
+);

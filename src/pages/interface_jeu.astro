@@ -297,9 +297,7 @@ console.log(quests);
             id="messages-container"
             class="overflow-y-auto h-full flex flex-col gap-4 hide-scrollbar"
           >
-            <div
-              class="flex flex-col gap-4 p-2 max-h-100 overflow-visible"
-            >
+            <div class="flex flex-col gap-4 p-2 max-h-100 overflow-visible">
               <!-- messages -->
               <div class="assistantMessage">
                 Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque
@@ -342,12 +340,17 @@ console.log(quests);
             </div>
           </div>
           <!-- input -->
-          <div class="w-full p-2">
-            <input
-              id="input"
-              class="w-full p-2 border border-Or-clair rounded-xl"
-              type="text"
-            />
+          <div class="flex w-full gap-2 p-2">
+            <div class="w-full">
+              <input
+                id="input"
+                class="w-full p-2 border border-Or-clair rounded-xl"
+                type="text"
+              />
+            </div>
+            <button id="button" class="goldCard hover:bg-Or-clair/50"
+              >Envoyer</button
+            >
           </div>
         </div>
       </div>
@@ -528,7 +531,7 @@ console.log(quests);
       container.scrollTop = container.scrollHeight;
     }
 
-    scrollToBottom()
+    scrollToBottom();
   </script>
 
   <!-- verbomnes -->
@@ -558,5 +561,61 @@ console.log(quests);
         closeVerbomnesModal();
       }
     });
+  </script>
+
+  <!-- chat api endpoint -->
+  <script>
+    const button = document.getElementById("button") as HTMLButtonElement;
+    const input = document.getElementById("input") as HTMLInputElement;
+    const messagesContainer = document.getElementById("messages-container") as HTMLDivElement;
+
+    let messages: Array<{ role: string; content: string }> = [];
+
+    if (button && input && messagesContainer) {
+    button.addEventListener("click", async () => {
+      const userMessage = input.value.trim();
+      if (!userMessage) return;
+
+      messages.push({ role: "user", content: userMessage });
+
+      const userMessageDiv = document.createElement("div");
+      userMessageDiv.classList.add("userMessage");
+      userMessageDiv.textContent = userMessage;
+      messagesContainer.appendChild(userMessageDiv);
+
+      input.value = "";
+
+      const res = await fetch("/apiEndpoint/chat.json", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: messages,
+        }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        messagesContainer.textContent = `Error ${res.status}: ${text}`;
+        return;
+      }
+
+      const data = await res.json();
+
+      messages.push({ role: "assistant", content: data.reply });
+
+      const assistantMessageDiv = document.createElement("div");
+      assistantMessageDiv.classList.add("assistantMessage");
+      assistantMessageDiv.textContent = data.reply;
+      messagesContainer.appendChild(assistantMessageDiv);
+    });
+
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        button.click();
+      }
+    });
+  }
   </script>
 </Layout>

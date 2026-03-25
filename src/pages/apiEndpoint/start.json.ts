@@ -1,30 +1,6 @@
 import { type APIRoute } from "astro";
 import { setupCollections } from "../../../backend/functions/user";
 import { createPlayer } from "../../../backend/functions/player";
-import { biomeState } from "../../stores/biome.js";
-
-const biomes = {
-  1: {
-    title: "Forêt de Lunel",
-    image: "/biomes/lunel.webp",
-    desc: "Une jungle oppressante avec des cités perchées",
-  },
-  2: {
-    title: "Dunes de Solarys",
-    image: "/biomes/solarys.webp",
-    desc: "Une immensité aride avec un oasis solitaire",
-  },
-  3: {
-    title: "Vallée gelée d'Auralis",
-    image: "/biomes/auralis.webp",
-    desc: "Un refuge givré avec des vents mordants",
-  },
-  4: {
-    title: "Ruines d'Élyndra",
-    image: "/biomes/elyndra.webp",
-    desc: "Une cité perdue avec des pierres runiques",
-  },
-};
 
 const roles = [
   {
@@ -80,13 +56,11 @@ export const POST: APIRoute = async ({ locals, request, redirect }) => {
         if (id) {
             await setupCollections(id);
             await createPlayer(id, {name: params.nom, class: role?.slug, isCurrent: true, currentHP: 100, maxHP: 100, for: role?.for, def: role?.def, mag : role?.mag, agi: role?.agi});
-            biomeState.set(biomes[params.biome]);
 
-            return redirect("/interface_jeu", 302);
-            // return new Response(
-            //     JSON.stringify({ reply: "Collections set up correctly" }),
-            //     { status: 200, headers: { "Content-Type": "application/json" } },
-            // );
+            return new Response(
+                JSON.stringify({ reply: "Collections set up correctly" }),
+                { status: 200, headers: { "Content-Type": "application/json" } },
+            );
         } else {
             return new Response(
                 JSON.stringify({ reply: "You must be connected to set up collections" }),
@@ -94,9 +68,10 @@ export const POST: APIRoute = async ({ locals, request, redirect }) => {
             );
         }
     } catch (error) {
-        return new Response(
-            JSON.stringify({ reply: "There was an error :", error }),
-            { status: 500, headers: { "Content-Type": "application/json" } },
-        );
+      console.error("[API error]", error);
+      return new Response(
+        JSON.stringify({ reply: "There was an error", error: error?.message ?? String(error) }),
+        { status: 500, headers: { "Content-Type": "application/json" } },
+      );
     }
 };
