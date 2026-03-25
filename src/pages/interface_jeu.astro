@@ -30,8 +30,6 @@ inventory = await listInventory(id);
 let quests;
 
 quests = await listQuest(id);
-
-console.log(quests);
 ---
 
 <Layout title="Interface de jeu" hideHeaderFooter={true}>
@@ -249,9 +247,10 @@ console.log(quests);
         <div class="goldCard h-full max-h-50 lg:max-h-100">
           <h3 class="goldTitle">Quêtes</h3>
           <div
+            id="quest-list"
             class="h-full flex flex-col max-h-50 lg:max-h-100 gap-4 overflow-y-scroll hide-scrollbar"
           >
-            {
+            <!-- {
               Array.isArray(quests)
                 ? quests.map((quest) => (
                     <div class="flex w-full items-center">
@@ -266,7 +265,7 @@ console.log(quests);
                     </div>
                   ))
                 : "Vous n'avez pas de quêtes"
-            }
+            } -->
           </div>
         </div>
         <!-- dice -->
@@ -294,49 +293,14 @@ console.log(quests);
         <!-- chat -->
         <div class="goldCard flex flex-col h-full">
           <div
-            id="messages-container"
+            id="messages-container-container"
             class="overflow-y-auto h-full flex flex-col gap-4 hide-scrollbar"
           >
-            <div class="flex flex-col gap-4 p-2 max-h-100 overflow-visible">
+            <div
+              id="messages-container"
+              class="flex flex-col gap-4 p-2 max-h-100 overflow-visible"
+            >
               <!-- messages -->
-              <div class="assistantMessage">
-                Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque
-                faucibus ex sapien vitae pellentesque sem placerat. In id cursus
-                mi pretium tellus duis convallis. Tempus leo eu aenean sed diam
-                urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum
-                egestas. Iaculis massa nisl malesuada lacinia integer nunc
-                posuere. Ut hendrerit semper vel class aptent taciti sociosqu.
-                Ad litora torquent per conubia nostra inceptos himenaeos. Lorem
-                ipsum dolor sit amet consectetur adipiscing elit. Quisque
-                faucibus ex sapien vitae pellentesque sem placerat. In id cursus
-                mi pretium tellus duis convallis. Tempus leo eu aenean sed diam
-                urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum
-                egestas. Iaculis massa nisl malesuada lacinia integer nunc
-                posuere. Ut hendrerit semper vel class aptent taciti sociosqu.
-                Ad litora torquent per conubia nostra inceptos himenaeos. Lorem
-                ipsum dolor sit amet consectetur adipiscing elit. Quisque
-                faucibus ex sapien vitae pellentesque sem placerat. In id cursus
-                mi pretium tellus duis convallis. Tempus leo eu aenean sed diam
-                urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum
-                egestas. Iaculis massa nisl malesuada lacinia integer nunc
-                posuere. Ut hendrerit semper vel class aptent taciti sociosqu.
-                Ad litora torquent per conubia nostra inceptos himenaeos. Lorem
-                ipsum dolor sit amet consectetur adipiscing elit. Quisque
-                faucibus ex sapien vitae pellentesque sem placerat. In id cursus
-                mi pretium tellus duis convallis. Tempus leo eu aenean sed diam
-                urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum
-                egestas. Iaculis massa nisl malesuada lacinia integer nunc
-                posuere. Ut hendrerit semper vel class aptent taciti sociosqu.
-                Ad litora torquent per conubia nostra inceptos himenaeos. Lorem
-                ipsum dolor sit amet consectetur adipiscing elit. Quisque
-                faucibus ex sapien vitae pellentesque sem placerat. In id cursus
-                mi pretium tellus duis convallis. Tempus leo eu aenean sed diam
-                urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum
-                egestas. Iaculis massa nisl malesuada lacinia integer nunc
-                posuere. Ut hendrerit semper vel class aptent taciti sociosqu.
-                Ad litora torquent per conubia nostra inceptos himenaeos.
-              </div>
-              <div class="userMessage">Message de l'utilisateur</div>
             </div>
           </div>
           <!-- input -->
@@ -393,9 +357,10 @@ console.log(quests);
         <div class="goldCard h-full max-h-50 lg:max-h-100">
           <h3 class="goldTitle">Inventaire</h3>
           <div
+            id="inventory-list"
             class="h-full flex flex-col max-h-50 lg:max-h-100 gap-4 overflow-y-scroll hide-scrollbar"
           >
-            {
+            <!-- {
               Array.isArray(inventory)
                 ? inventory.map((item) => (
                     <div class="flex w-full items-center">
@@ -407,7 +372,7 @@ console.log(quests);
                     </div>
                   ))
                 : "Votre inventaire est vide"
-            }
+            } -->
           </div>
         </div>
       </div>
@@ -524,16 +489,6 @@ console.log(quests);
     menuOverlay.addEventListener("click", toggleMenu);
   </script>
 
-  <!-- scrolling to bottom of chat -->
-  <script>
-    function scrollToBottom() {
-      const container = document.getElementById("messages-container");
-      container.scrollTop = container.scrollHeight;
-    }
-
-    scrollToBottom();
-  </script>
-
   <!-- verbomnes -->
   <script>
     const verbomnesButton = document.getElementById("verbomnes-button");
@@ -567,55 +522,363 @@ console.log(quests);
   <script>
     const button = document.getElementById("button") as HTMLButtonElement;
     const input = document.getElementById("input") as HTMLInputElement;
-    const messagesContainer = document.getElementById("messages-container") as HTMLDivElement;
+    const messagesContainer = document.getElementById(
+      "messages-container",
+    ) as HTMLDivElement;
 
     let messages: Array<{ role: string; content: string }> = [];
 
     if (button && input && messagesContainer) {
-    button.addEventListener("click", async () => {
-      const userMessage = input.value.trim();
-      if (!userMessage) return;
+      button.addEventListener("click", async () => {
+        const userMessage = input.value.trim();
+        if (!userMessage) return;
 
-      messages.push({ role: "user", content: userMessage });
+        messages.push({ role: "user", content: userMessage });
 
-      const userMessageDiv = document.createElement("div");
-      userMessageDiv.classList.add("userMessage");
-      userMessageDiv.textContent = userMessage;
-      messagesContainer.appendChild(userMessageDiv);
+        const userMessageDiv = document.createElement("div");
+        userMessageDiv.classList.add("userMessage");
+        userMessageDiv.textContent = userMessage;
+        messagesContainer.appendChild(userMessageDiv);
 
-      input.value = "";
+        scrollToBottom();
 
-      const res = await fetch("/apiEndpoint/chat.json", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: messages,
-        }),
+        input.value = "";
+
+        const res = await fetch("/apiEndpoint/chat.json", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            messages: messages,
+          }),
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          messagesContainer.textContent = `Error ${res.status}: ${text}`;
+          return;
+        }
+
+        const data = await res.json();
+
+        messages.push({ role: "assistant", content: data.reply });
+
+        const assistantMessageDiv = document.createElement("div");
+        assistantMessageDiv.classList.add("assistantMessage");
+        assistantMessageDiv.textContent = data.reply;
+        messagesContainer.appendChild(assistantMessageDiv);
+
+        scrollToBottom();
       });
 
-      if (!res.ok) {
-        const text = await res.text();
-        messagesContainer.textContent = `Error ${res.status}: ${text}`;
+      input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          button.click();
+        }
+      });
+    }
+
+    function scrollToBottom() {
+      const container = document.getElementById("messages-container-container");
+      container.scrollTop = container.scrollHeight;
+    }
+
+    scrollToBottom();
+  </script>
+
+  <!-- inventory subscribtion -->
+  <p id="hiddenId" class="hidden">{id}</p>
+  <script>
+    import PocketBase from "pocketbase";
+
+    const pb = new PocketBase("http://elyndra.paolo-vincent.fr/");
+
+    const id = document.getElementById("hiddenId")?.textContent;
+
+    // ----------------------
+    // STATE
+    // ----------------------
+    let inventory = [];
+
+    // ----------------------
+    // DOM RENDER
+    // ----------------------
+    function renderInventory() {
+      const container = document.getElementById("inventory-list");
+
+      if (!container) return;
+
+      if (!inventory.length) {
+        container.innerHTML = "Votre inventaire est vide";
         return;
       }
 
-      const data = await res.json();
+      container.innerHTML = inventory
+        .map(
+          (item) => `
+    <div class="flex w-full items-center" data-id="${item.id}">
+      <div class="flex flex-col w-full gap-1">
+        <p>${escapeHtml(item.name)}</p>
+        <p class="text-xs text-white/75">${escapeHtml(item.desc)}</p>
+      </div>
+      <p class="text-xs text-white/75">x${item.amount}</p>
+    </div>
+  `,
+        )
+        .join("");
+    }
 
-      messages.push({ role: "assistant", content: data.reply });
+    // ----------------------
+    // HELPERS (avoid XSS)
+    // ----------------------
+    function escapeHtml(str = "") {
+      return str
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
 
-      const assistantMessageDiv = document.createElement("div");
-      assistantMessageDiv.classList.add("assistantMessage");
-      assistantMessageDiv.textContent = data.reply;
-      messagesContainer.appendChild(assistantMessageDiv);
-    });
+    // ----------------------
+    // STATE MUTATIONS
+    // ----------------------
+    function addItem(item) {
+      if (inventory.find((i) => i.id === item.id)) return; // avoid duplicates
+      inventory.push(item);
+      renderInventory();
+    }
 
-    input.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        button.click();
+    function updateItem(item) {
+      const i = inventory.findIndex((i) => i.id === item.id);
+      if (i !== -1) {
+        inventory[i] = item;
+        renderInventory();
       }
-    });
-  }
+    }
+
+    function removeItem(id) {
+      inventory = inventory.filter((i) => i.id !== id);
+      renderInventory();
+    }
+
+    // ----------------------
+    // INIT
+    // ----------------------
+    async function init() {
+      try {
+        // Initial load (filter by user if needed)
+        inventory = await pb.collection("Inventory_" + id).getFullList();
+
+        renderInventory();
+
+        // Subscribe to live updates
+        pb.collection("Inventory_" + id).subscribe("*", (e) => {
+          const item = e.record;
+
+          if (e.action === "create") addItem(item);
+          if (e.action === "update") updateItem(item);
+          if (e.action === "delete") removeItem(item.id);
+        });
+      } catch (err) {
+        console.error("Inventory init error:", err);
+      }
+    }
+
+    // ----------------------
+    // START
+    // ----------------------
+    init();
+  </script>
+
+  <!-- quest subscription -->
+  <script>
+    import PocketBase from "pocketbase";
+
+    const pb = new PocketBase("http://elyndra.paolo-vincent.fr/");
+
+    const id = document.getElementById("hiddenId")?.textContent;
+
+    // ----------------------
+    // STATE
+    // ----------------------
+    let quests = [];
+
+    // ----------------------
+    // DOM RENDER
+    // ----------------------
+    function renderQuest() {
+      const container = document.getElementById("quest-list");
+
+      if (!container) return;
+
+      if (!quests.length) {
+        container.innerHTML = "Vous n'avez aucune quête";
+        return;
+      }
+
+      container.innerHTML = quests
+        .map(
+          (quest) => `
+    <div class="flex w-full items-center data-id="${quest.id}">
+        <div class="flex flex-col w-full gap-1">
+            <p>${escapeHtml(quest.name)}</p>
+            <p class="text-xs text-white/75">${escapeHtml(quest.desc)}</p>
+        </div>
+        <div class="size-4 rounded-md border border-Or-clair ${quest.completed ? "bg-Or-clair" : ""}"></div>
+    </div>
+  `,
+        )
+        .join("");
+    }
+
+    // ----------------------
+    // HELPERS (avoid XSS)
+    // ----------------------
+    function escapeHtml(str = "") {
+      return str
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    // ----------------------
+    // STATE MUTATIONS
+    // ----------------------
+    function addQuest(quest) {
+      if (quests.find((i) => i.id === quest.id)) return; // avoid duplicates
+      quests.push(quest);
+      renderQuest();
+    }
+
+    function updateQuest(quest) {
+      const i = quests.findIndex((i) => i.id === quest.id);
+      if (i !== -1) {
+        quests[i] = quest;
+        renderQuest();
+      }
+    }
+
+    function removeQuest(id) {
+      quests = quests.filter((i) => i.id !== id);
+      renderQuest();
+    }
+
+    // ----------------------
+    // INIT
+    // ----------------------
+    async function init() {
+      try {
+        // Initial load (filter by user if needed)
+        quests = await pb.collection("Quest_" + id).getFullList();
+
+        renderQuest();
+
+        // Subscribe to live updates
+        pb.collection("Quest_" + id).subscribe("*", (e) => {
+          const quest = e.record;
+
+          if (e.action === "create") addQuest(quest);
+          if (e.action === "update") updateQuest(quest);
+          if (e.action === "delete") removeQuest(quest.id);
+        });
+      } catch (err) {
+        console.error("Quest init error:", err);
+      }
+    }
+
+    // ----------------------
+    // START
+    // ----------------------
+    init();
+  </script>
+
+  <!-- player subscription -->
+  <script>
+    import PocketBase from "pocketbase";
+
+    const pb = new PocketBase("http://elyndra.paolo-vincent.fr/");
+
+    const id = document.getElementById("hiddenId")?.textContent;
+
+    // ----------------------
+    // DOM UPDATE
+    // ----------------------
+    function updateStats(player) {
+      setText("for", player.for);
+      setText("def", player.def);
+      setText("mag", player.mag);
+      setText("agi", player.agi);
+      setText("currentHP", player.currentHP);
+      setText("maxHP", player.maxHP);
+    }
+
+    // ----------------------
+    // SMALL HELPER
+    // ----------------------
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value ?? 0;
+    }
+
+    // ----------------------
+    // OPTIONAL: visual feedback
+    // ----------------------
+    function flash(el) {
+      if (!el) return;
+
+      el.classList.add("bg-Or-clair/30");
+      setTimeout(() => {
+        el.classList.remove("bg-Or-clair/30");
+      }, 300);
+    }
+
+    function updateStatWithEffect(id, newValue) {
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      if (el.textContent != newValue) {
+        el.textContent = newValue;
+        flash(el);
+      }
+    }
+
+    // ----------------------
+    // INIT
+    // ----------------------
+    async function init() {
+      try {
+        // Get current player
+        const players = await pb.collection("Player_"+id).getFullList({filter : `isCurrent = true`});
+        const player = players[0];
+
+        // Initial render
+        updateStats(player);
+
+        // Subscribe to THIS player only
+        pb.collection("Player_"+id).subscribe(player.id, (e) => {
+          const updated = e.record;
+
+          if (e.action === "update") {
+            updateStatWithEffect("for", updated.for);
+            updateStatWithEffect("def", updated.def);
+            updateStatWithEffect("mag", updated.mag);
+            updateStatWithEffect("agi", updated.agi);
+            updateStatWithEffect("currentHP", updated.currentHP);
+            updateStatWithEffect("maxHP", updated.maxHP);
+          }
+        });
+      } catch (err) {
+        console.error("Stats init error:", err);
+      }
+    }
+
+    // ----------------------
+    // START
+    // ----------------------
+    init();
   </script>
 </Layout>

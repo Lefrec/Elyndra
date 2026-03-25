@@ -13,7 +13,7 @@ if (Astro.request.method === "POST") {
     Astro.locals.pb.authStore.clear();
     Astro.response.headers.append(
       "set-cookie",
-      Astro.locals.pb.authStore.exportToCookie()
+      Astro.locals.pb.authStore.exportToCookie({ secure: false })
     );
     return Astro.redirect("/login");
   };

@@ -1,8 +1,12 @@
 import { type APIRoute } from "astro";
 import { listInventory, createItem, updateItem, deleteItem } from "../../../backend/functions/inventory";
-import { listPlayer, getPlayer, createPlayer, updatePlayer, deletePlayer } from "../../../backend/functions/player";
-import { listCollections, setupGamestate, addGamestate, listGamestate, deleteGamestate, getLoreRAG, getGamestateRAG } from "../../../backend/functions/weaviate";
-// import { listEntity, createEntity, updateEntity, deleteEntity } from "../../../backend/functions/entity"; 
+import { listQuest, createQuest, updateQuest, deleteQuest } from "../../../backend/functions/quest";
+import { getPlayer, updatePlayer } from "../../../backend/functions/player";
+import { addGamestate, listGamestate, deleteGamestate, getLoreRAG, getGamestateRAG } from "../../../backend/functions/weaviate";
+
+//get API key and URL
+const API_KEY = import.meta.env.LABAI_API_KEY;
+const API_URL = "https://lab-ia.umlp.fr/api/chat/completions";
 
 //Define what a tool is
 interface Tool {
@@ -12,17 +16,72 @@ interface Tool {
   execute: (args: any, id: string) => Promise<any>;
 };
 
-//get API key and URL
-const API_KEY = import.meta.env.LABAI_API_KEY;
-const API_URL = "https://lab-ia.umlp.fr/apiEndpoint/chat/completions";
-
-//we keep the system prompt out of the POST for readability
-const systemPrompt: string = "Tu es un assistant IA, répond aux requêtes de l'utilisateur de la manière la plus simple et directe possible."+
-"Tu peux utiliser des tool call pour aider l'utilisateur à gérer ses collections inventory, entity, player et gamestate dans une base de données."+
-"Tu ne connais pas les id, utilise les fonctions de liste pour les trouver avant d'agir.";
-
 //array defining our tools
 const tools: Tool[] = [
+  //Quest
+  {
+    name: "listQuest",
+    description: "Liste toutes les quêtes de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+    execute: async (args, id) => listQuest(id),
+  },
+  {
+    name: "createQuest",
+    description: "Ajoute une quête à l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        data: {
+          type: "object",
+          description: "Propriétés de la quête",
+          properties: {
+            name: { type: "string", description: "Nom de la quête" },
+            desc: { type: "string", description: "Description de la quête" },
+            completed: { type: "boolean", description: "Est-ce que la quête a été complétée" },
+          },
+        },
+      },
+      required: ["data"],
+    },
+    execute: async (args, id) => createQuest(id, args.data),
+  },
+  {
+    name: "updateQuest",
+    description: "Modifie une quête déjà existante de l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        questId: { type: "string", description: "ID de la quête à modifier dans la base de donnée" },
+        data: {
+          type: "object",
+          description: "Propriétés de la quête",
+          properties: {
+            name: { type: "string", description: "Nom de la quête" },
+            desc: { type: "string", description: "Description de la quête" },
+            completed: { type: "boolean", description: "Est-ce que la quête a été complétée" },
+          },
+        },
+      },
+      required: ["questId", "data"],
+    },
+    execute: async (args, id) => updateQuest(id, args.questId, args.data),
+  },
+  {
+    name: "deleteQuest",
+    description: "Supprime une quête existante pour l'utilisateur",
+    parameters: {
+      type: "object",
+      properties: {
+        questId: { type: "string", description: "ID de la quête à supprimer dans la base de donnée" },
+      },
+      required: ["questId"],
+    },
+    execute: async (args, id) => deleteQuest(id, args.questId),
+  },
   //Inventory
   {
     name: "listInventory",
@@ -81,23 +140,13 @@ const tools: Tool[] = [
     parameters: {
       type: "object",
       properties: {
-        itemId: { type: "string", description: "ID de l'objet à modifier dans la base de donnée" },
+        itemId: { type: "string", description: "ID de l'objet à supprimer dans la base de donnée" },
       },
       required: ["itemId"],
     },
     execute: async (args, id) => deleteItem(id, args.itemId),
   },
   //Player
-  {
-    name: "listPlayer",
-    description: "Liste tous les personnages de l'utilisateur",
-    parameters: {
-      type: "object",
-      properties: {},
-      required: [],
-    },
-    execute: async (args, id) => listPlayer(id),
-  },
   {
     name: "getPlayer",
     description: "Récupère uniquement le personnage actuel de l'utilisateur",
@@ -107,32 +156,6 @@ const tools: Tool[] = [
       required: [],
     },
     execute: async (args, id) => getPlayer(id),
-  },
-  {
-    name: "createPlayer",
-    description: "Crée un nouveau personnage pour l'utilisateur",
-    parameters: {
-      type: "object",
-      properties: {
-        data: {
-          type: "object",
-          description: "Propriétés du personnage",
-          properties: {
-            name: { type: "string", description: "Nom du personnage" },
-            class: { type: "string", enum: ["chevalier","mage","alchimiste","ombre"], description: "Classe du personnage" },
-            maxHP: { type: "integer", description: "Points de vie maximum" },
-            currentHP: { type: "integer", description: "Points de vie actuels" },
-            for: { type: "integer", description: "Force" },
-            def: { type: "integer", description: "Défense" },
-            mag: { type: "integer", description: "Magie" },
-            agi: { type: "integer", description: "Agilité" },
-            isCurrent: { type: "boolean", description: "Si c'est le personnage actuel" },
-          },
-        },
-      },
-      required: ["data"],
-    },
-    execute: async (args, id) => createPlayer(id, args.data),
   },
   {
     name: "updatePlayer",
@@ -160,18 +183,6 @@ const tools: Tool[] = [
       required: ["playerId", "data"],
     },
     execute: async (args, id) => updatePlayer(id, args.playerId, args.data),
-  },
-  {
-    name: "deletePlayer",
-    description: "Supprime un personnage de l'utilisateur",
-    parameters: {
-      type: "object",
-      properties: {
-        playerId: { type: "string", description: "ID du personnage à supprimer" },
-      },
-      required: ["playerId"],
-    },
-    execute: async (args, id) => deletePlayer(id, args.playerId),
   },
   //Gamestate and Lore
   {
@@ -244,72 +255,6 @@ const tools: Tool[] = [
       required: ["query"],
     },
     execute: async (args, id) => getGamestateRAG(id, args.query, args.size || 5),
-  },
-  //Entity
-  {
-    name: "listEntity",
-    description: "Liste toutes les entités de l'utilisateur",
-    parameters: {
-      type: "object",
-      properties: {},
-      required: [],
-    },
-    execute: async (args, id) => listEntity(id),
-  },
-  {
-    name: "createEntity",
-    description: "Crée une nouvelle entité pour l'utilisateur",
-    parameters: {
-      type: "object",
-      properties: {
-        data: {
-          type: "object",
-          description: "Propriétés de l'entité",
-          properties: {
-            name: { type: "string", description: "Nom de l'entité" },
-            desc: { type: "string", description: "Description de l'entité" },
-            maxHP: { type: "integer", description: "Points de vie maximum" },
-            currentHP: { type: "integer", description: "Points de vie actuels" },
-          },
-        },
-      },
-      required: ["data"],
-    },
-    execute: async (args, id) => createEntity(id, args.data),
-  },
-  {
-    name: "updateEntity",
-    description: "Modifie une entité existante de l'utilisateur",
-    parameters: {
-      type: "object",
-      properties: {
-        entityId: { type: "string", description: "ID de l'entité à modifier" },
-        data: {
-          type: "object",
-          description: "Propriétés de l'entité",
-          properties: {
-            name: { type: "string", description: "Nom de l'entité" },
-            desc: { type: "string", description: "Description de l'entité" },
-            maxHP: { type: "integer", description: "Points de vie maximum" },
-            currentHP: { type: "integer", description: "Points de vie actuels" },
-          },
-        },
-      },
-      required: ["entityId", "data"],
-    },
-    execute: async (args, id) => updateEntity(id, args.entityId, args.data),
-  },
-  {
-    name: "deleteEntity",
-    description: "Supprime une entité de l'utilisateur",
-    parameters: {
-      type: "object",
-      properties: {
-        entityId: { type: "string", description: "ID de l'entité à supprimer" },
-      },
-      required: ["entityId"],
-    },
-    execute: async (args, id) => deleteEntity(id, args.entityId),
   },
 ];
 
@@ -387,6 +332,11 @@ function parseToolCalls(content: string): Array<{ function: { name: string; argu
     }
     return results.length > 0 ? results : null;
 };
+
+//we keep the system prompt out of the POST for readability
+const systemPrompt: string = "Tu es un assistant IA, répond aux requêtes de l'utilisateur de la manière la plus simple et directe possible."+
+"Tu peux utiliser des tool call pour aider l'utilisateur à gérer ses collections inventory, player, quest et gamestate dans une base de données."+
+"Tu ne connais pas les id, utilise les fonctions de liste pour les trouver avant d'agir.";
 
 export const POST: APIRoute = async ({locals, request}) => {
     try {
