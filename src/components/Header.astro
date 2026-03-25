@@ -4,8 +4,11 @@ interface Props {
 }
 const { bannerOffset = false } = Astro.props;
 
-const isLoggedIn = !!Astro.cookies.get("elyndra_session")?.value;
-const pseudo = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
+const isLoggedIn = Astro.locals.pb.authStore.isValid;
+let pseudo;
+if (isLoggedIn) {
+  pseudo = Astro.locals.pb.authStore.record.name;
+} 
 ---
 
 <header
@@ -44,53 +47,6 @@ const pseudo = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
             >Boutique</a
           >
         </li>
-        <li>
-          {
-            isLoggedIn ? (
-              <div class="flex items-center gap-3">
-                <a
-                  href="/profile"
-                  class="text-Or-clair text-sm font-heading tracking-widest hover:underline hover:opacity-80 transition-opacity"
-                >
-                  {pseudo}
-                </a>
-                <button
-                  id="logout-btn"
-                  class="text-white/60 hover:text-Or-clair text-xs font-body tracking-widest uppercase border border-white/20 hover:border-Or-clair/50 px-3 py-1.5 rounded-[6px] transition-all"
-                >
-                  Se déconnecter
-                </button>
-              </div>
-            ) : (
-              <a href="/login" class="hover:opacity-80">
-                <svg
-                  width="28"
-                  height="28"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M28.195 29.653s0-1.459-.487-3.403c-.588-2.356-1.944-3.889-4.86-3.889H12.152c-2.917 0-4.273 1.533-4.861 3.889-.486 1.944-.486 3.403-.486 3.403h21.389zM12.639 12.639c0 1.81.263 3.796.972 4.861.905 1.358 2.44 1.944 3.89 1.944 1.504 0 2.982-.586 3.888-1.944.71-1.065.972-3.05.972-4.861 0-1.358-.486-5.833-4.86-5.833-4.376 0-4.862 3.57-4.862 5.833z"
-                    fill="#D0CFCE"
-                  />
-                  <path
-                    d="M28.195 29.167s0-.973-.487-2.917c-.588-2.356-1.944-3.889-4.86-3.889H12.152c-2.917 0-4.273 1.533-4.861 3.889-.486 1.944-.486 2.917-.486 2.917"
-                    stroke="#000"
-                    stroke-width=".5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M12.639 12.639c0 1.81.262 3.796.972 4.861.905 1.358 2.44 1.944 3.889 1.944 1.505 0 2.983-.586 3.889-1.944.71-1.065.972-3.05.972-4.861 0-1.358-.486-5.833-4.861-5.833s-4.861 3.57-4.861 5.833z"
-                    stroke="#000"
-                    stroke-width=".5"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </a>
-            )
-          }
-        </li>
       </ul>
 
       <!-- Icône panier -->
@@ -120,19 +76,13 @@ const pseudo = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
         >
       </a>
 
-      <li>
+      <div>
         {
           isLoggedIn ? (
             <div class="flex items-center gap-3">
-              <span class="text-[#FFE9B5] text-sm font-heading tracking-widest">
+              <a href="/profile" class="text-[#FFE9B5] text-sm font-heading tracking-widest">
                 {pseudo}
-              </span>
-              <button
-                id="logout-btn"
-                class="text-white/60 hover:text-[#FFE9B5] text-xs font-body tracking-widest uppercase border border-white/20 hover:border-[#FFE9B5]/50 px-3 py-1.5 rounded-[6px] transition-all"
-              >
-                Se déconnecter
-              </button>
+              </a>
             </div>
           ) : (
             <a href="/login" class="hover:opacity-80">
@@ -163,7 +113,7 @@ const pseudo = Astro.cookies.get("elyndra_pseudo")?.value ?? "";
             </a>
           )
         }
-      </li>
+      </div>
     </nav>
 
     <!-- Boutons mobile : login + hamburger -->
