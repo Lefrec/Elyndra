@@ -53,6 +53,11 @@ async function setupPlayer(id: string) {
             await pb.collections.create({
                 type: "base",
                 name: collectionName,
+                listRule:   "",
+                viewRule:   "",
+                createRule: "",
+                updateRule: "",
+                deleteRule: "",
                 fields: [
                     {
                         name: "name",
@@ -137,6 +142,11 @@ async function setupInventory(id: string) {
             await pb.collections.create({
                 type: "base",
                 name: collectionName,
+                listRule:   "",
+                viewRule:   "",
+                createRule: "",
+                updateRule: "",
+                deleteRule: "",
                 fields: [
                     {
                         name: "name",
@@ -255,6 +265,11 @@ async function setupQuest(id: string) {
             await pb.collections.create({
                 type: "base",
                 name: collectionName,
+                listRule:   "",
+                viewRule:   "",
+                createRule: "",
+                updateRule: "",
+                deleteRule: "",
                 fields: [
                     {
                         name: "name",
