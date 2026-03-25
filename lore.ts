@@ -1,73 +1,4 @@
 import weaviate, { type WeaviateClient, dataType, vectors } from 'weaviate-client';
-import { bestiaire } from './bestiaire.ts';
-import { autresPersonnages } from './autres_perso.ts';
-import { histoiresBiomes } from './histoires_biomes.ts';
-import { typesEvenements } from './type_evenement.ts';
-import { patternsBoss, combatsBoss } from './boss.ts';
-import { patternsEvenementsAleatoires, EvenementsDarkFantasy } from './evenements_aleatoires.ts';
-
-const BestiaireItems = [];
-for (const [biome, monstres] of Object.entries(bestiaire)) {
-	for (const monstre of monstres) {
-		let description = `${monstre.description} Habituellement rencontré dans : ${biome}.`;
-		if (monstre.stats) {
-			description += ` Stats - Force: ${monstre.stats.force}, Endurance: ${monstre.stats.endurance}, Intelligence: ${monstre.stats.intelligence}.`;
-		}
-		BestiaireItems.push({
-			type: "Monstre",
-			name: monstre.nom,
-			desc: description,
-		});
-	}
-}
-
-const AutresPersonnagesItems = autresPersonnages.map(p => {
-	let description = `${p.role} que l'on rencontre dans ${p.biome}. ${p.description}`;
-	if (p.stats) {
-		description += ` Stats - Force: ${p.stats.force}, Endurance: ${p.stats.endurance}, Intelligence: ${p.stats.intelligence}.`;
-	}
-	return {
-		type: "Personnage",
-		name: p.nom,
-		desc: description,
-	};
-});
-
-const HistoiresBiomesItems = histoiresBiomes.map(b => ({
-	type: "Histoire Biome",
-	name: b.biome,
-	desc: `${b.histoire}`,
-}));
-
-const TypeEvenementItems = typesEvenements.map(e => ({
-	type: "Concept Narratif",
-	name: e.nom,
-	desc: `${e.description} Pourquoi c'est apprécié par les joueurs : ${e.pourquoiApprecie}`,
-}));
-
-const PatternsBossItems = patternsBoss.map(p => ({
-	type: "Mécanique de Combat",
-	name: p.nom,
-	desc: `Pattern de game design pour encounter de Boss : ${p.description}`,
-}));
-
-const BossLoreItems = combatsBoss.map(b => ({
-	type: "Boss Epique",
-	name: b.nom,
-	desc: `Boss épique lié à : ${b.biome}. Mécanique et Lore : ${b.description}`,
-}));
-
-const PatternsEvenementsAleatoiresItems = patternsEvenementsAleatoires.map(p => ({
-	type: "Pattern Événement Aléatoire",
-	name: p.nom,
-	desc: `Mécanique d'événement dynamique : ${p.description}`,
-}));
-
-const EvenementsDarkFantasyItems2 = EvenementsDarkFantasy.map(e => ({
-	type: "d'Événement Aléatoire Dark Fantasy",
-	name: e.nom,
-	desc: e.description,
-}));
 
 //connect to local Weaviate DB
 const client: WeaviateClient = await weaviate.connectToLocal();
@@ -219,22 +150,5 @@ const groupe = await loreCol.data.insertMany(Groupe);
 console.log(`Imported & vectorized ${Groupe.length} objects into the Lore collection`);
 const lieu = await loreCol.data.insertMany(Lieu);
 console.log(`Imported & vectorized ${Lieu.length} objects into the Lore collection`);
-const monstresInsert = await loreCol.data.insertMany(BestiaireItems);
-console.log(`Imported & vectorized ${BestiaireItems.length} objects into the Lore collection`);
-const persosInsert = await loreCol.data.insertMany(AutresPersonnagesItems);
-console.log(`Imported & vectorized ${AutresPersonnagesItems.length} objects into the Lore collection`);
-const histoiresBiomesInsert = await loreCol.data.insertMany(HistoiresBiomesItems);
-console.log(`Imported & vectorized ${HistoiresBiomesItems.length} objects into the Lore collection`);
-const evenementsInsert = await loreCol.data.insertMany(TypeEvenementItems);
-console.log(`Imported & vectorized ${TypeEvenementItems.length} objects into the Lore collection`);
-const patternsBossInsert = await loreCol.data.insertMany(PatternsBossItems);
-console.log(`Imported & vectorized ${PatternsBossItems.length} objects into the Lore collection`);
-const bossLoreInsert = await loreCol.data.insertMany(BossLoreItems);
-console.log(`Imported & vectorized ${BossLoreItems.length} objects into the Lore collection`);
-const patternsEvenementsInsert = await loreCol.data.insertMany(PatternsEvenementsAleatoiresItems);
-console.log(`Imported & vectorized ${PatternsEvenementsAleatoiresItems.length} objects into the Lore collection`);
-const evenementsDarkFantasyInsert = await loreCol.data.insertMany(EvenementsDarkFantasyItems2);
-console.log(`Imported & vectorized ${EvenementsDarkFantasyItems2.length} objects into the Lore collection`);
-
 //close the client
 await client.close();
