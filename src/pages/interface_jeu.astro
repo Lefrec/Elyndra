@@ -600,6 +600,31 @@ dice = await getDice(id);
 
   <!-- chat api endpoint -->
   <script>
+    import { biomeState } from "../stores/biome.js";
+
+    const biomes = {
+      elyndra: {
+        title: "Ruines d'Élyndra",
+        image: "/biomes/elyndra.webp",
+        desc: "Une cité perdue avec des pierres runiques",
+      },
+      lunel: {
+        title: "Forêt de Lunel",
+        image: "/biomes/lunel.webp",
+        desc: "Une jungle oppressante avec des cités perchées",
+      },
+      solarys: {
+        title: "Dunes de Solarys",
+        image: "/biomes/solarys.webp",
+        desc: "Une immensité aride avec un oasis solitaire",
+      },
+      auralis: {
+        title: "Vallée gelée d'Auralis",
+        image: "/biomes/auralis.webp",
+        desc: "Un refuge givré avec des vents mordants",
+      },
+    };
+
     const button = document.getElementById("button") as HTMLButtonElement;
     const input = document.getElementById("input") as HTMLInputElement;
     const messagesContainer = document.getElementById(
@@ -657,6 +682,45 @@ dice = await getDice(id);
           button.click();
         }
       });
+
+      const state = biomeState.get();
+
+      messages.push({
+        role: "user",
+        content:
+          `Ceci est le message de début d'aventure que le joueur ne verra pas.` +
+          `Le joueur débute son aventure dans la région ${state.title}, ${state.description}.` +
+          `Commence par récupérer les informations du joueur pour savoir qui il est et du RAG du Lore pour avoir des informations générales sur le monde, puis introduit le à l'aventure en le mettant dans l'ambiance et en décrivant son environnement` +
+          `Décris la situation et définis des objectifs simples à court terme le temps de l'introduire à l'univers comme une sorte de tutoriel`+
+          `Définis naturellement et de manière diégétiques son inventaire de départ, ses objectifs, ses origines, etc` +
+          `C'est le début de l'aventure alors soigne l'introduction et soit accrocheur, évite les pavés de texte`,
+      });
+
+      const res = await fetch("/apiEndpoint/chat.json", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: messages,
+        }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        messagesContainer.textContent = `Error ${res.status}: ${text}`;
+      }
+
+      const data = await res.json();
+
+      messages.push({ role: "assistant", content: data.reply });
+
+      const assistantMessageDiv = document.createElement("div");
+      assistantMessageDiv.classList.add("assistantMessage");
+      assistantMessageDiv.textContent = data.reply;
+      messagesContainer.appendChild(assistantMessageDiv);
+
+      scrollToBottom();
     }
 
     function scrollToBottom() {
