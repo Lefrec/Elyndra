@@ -18,6 +18,7 @@ export async function setupCollections(id: string) {
         // await setupEntity(id);
         await setupQuest(id);
         await setupGamestate(id);
+        await clearSave(id);
         pb.authStore.clear();
         return;
     } catch (e) {
@@ -34,6 +35,7 @@ export async function deleteCollections(id: string) {
         // await deleteEntity(id);
         await deleteQuest(id);
         await deleteGamestateCol(id);
+        await clearSave(id);
         pb.authStore.clear();
         return;
     } catch (e) {
@@ -339,6 +341,24 @@ export async function saveMessages(id: string, messages: Array<{ role: string, c
         }
     } catch (e) {
         console.log("[saveMessages] Failed",e);
+        return e;
+    }
+}
+
+async function clearSave(id: string) {
+     try {
+        const collectionName : string = "Player_"+id;
+        const doesExist = await pb.collection("Save").getFullList({ filter: `user = '${id}'` });
+        //logic executed if the collection doesn't exist
+        if (doesExist) {
+            console.log("[clearSave] Killing existing saves")
+            doesExist.forEach(async (col) => {
+                await pb.collection("Save").delete(col.id);
+            })
+        }
+        return;
+    } catch (e) {
+        console.log("[clearSave] Failed")
         return e;
     }
 }

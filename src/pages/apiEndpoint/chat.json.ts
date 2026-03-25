@@ -477,8 +477,9 @@ Tu dois initialiser l’aventure du joueur.
 
 1. Récupérer les informations du joueur (getPlayer)
 2. Puis récupérer les informations du lore (getLoreRAG)
-3. Analyser ces informations pour contextualiser le personnage dans le monde
-4. Générer une introduction immersive (addGamestate, createItem, createQuest)
+3. Analyser ces informations pour contextualiser le personnage dans le monde et imaginer un scénario d'introduction
+4. Générer des objets dans l'inventaire, des quêtes et des informations de gamestate liés au scénario d'introduction (addGamestate, createItem, createQuest)
+5. Générer une réponse d'introduction immersive et accrocheuse
 
 ========================
 CONTENU À PRODUIRE
@@ -486,6 +487,11 @@ CONTENU À PRODUIRE
 - Introduire le joueur dans la région suivante :
   ${state.title}, ${state.desc}
 
+- Générer :
+  - Objets dans l'inventaire
+  - Quêtes et objectifs à court terme
+  - Éléments de Gamestate
+  
 - Décrire :
   - l’environnement immédiat
   - l’ambiance
@@ -508,7 +514,7 @@ CONTRAINTES
 - Ne pas écrire sous forme de checklist ou de liste
 - Ne pas surcharger d’informations
 - Rester immersif, fluide et narratif
-- Réponse courte (1 à 3 paragraphes)
+- Réponse très courte
 - Toujours terminer par une ouverture ou une question
 
 ========================
@@ -522,7 +528,7 @@ TON
 ========================
 IMPORTANT
 ========================
-Tu dois commencer directement par la narration après avoir collecté les informations nécessaires.
+Tu dois commencer directement par la narration après avoir collecté et généré les informations nécessaires.
 `;
 }
 
@@ -576,7 +582,7 @@ export const POST: APIRoute = async ({locals, request}) => {
               ]
             }
 
-            console.log("[chat] Messages :",messages);
+            console.log("[chat] Messages :", chatMessages);
 
             for (let i = 0; i < maxToolCallAmount; i++) {
                 console.log("[chat] Handling request",i);
