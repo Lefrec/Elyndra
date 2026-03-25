@@ -1,8 +1,8 @@
 import { type APIRoute } from "astro";
-import { listInventory, createItem, updateItem, deleteItem } from "../../../../backend/functions/proto/inventory";
-import { listPlayer, getPlayer, createPlayer, updatePlayer, deletePlayer } from "../../../../backend/functions/proto/player";
-import { listCollections, setupGamestate, addGamestate, listGamestate, deleteGamestate, getLoreRAG, getGamestateRAG } from "../../../../backend/functions/proto/weaviate";
-import { listEntity, createEntity, updateEntity, deleteEntity } from "../../../../backend/functions/proto/entity"; 
+import { listInventory, createItem, updateItem, deleteItem } from "../../functions/proto/inventory";
+import { listPlayer, getPlayer, createPlayer, updatePlayer, deletePlayer } from "../../functions/proto/player";
+import { listCollections, setupGamestate, addGamestate, listGamestate, deleteGamestate, getLoreRAG, getGamestateRAG } from "../../functions/proto/weaviate";
+import { listEntity, createEntity, updateEntity, deleteEntity } from "../../functions/proto/entity"; 
 
 //Define what a tool is
 interface Tool {

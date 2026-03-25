@@ -1,5 +1,5 @@
 import { type APIRoute } from "astro";
-import { deleteCollections } from "../../../../backend/functions/proto/user";
+import { deleteCollections } from "../../functions/proto/user";
 
 export const POST: APIRoute = async ({locals, request}) => {
     try {
