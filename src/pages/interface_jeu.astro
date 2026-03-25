@@ -8,10 +8,10 @@ import Bouclier from "../assets/interface_ia/stats/bouclier.svg";
 import Magie from "../assets/interface_ia/stats/magie.svg";
 import Pied from "../assets/interface_ia/stats/pied.svg";
 import { biomeState } from "../stores/biome.js";
-import { diceState } from "../stores/dice.js";
 import { getPlayer } from "../../backend/functions/player";
 import { listInventory } from "../../backend/functions/inventory";
 import { listQuest } from "../../backend/functions/quest";
+import { getDice } from "../../backend/functions/dice";
 
 if (!Astro.locals.pb.authStore.record) {
   return Astro.redirect("/login");
@@ -30,6 +30,10 @@ inventory = await listInventory(id);
 let quests;
 
 quests = await listQuest(id);
+
+let dice;
+
+dice = await getDice(id);
 ---
 
 <Layout title="Interface de jeu" hideHeaderFooter={true}>
@@ -273,8 +277,15 @@ quests = await listQuest(id);
           <h3 class="goldTitle">Jet de dé</h3>
           <div class="relative flex w-full h-full justify-center items-center">
             <Dice id="dice" />
-            <p id="dice-result" class="absolute">{diceState.get().result}</p>
+            <p id="dice-result" class="absolute">{dice?.modifiedRoll || 20}</p>
           </div>
+          <p id="dice-details" class="text-white self-center text-xs">
+            {
+              dice
+                ? `${dice.roll} (D20) + ${dice.modifier} (modificateur) = ${dice.modifiedRoll}`
+                : ""
+            }
+          </p>
         </div>
       </div>
       <!-- main col -->
@@ -379,6 +390,8 @@ quests = await listQuest(id);
     </div>
   </div>
 
+  <p id="hiddenId" class="hidden">{id}</p>
+
   <!-- biomeState management -->
   <script>
     import { biomeState } from "../stores/biome.js";
@@ -425,32 +438,99 @@ quests = await listQuest(id);
     // randomizeBiome();
   </script>
 
-  <!-- diceState management -->
+  <!-- dice subscribtion -->
   <script>
-    import { diceState } from "../stores/dice";
+    import PocketBase from "pocketbase";
 
-    diceState.subscribe(() => {
-      const state = diceState.get();
-      const anim = document
-        .getElementById("dice")
-        .animate(
-          [{ transform: "rotate(0deg)" }, { transform: "rotate(720deg)" }],
-          {
-            duration: 800,
-            easing: "cubic-bezier(0.25, 0.46, 0.45, 0.94)", // easeOutQuad
-          },
-        );
+    const pb = new PocketBase("http://elyndra.paolo-vincent.fr/");
 
-      anim.onfinish = () => {
-        document.getElementById("dice-result").textContent = state.result;
-      };
-    });
+    const id = document.getElementById("hiddenId")?.textContent;
 
-    function randomizeResult() {
-      diceState.set({ result: Math.ceil(Math.random() * 20) });
+    // ----------------------
+    // DOM UPDATE
+    // ----------------------
+    function updateDice(dice) {
+      const resultEl = document.getElementById("dice-result");
+      const detailsEl = document.getElementById("dice-details");
+
+      if (!resultEl || !detailsEl) return;
+
+      const roll = dice?.roll ?? 0;
+      const modifier = dice?.modifier ?? 0;
+      const modified = dice?.modifiedRoll ?? roll + modifier;
+
+      resultEl.textContent = modified;
+      detailsEl.textContent = `${roll} (D20) + ${modifier} (modificateur) = ${modified}`;
     }
 
-    // randomizeResult();
+    // ----------------------
+    // OPTIONAL: animation hook
+    // ----------------------
+    function animateDice() {
+      const diceEl = document.getElementById("dice");
+      if (!diceEl) return;
+
+      diceEl.classList.add("animate-spin");
+
+      setTimeout(() => {
+        diceEl.classList.remove("animate-spin");
+      }, 500);
+    }
+
+    // ----------------------
+    // INIT
+    // ----------------------
+    async function init() {
+      try {
+        const collection = "Dice";
+
+        let diceRecord = null;
+
+        // 1. Try to fetch existing dice
+        try {
+          diceRecord = await pb
+            .collection(collection)
+            .getFirstListItem(`user="${id}"`);
+
+          updateDice(diceRecord);
+        } catch (err) {
+          // No dice yet → that's fine
+          console.log("No dice record yet");
+        }
+
+        // 2. Subscribe to ALL changes in collection
+        pb.collection(collection).subscribe("*", (e) => {
+          const record = e.record;
+
+          // Only care about THIS user
+          if (!record || record.user !== id) return;
+
+          if (e.action === "create") {
+            diceRecord = record;
+            updateDice(record);
+            animateDice();
+          }
+
+          if (e.action === "update") {
+            diceRecord = record;
+            updateDice(record);
+            animateDice();
+          }
+
+          if (e.action === "delete") {
+            diceRecord = null;
+            updateDice(null);
+          }
+        });
+      } catch (err) {
+        console.error("Dice init error:", err);
+      }
+    }
+
+    // ----------------------
+    // START
+    // ----------------------
+    init();
   </script>
 
   <!-- side menu toggle -->
@@ -588,7 +668,6 @@ quests = await listQuest(id);
   </script>
 
   <!-- inventory subscribtion -->
-  <p id="hiddenId" class="hidden">{id}</p>
   <script>
     import PocketBase from "pocketbase";
 
@@ -852,14 +931,16 @@ quests = await listQuest(id);
     async function init() {
       try {
         // Get current player
-        const players = await pb.collection("Player_"+id).getFullList({filter : `isCurrent = true`});
+        const players = await pb
+          .collection("Player_" + id)
+          .getFullList({ filter: `isCurrent = true` });
         const player = players[0];
 
         // Initial render
         updateStats(player);
 
         // Subscribe to THIS player only
-        pb.collection("Player_"+id).subscribe(player.id, (e) => {
+        pb.collection("Player_" + id).subscribe(player.id, (e) => {
           const updated = e.record;
 
           if (e.action === "update") {

@@ -3,6 +3,7 @@ import { listInventory, createItem, updateItem, deleteItem } from "../../../back
 import { listQuest, createQuest, updateQuest, deleteQuest } from "../../../backend/functions/quest";
 import { getPlayer, updatePlayer } from "../../../backend/functions/player";
 import { addGamestate, listGamestate, deleteGamestate, getLoreRAG, getGamestateRAG } from "../../../backend/functions/weaviate";
+import { rollTest } from "../../../backend/functions/dice";
 
 //get API key and URL
 const API_KEY = import.meta.env.LABAI_API_KEY;
@@ -18,6 +19,20 @@ interface Tool {
 
 //array defining our tools
 const tools: Tool[] = [
+  //Roll
+  {
+    name: "roleTest",
+    description: "Lance un dé pour déterminer le résultat d'une action incertaine",
+    parameters: {
+      type: "object",
+      properties: {
+        difficulty: { type: "integer", description: "La difficulté de l'action entre 1 et 20" },
+        modifier: { type: "integer", description: "Modificateur appliquable au jet"},
+        },
+      required: ["difficulty"],
+    },
+    execute: async (args, id) => rollTest(id, args.difficulty, args.modifier),
+  },
   //Quest
   {
     name: "listQuest",

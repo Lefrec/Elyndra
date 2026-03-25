@@ -15,7 +15,7 @@ export async function setupCollections(id: string) {
         await authAdmin();
         await setupPlayer(id);
         await setupInventory(id);
-        await setupEntity(id);
+        // await setupEntity(id);
         await setupQuest(id);
         await setupGamestate(id);
         pb.authStore.clear();
@@ -31,7 +31,7 @@ export async function deleteCollections(id: string) {
         await authAdmin();
         await deletePlayer(id);
         await deleteInventory(id);
-        await deleteEntity(id);
+        // await deleteEntity(id);
         await deleteQuest(id);
         await deleteGamestateCol(id);
         pb.authStore.clear();
@@ -183,66 +183,66 @@ async function deleteInventory(id: string) {
     }
 }
 
-async function setupEntity(id: string) {
-    try {
-        const collectionName : string = "Entity_"+id;
-        const doesExist : boolean = await checkCollection(collectionName);
+// async function setupEntity(id: string) {
+//     try {
+//         const collectionName : string = "Entity_"+id;
+//         const doesExist : boolean = await checkCollection(collectionName);
 
-        //logic executed if the collection doesn't exist
-        if (!doesExist) {
-            console.log("[setupEntity] Create collection");
-            await pb.collections.create({
-                type: "base",
-                name: collectionName,
-                fields: [
-                    {
-                        name: "name",
-                        type: "text",
-                    },
-                    {
-                        name: "desc",
-                        type: "text",
-                    },
-                    {
-                        name: "maxHP",
-                        type: "number",
-                    },
-                    {
-                        name: "currentHP",
-                        type: "number",
-                    },
-                ]
-            })
-        } else {
-            console.log("[setupEntity] Truncate collection");
-            await pb.collections.truncate(collectionName)
-        }
+//         //logic executed if the collection doesn't exist
+//         if (!doesExist) {
+//             console.log("[setupEntity] Create collection");
+//             await pb.collections.create({
+//                 type: "base",
+//                 name: collectionName,
+//                 fields: [
+//                     {
+//                         name: "name",
+//                         type: "text",
+//                     },
+//                     {
+//                         name: "desc",
+//                         type: "text",
+//                     },
+//                     {
+//                         name: "maxHP",
+//                         type: "number",
+//                     },
+//                     {
+//                         name: "currentHP",
+//                         type: "number",
+//                     },
+//                 ]
+//             })
+//         } else {
+//             console.log("[setupEntity] Truncate collection");
+//             await pb.collections.truncate(collectionName)
+//         }
 
-        return;
-    } catch (e) {
-        console.log("[setupEntity] Failed")
-        return e;
-    }
-}
+//         return;
+//     } catch (e) {
+//         console.log("[setupEntity] Failed")
+//         return e;
+//     }
+// }
 
-async function deleteEntity(id: string) {
-    try {
-        const collectionName : string = "Entity_"+id;
-        const doesExist : boolean = await checkCollection(collectionName);
+// async function deleteEntity(id: string) {
+//     try {
+//         const collectionName : string = "Entity_"+id;
+//         const doesExist : boolean = await checkCollection(collectionName);
 
-        if (!doesExist) {
-            console.log("[deleteEntity] Collection doesn't exist");
-        } else {
-            await pb.collections.delete(collectionName);
-            console.log("[deleteEntity] Deleted collection");
-        }
+//         if (!doesExist) {
+//             console.log("[deleteEntity] Collection doesn't exist");
+//         } else {
+//             await pb.collections.delete(collectionName);
+//             console.log("[deleteEntity] Deleted collection");
+//         }
 
-        return;
-    } catch (e) {
-        console.log("[deleteEntity] Failed")
-        return e;
-    }
-}
+//         return;
+//     } catch (e) {
+//         console.log("[deleteEntity] Failed")
+//         return e;
+//     }
+// }
 
 async function setupQuest(id: string) {
     try {
