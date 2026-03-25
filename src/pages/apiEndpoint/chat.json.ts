@@ -491,7 +491,7 @@ CONTENU À PRODUIRE
   - Objets dans l'inventaire
   - Quêtes et objectifs à court terme
   - Éléments de Gamestate
-  
+
 - Décrire :
   - l’environnement immédiat
   - l’ambiance
@@ -596,6 +596,7 @@ export const POST: APIRoute = async ({locals, request}) => {
                     body: JSON.stringify({
                         model: "mistralai/Mistral-Small-3.2-24B-Instruct-2506",
                         messages: chatMessages,
+                        "temperature": 2, 
                         tools: toolsArray,
                         tool_choice: "auto",
                     }),
