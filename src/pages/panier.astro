@@ -8,10 +8,10 @@ const description = "Votre panier d'achats pour Elyndra";
 <Layout title={title} description={description}>
   <section class="py-16 px-6 md:px-12 lg:px-16 max-w-7xl mx-auto">
     <div class="text-left mb-16">
-      <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#FFE9B5] mb-4 sm:mb-6 leading-tight">
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-Or-clair mb-4 sm:mb-6 leading-tight">
         Votre Panier
       </h1>
-      <p class="text-[#9C9C9C] text-base sm:text-lg md:text-xl max-w-lg leading-relaxed">
+      <p class="text-sous-texte text-base sm:text-lg md:text-xl max-w-lg leading-relaxed">
         Vérifiez vos achats avant de procéder au paiement
       </p>
     </div>
@@ -20,7 +20,7 @@ const description = "Votre panier d'achats pour Elyndra";
       <!-- Les items du panier seront insérés ici par JavaScript -->
     </div>
 
-    <div id="cart-total" class="mt-12 p-6 bg-[#0E0E0E] border border-[#353120] rounded-2xl">
+    <div id="cart-total" class="mt-12 p-6 bg-Background-card border border-Bordure-foncee rounded-2xl">
       <!-- Total sera affiché ici -->
     </div>
 
@@ -28,14 +28,14 @@ const description = "Votre panier d'achats pour Elyndra";
       <button id="clear-cart-btn" class="bg-red-600 text-white font-bold py-3 px-8 rounded-lg uppercase text-lg hover:bg-red-700 transition-colors">
         Vider le panier
       </button>
-      <button id="checkout-btn" class="bg-[#FFE9B5] text-[#090D13] font-bold py-3 px-8 rounded-lg uppercase text-lg hover:bg-yellow-400 transition-colors">
+      <button id="checkout-btn" class="bg-Or-clair text-Background-dark-blue font-bold py-3 px-8 rounded-lg uppercase text-lg hover:bg-yellow-400 transition-colors">
         Procéder au Paiement
       </button>
     </div>
   </section>
 
   <!-- Notification -->
-  <div id="notification" class="fixed top-4 right-4 bg-[#090D13] text-[#FFE9B5] p-4 rounded-lg shadow-lg hidden z-50 max-w-sm border border-[#353120]">
+  <div id="notification" class="fixed top-4 right-4 bg-Background-dark-blue text-Or-clair p-4 rounded-lg shadow-lg hidden z-50 max-w-sm border border-Bordure-foncee">
     <p id="notification-text" class="font-bold"></p>
   </div>
 
@@ -55,7 +55,7 @@ const description = "Votre panier d'achats pour Elyndra";
       const totalDiv = document.getElementById('cart-total');
 
       if (cart.length === 0) {
-        container.innerHTML = '<p class="text-[#9C9C9C] text-center py-12">Votre panier est vide</p>';
+        container.innerHTML = '<p class="text-sous-texte text-center py-12">Votre panier est vide</p>';
         totalDiv.innerHTML = '';
         return;
       }
@@ -69,21 +69,21 @@ const description = "Votre panier d'achats pour Elyndra";
         let itemContent = '';
         if (item.type === 'credit') {
           itemContent = `
-            <div class="bg-[#0E0E0E] border border-[#353120] rounded-2xl p-6 flex items-center gap-6">
-              <div class="w-20 h-20 bg-[#FFE9B5] rounded-lg flex items-center justify-center">
+            <div class="bg-Background-card border border-Bordure-foncee rounded-2xl p-6 flex items-center gap-6">
+              <div class="w-20 h-20 bg-Or-clair rounded-lg flex items-center justify-center">
                 <img src="${item.image}" alt="${item.name}" class="w-12 h-12 object-contain">
               </div>
               <div class="flex-1">
-                <h3 class="text-xl font-bold text-[#E8E5D8]">${item.name}</h3>
-                <p class="text-[#9C9C9C]">${item.credits} crédits</p>
+                <h3 class="text-xl font-bold text-Blanc">${item.name}</h3>
+                <p class="text-sous-texte">${item.credits} crédits</p>
                 <div class="flex items-center gap-4 mt-2">
-                  <span class="text-[#FFE9B5] font-bold">${item.price.toFixed(2)}€</span>
+                  <span class="text-Or-clair font-bold">${item.price.toFixed(2)}€</span>
                   <div class="flex items-center gap-2">
-                    <button class="quantity-btn bg-[#353120] text-[#E8E5D8] px-2 py-1 rounded" data-action="decrease" data-id="${item.name}" data-type="${item.type}">-</button>
-                    <span class="text-[#E8E5D8]">${item.quantity}</span>
-                    <button class="quantity-btn bg-[#353120] text-[#E8E5D8] px-2 py-1 rounded" data-action="increase" data-id="${item.name}" data-type="${item.type}">+</button>
+                    <button class="quantity-btn bg-Bordure-foncee text-Blanc px-2 py-1 rounded" data-action="decrease" data-id="${item.name}" data-type="${item.type}">-</button>
+                    <span class="text-Blanc">${item.quantity}</span>
+                    <button class="quantity-btn bg-Bordure-foncee text-Blanc px-2 py-1 rounded" data-action="increase" data-id="${item.name}" data-type="${item.type}">+</button>
                   </div>
-                  <span class="text-[#9C9C9C]">Sous-total: ${itemTotal.toFixed(2)}€</span>
+                  <span class="text-sous-texte">Sous-total: ${itemTotal.toFixed(2)}€</span>
                 </div>
               </div>
               <button class="remove-btn bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700" data-id="${item.name}" data-type="${item.type}">Supprimer</button>
@@ -91,19 +91,19 @@ const description = "Votre panier d'achats pour Elyndra";
           `;
         } else {
           itemContent = `
-            <div class="bg-[#0E0E0E] border border-[#353120] rounded-2xl p-6 flex items-center gap-6">
+            <div class="bg-Background-card border border-Bordure-foncee rounded-2xl p-6 flex items-center gap-6">
               <img src="${item.image}" alt="${item.name || item.title}" class="w-20 h-20 object-cover rounded-lg">
               <div class="flex-1">
-                <h3 class="text-xl font-bold text-[#E8E5D8]">${item.name || item.title}</h3>
-                <p class="text-[#9C9C9C]">${item.description?.substring(0, 100)}...</p>
+                <h3 class="text-xl font-bold text-Blanc">${item.name || item.title}</h3>
+                <p class="text-sous-texte">${item.description?.substring(0, 100)}...</p>
                 <div class="flex items-center gap-4 mt-2">
-                  <span class="text-[#FFE9B5] font-bold">${priceNum.toFixed(2)}€</span>
+                  <span class="text-Or-clair font-bold">${priceNum.toFixed(2)}€</span>
                   <div class="flex items-center gap-2">
-                    <button class="quantity-btn bg-[#353120] text-[#E8E5D8] px-2 py-1 rounded" data-action="decrease" data-id="${item.id}" data-type="${item.type}">-</button>
-                    <span class="text-[#E8E5D8]">${item.quantity}</span>
-                    <button class="quantity-btn bg-[#353120] text-[#E8E5D8] px-2 py-1 rounded" data-action="increase" data-id="${item.id}" data-type="${item.type}">+</button>
+                    <button class="quantity-btn bg-Bordure-foncee text-Blanc px-2 py-1 rounded" data-action="decrease" data-id="${item.id}" data-type="${item.type}">-</button>
+                    <span class="text-Blanc">${item.quantity}</span>
+                    <button class="quantity-btn bg-Bordure-foncee text-Blanc px-2 py-1 rounded" data-action="increase" data-id="${item.id}" data-type="${item.type}">+</button>
                   </div>
-                  <span class="text-[#9C9C9C]">Sous-total: ${itemTotal.toFixed(2)}€</span>
+                  <span class="text-sous-texte">Sous-total: ${itemTotal.toFixed(2)}€</span>
                 </div>
               </div>
               <button class="remove-btn bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700" data-id="${item.id}" data-type="${item.type}">Supprimer</button>
@@ -116,8 +116,8 @@ const description = "Votre panier d'achats pour Elyndra";
 
       totalDiv.innerHTML = `
         <div class="flex justify-between items-center">
-          <span class="text-xl font-bold text-[#E8E5D8]">Total:</span>
-          <span class="text-2xl font-black text-[#FFE9B5]">${total.toFixed(2)}€</span>
+          <span class="text-xl font-bold text-Blanc">Total:</span>
+          <span class="text-2xl font-black text-Or-clair">${total.toFixed(2)}€</span>
         </div>
       `;
 
